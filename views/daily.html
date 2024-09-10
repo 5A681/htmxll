@@ -1,0 +1,89 @@
+{{ block "daily" .}}
+    <div id="daily-table" class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    Date
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Time
+                </th>
+                <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    Vab (kV)
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Vbc (kV)
+                </th>
+                <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                   Vca (kV)
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Ia (A)
+                </th>
+                <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    Ib (A)
+                </th>
+                <th scope="col" class="px-6 py-3">
+                Ic (A)
+                </th>
+                <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    P (MW)
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Q (MVAR)
+                </th>
+                <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    PF (%)
+                </th>
+            </tr>
+        </thead>
+        <tbody >
+            {{ range .}}
+            <tr  class="border-b border-gray-200 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                     {{ .Date }}
+                </th>
+                <td class="px-6 py-4">
+                    {{ .Time }}
+                </td>
+                 <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                    0
+                </td>
+                <td class="px-6 py-4">
+                   0
+                </td>
+                <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                    0
+                </td>
+                <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                    {{.CurrentPhaseA}}
+                </td>
+                <td class="px-6 py-4">
+                   {{.CurrentPhaseB}}
+                </td>
+                 <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                   {{.CurrentPhaseC}}
+                </td>
+                <td class="px-6 py-4">
+                    {{.ActivePower}}
+                </td>
+                 <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                    {{.ReactivePower}}
+                </td>
+                <td class="px-6 py-4">
+                    {{.PowerFactor}}
+                </td>
+                
+            </tr>
+            {{ end }}
+            
+        </tbody>
+    </table>
+</div>
+{{ end }}
+
+
+{{ block "table-body" .}}
+
+{{ end }}
