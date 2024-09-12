@@ -8,21 +8,26 @@
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <!-- <link rel="stylesheet" href="/main.css" /> -->
      <link href="/static/css/style.css" rel="stylesheet">
-     <script src="https://unpkg.com/htmx.org@2.0.2/dist/htmx.js"
-          integrity="sha384-yZq+5izaUBKcRgFbxgkRYwpHhHHCpp5nseXp0MEQ1A4MTWVMnqkmcuFez8x5qfxr"
-          crossorigin="anonymous"></script>
+     <script src="static/htmx.min.js"></script>
      <title>Document</title>
 </head>
 
-<body hx-get="/daily" hx-target="#data" hx-trigger="load" hx-swap="outerHTML">
- 
-   {{template "navbar"}}
-   {{template "daily"}}
-   
+<body>
+
+     {{template "navbar"}}
+     <div>
+          <div id="content" hx-get="/data?component=daily" hx-trigger="load" hx-swap="innerHTML">
+               {{template "content" .}}
+          </div>
+     </div>
+
+
 </body>
 
 </html>
 {{ end }}
 
-
-
+{{block "content" .}}
+{{template "daily" .}}
+{{template "monthly" .}}
+{{end}}

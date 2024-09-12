@@ -14,6 +14,14 @@ func (s repository) GetSubStationById(id int) (*entity.SubStation, error) {
 	}
 	return &subStation, nil
 }
+func (s repository) GetSubStations() ([]entity.SubStation, error) {
+	var subStations []entity.SubStation
+	err := s.db.Select(&subStations, "SELECT * FROM sub_stations ORDER BY created_at ASC")
+	if err != nil {
+		return nil, err
+	}
+	return subStations, nil
+}
 
 func (s repository) GetSubStationByName(name string) (*entity.SubStation, error) {
 	var subStation entity.SubStation

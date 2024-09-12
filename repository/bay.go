@@ -13,6 +13,15 @@ func (s repository) GetBayById(id int) (*entity.Bay, error) {
 	}
 	return &bay, nil
 }
+func (s repository) GetBays() ([]entity.Bay, error) {
+
+	var bays []entity.Bay
+	err := s.db.Select(&bays, `select * from bays order by created_at asc`)
+	if err != nil {
+		return nil, err
+	}
+	return bays, nil
+}
 
 func (s repository) GetBayByNameAndSubStationId(id int, name string) (*entity.Bay, error) {
 	var bay entity.Bay

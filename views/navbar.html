@@ -6,12 +6,18 @@
             <span
                 class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white text-purple-700">PEA</span>
         </a>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-                Button
+        <div class="flex space-x-2">
+            <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold w-20 h-12 rounded-full">
+            PDF
             </button>
-        <div class="flex items-center space-x-1">
+            <button class="bg-red-500 hover:bg-red-700 text-white font-bold w-20 h-12 rounded-full">
+                EXCEL
+            </button>
+              <div class="flex items-center space-x-1">
             {{template "dropdown-datetime"}}
         </div>
+        </div>
+      
     </div>
 </nav>
 

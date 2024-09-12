@@ -44,8 +44,8 @@ func (s service) GetLatestData(bayId int, filter filter.SortData) ([]dto.DataTmp
 
 }
 
-func (s service) GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([]entity.DataTmps, error) {
-	var datas []entity.DataTmps
+func (s service) GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
 		log.Println(err.Error())
@@ -61,7 +61,20 @@ func (s service) GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([
 				log.Println(err.Error())
 			}
 			if data != nil {
-				datas = append(datas, *data)
+				res = append(res, dto.DataTmps{
+					Id:            data.Id,
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					Date:          data.DataDatetime.Format("02/01/2006"),
+					Time:          data.DataDatetime.Format("15:04"),
+					BayId:         data.BayId,
+					CreatedAt:     data.CreatedAt,
+				})
+
 			}
 		}
 
@@ -76,17 +89,29 @@ func (s service) GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([
 				log.Println(err.Error())
 			}
 			if data != nil {
-				datas = append(datas, *data)
+				res = append(res, dto.DataTmps{
+					Id:            data.Id,
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					Date:          data.DataDatetime.Format("02/01/2006"),
+					Time:          data.DataDatetime.Format("15:04"),
+					BayId:         data.BayId,
+					CreatedAt:     data.CreatedAt,
+				})
 			}
 		}
 	}
 
-	return datas, nil
+	return res, nil
 
 }
 
-func (s service) GetDataLatestMonthNightTime(bayId int, filter filter.SortData) ([]entity.DataTmps, error) {
-	var datas []entity.DataTmps
+func (s service) GetDataLatestMonthNightTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
 		log.Println(err.Error())
@@ -104,7 +129,19 @@ func (s service) GetDataLatestMonthNightTime(bayId int, filter filter.SortData) 
 				log.Println(err.Error(), i)
 			}
 			if data != nil {
-				datas = append(datas, *data)
+				res = append(res, dto.DataTmps{
+					Id:            data.Id,
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					Date:          data.DataDatetime.Format("02/01/2006"),
+					Time:          data.DataDatetime.Format("15:04"),
+					BayId:         data.BayId,
+					CreatedAt:     data.CreatedAt,
+				})
 			}
 		}
 
@@ -121,16 +158,28 @@ func (s service) GetDataLatestMonthNightTime(bayId int, filter filter.SortData) 
 				log.Println(err.Error())
 			}
 			if data != nil {
-				datas = append(datas, *data)
+				res = append(res, dto.DataTmps{
+					Id:            data.Id,
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					Date:          data.DataDatetime.Format("02/01/2006"),
+					Time:          data.DataDatetime.Format("15:04"),
+					BayId:         data.BayId,
+					CreatedAt:     data.CreatedAt,
+				})
 			}
 		}
 	}
 
-	return datas, nil
+	return res, nil
 
 }
-func (s service) GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([]entity.DataTmps, error) {
-	var datas []entity.DataTmps
+func (s service) GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
 		log.Println(err.Error())
@@ -146,7 +195,19 @@ func (s service) GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([
 				log.Println(err.Error())
 			}
 			if data != nil {
-				datas = append(datas, *data)
+				res = append(res, dto.DataTmps{
+					Id:            data.Id,
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					Date:          data.DataDatetime.Format("02/01/2006"),
+					Time:          data.DataDatetime.Format("15:04"),
+					BayId:         data.BayId,
+					CreatedAt:     data.CreatedAt,
+				})
 			}
 		}
 
@@ -161,12 +222,24 @@ func (s service) GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([
 				log.Println(err.Error())
 			}
 			if data != nil {
-				datas = append(datas, *data)
+				res = append(res, dto.DataTmps{
+					Id:            data.Id,
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					Date:          data.DataDatetime.Format("02/01/2006"),
+					Time:          data.DataDatetime.Format("15:04"),
+					BayId:         data.BayId,
+					CreatedAt:     data.CreatedAt,
+				})
 			}
 		}
 	}
 
-	return datas, nil
+	return res, nil
 
 }
 

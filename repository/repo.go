@@ -11,6 +11,7 @@ import (
 
 type Repository interface {
 	GetSubStationById(id int) (*entity.SubStation, error)
+	GetSubStations() ([]entity.SubStation, error)
 	GetSubStationByName(name string) (*entity.SubStation, error)
 	GetBayById(id int) (*entity.Bay, error)
 	GetBayByNameAndSubStationId(id int, name string) (*entity.Bay, error)
@@ -29,6 +30,7 @@ type Repository interface {
 	GetAllYears() ([]int, error)
 	CreateSubStation(sub *entity.SubStation) error
 	CreateBay(bay *entity.Bay) error
+	GetBays() ([]entity.Bay, error)
 }
 
 type repository struct {
