@@ -58,6 +58,7 @@ func main() {
 
 	readFile := filedata.NewFileData(repo)
 	go readFile.CheckNewFileRealTime()
+	go readFile.InitReadFile()
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -65,6 +66,10 @@ func main() {
 	e.Renderer = newTemplate()
 
 	hand := handler.NewHandler(service)
+	defaultData := models.DefaultData{
+		OptionDateTime: "Optioin",
+	}
+	changeOptHandler := handler.NewChangeOption(&defaultData)
 
 	//page := newPage()
 	count := Count{Count: 0}
@@ -81,19 +86,21 @@ func main() {
 		return c.Render(200, "count", count)
 	})
 
-	status := false
-	e.GET("/datetime-option", func(c echo.Context) error {
-		status = !status
-		if !status {
-			return c.Render(200, "option", models.DateTimeOption{})
-		}
-		return c.Render(200, "option", models.NewDateTimeOption())
-	})
+	e.GET("/option-title", changeOptHandler.GetOptionDateTimmeText)
+
+	// status := false
+	// e.GET("/datetime-option", func(c echo.Context) error {
+	// 	status = !status
+	// 	if !status {
+	// 		return c.Render(200, "option", models.DateTimeOption{})
+	// 	}
+
+	// 	return c.Render(200, "option", models.NewDateTimeOption())
+	// })
 	stationOptionStatus := false
 	e.GET("/station-option", func(c echo.Context) error {
 		data, err := repo.GetSubStations()
 		if err != nil {
-			log.Println("this error")
 			return c.Render(200, "option-station", []entity.SubStation{})
 		}
 		stationOptionStatus = !stationOptionStatus
@@ -102,24 +109,12 @@ func main() {
 		}
 		return c.Render(200, "option-station", data)
 	})
-	bayOptionStatus := false
-	e.GET("/bay-option", func(c echo.Context) error {
-		data, err := repo.GetBays()
-		if err != nil {
-			log.Println("this error", err)
-			return c.Render(200, "option", []entity.Bay{})
-		}
-		bayOptionStatus = !bayOptionStatus
-		if !bayOptionStatus {
-			return c.Render(200, "option-bay", []entity.Bay{})
-		}
-		return c.Render(200, "option-bay", data)
-	})
 
 	e.GET("/text-option", hand.GetOptionText)
 	e.GET("/text-station-option", hand.GetStationOptionText)
-	e.GET("/text-bay-option", hand.GetBayOptionText)
 	e.GET("/data", hand.GetDailyReport)
+	e.GET("/bay-list", hand.GetBayList)
+	e.GET("/station-list", hand.GetStationList)
 	e.Logger.Fatal(e.Start(":3000"))
 }
 

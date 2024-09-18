@@ -1,43 +1,38 @@
-{{ block "dropdown-datetime" .}}
-<div class="relative inline-block text-left"></div>
-<div>
-    <button type="button"
-        class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-        id="menu-button" aria-expanded="true" aria-haspopup="true" hx-get="/datetime-option" hx-trigger="click"
-        hx-target="#date-time-option" hx-swap="outerHTML">
-        <span id="text-option">Options</span>
-        <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd"
-                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                clip-rule="evenodd" />
-        </svg>
-    </button>
-    {{template "option" .}}
-</div>
-
-</div>
+{{block "time-list" .}}
+<form class="max-w-sm mx-auto"></form>
+<select id="time-list"
+    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    hx-get="/data" hx-target="#content" name="component" hx-trigger="change" hx-swap="innerHTML">
+<option selected>Choose Time</option>
+    <option value="daily" hx-get="/data?component=daily" hx-target="#content">Daily</option>
+    <option value="monthly" hx-get="/data?component=monthly" hx-target="#content">Monthly</option>
+    <option value="yearly" hx-get="/data?component=yearly" hx-target="#content">Yearly</option>
+</select>
+</form>
 {{ end }}
 
+{{block "bay-list" .}}
+<form id="bay-list" class="max-w-sm mx-auto">
+<select 
+    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    hx-get="/data" hx-target="#content" name="bay" hx-trigger="change" hx-swap="innerHTML">
+<option selected>Choose Bay</option>
+    {{range .Data}}
+    <option value="{{.Id}}">{{.Name}}</option>
+    {{end}}
+</select>
+</form>
+{{ end }}
 
-
-{{ block "option" .DateTimes}}
-{{if .DateTimes}}
-<div id="date-time-option"
-    class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-    role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-    {{ range .DateTimes}}
-    {{if .Option}}
-    <div class="py-1" role="none">
-        <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-        <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-0"
-            name="component" hx-get="/data?component={{.Page}}" hx-target="#content" hx-trigger="click">
-            {{.Option}}</a>
-
-    </div>
-    {{ end }}
-    {{ end }}
-</div>
-{{else}}
-<div id="date-time-option" class="hidden"></div>
-{{end}}
+{{block "station-list" .}}
+<form id="station-list" class="max-w-sm mx-auto" >
+<select 
+    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[250px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="change" hx-swap="innerHTML">
+<option selected>Choose station</option>
+    {{range .Data}}
+    <option value="{{.Id}}">{{.Name}}</option>
+    {{end}}
+</select>
+</form>
 {{ end }}

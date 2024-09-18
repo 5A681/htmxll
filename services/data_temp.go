@@ -243,8 +243,8 @@ func (s service) GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([
 
 }
 
-func (s service) GetDataLatestYearPeakTime(bayId int, year int, filter filter.SortData) ([]entity.DataTmps, error) {
-	var datas []entity.DataTmps
+func (s service) GetDataLatestYearPeakTime(bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
+	var datas []dto.DataTmpsYear
 
 	for i := 0; i < 12; i++ {
 
@@ -253,7 +253,20 @@ func (s service) GetDataLatestYearPeakTime(bayId int, year int, filter filter.So
 			log.Println(err.Error(), 1)
 		}
 		if data != nil {
-			datas = append(datas, *data)
+			datas = append(datas, dto.DataTmpsYear{
+				Id:            data.Id,
+				Month:         data.DataDatetime.Format("Jan"),
+				Date:          data.DataDatetime.Format("02"),
+				Time:          data.DataDatetime.Format("15:04"),
+				CurrentPhaseA: data.CurrentPhaseA,
+				CurrentPhaseB: data.CurrentPhaseB,
+				CurrentPhaseC: data.CurrentPhaseC,
+				ActivePower:   data.ActivePower,
+				ReactivePower: data.ReactivePower,
+				PowerFactor:   data.PowerFactor,
+				CreatedAt:     data.CreatedAt,
+				BayId:         data.BayId,
+			})
 		}
 	}
 
@@ -261,9 +274,9 @@ func (s service) GetDataLatestYearPeakTime(bayId int, year int, filter filter.So
 
 }
 
-func (s service) GetDataLatestYearLightTime(bayId int, year int, filter filter.SortData) ([]entity.DataTmps, error) {
+func (s service) GetDataLatestYearLightTime(bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
 
-	var datas []entity.DataTmps
+	var datas []dto.DataTmpsYear
 
 	for i := 0; i < 12; i++ {
 
@@ -272,10 +285,47 @@ func (s service) GetDataLatestYearLightTime(bayId int, year int, filter filter.S
 			log.Println(err.Error(), 3)
 		}
 		if data != nil {
-			datas = append(datas, *data)
+			datas = append(datas, dto.DataTmpsYear{
+				Id:            data.Id,
+				Month:         data.DataDatetime.Format("Jan"),
+				Date:          data.DataDatetime.Format("02"),
+				Time:          data.DataDatetime.Format("15:04"),
+				CurrentPhaseA: data.CurrentPhaseA,
+				CurrentPhaseB: data.CurrentPhaseB,
+				CurrentPhaseC: data.CurrentPhaseC,
+				ActivePower:   data.ActivePower,
+				ReactivePower: data.ReactivePower,
+				PowerFactor:   data.PowerFactor,
+				CreatedAt:     data.CreatedAt,
+				BayId:         data.BayId,
+			})
 		}
 	}
 
 	return datas, nil
 
+}
+
+func (s service) GetAllBay(stationId int) ([]entity.Bay, error) {
+	res, err := s.repo.GetBays(stationId)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (s service) GetAllSubStation() ([]entity.SubStation, error) {
+	res, err := s.repo.GetSubStations()
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (s service) GetFirstSubstation() (*entity.SubStation, error) {
+	res, err := s.repo.GetFirstSubstation()
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }

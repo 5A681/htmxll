@@ -4,6 +4,7 @@ import "htmxll/repository"
 
 type FileData interface {
 	CheckNewFileRealTime()
+	InitReadFile()
 }
 
 type fileData struct {

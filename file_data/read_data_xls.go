@@ -16,7 +16,9 @@ func ReadFileXls(filepath string, sheet int, wg *sync.WaitGroup, dataTempRepo re
 	defer wg.Done()
 	xlsFile, err := xls.Open(filepath, "utf-8")
 	if err != nil {
-		log.Fatalf("Failed to open .xls file: %v", err)
+		log.Printf("Failed to open .xls file: %v", err)
+		log.Println("Done sheet", sheet)
+		return
 	}
 	_ = xlsFile
 	ws := xlsFile.GetSheet(sheet)
@@ -51,6 +53,7 @@ func ReadFileXls(filepath string, sheet int, wg *sync.WaitGroup, dataTempRepo re
 		_, err = dataTempRepo.GetBayByNameAndSubStationId(sub.Id, splitName[1])
 		if err != nil {
 			if err.Error() == "sql: no rows in result set" {
+				log.Println("error is")
 				dataTempRepo.CreateBay(&entity.Bay{
 					Name:         splitName[1],
 					SubStationId: sub.Id,

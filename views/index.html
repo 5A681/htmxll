@@ -9,18 +9,19 @@
      <!-- <link rel="stylesheet" href="/main.css" /> -->
      <link href="/static/css/style.css" rel="stylesheet">
      <script src="static/htmx.min.js"></script>
+     <script src="static/index.js"></script>
      <title>Document</title>
 </head>
 
-<body>
+<body hx-get="/station-list" hx-target="#station-list" hx-trigger="load" hx-swap="outerHTML">
 
      {{template "navbar"}}
      <div>
-          <div id="content" hx-get="/data?component=daily" hx-trigger="load" hx-swap="innerHTML">
+          <div id="content">
                {{template "content" .}}
           </div>
      </div>
-
+     
 
 </body>
 
@@ -30,4 +31,5 @@
 {{block "content" .}}
 {{template "daily" .}}
 {{template "monthly" .}}
+{{template "yearly" .}}
 {{end}}

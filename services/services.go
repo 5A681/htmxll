@@ -12,8 +12,11 @@ type Service interface {
 	GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
 	GetDataLatestMonthNightTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
 	GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
-	GetDataLatestYearPeakTime(bayId int, year int, filter filter.SortData) ([]entity.DataTmps, error)
-	GetDataLatestYearLightTime(bayId int, year int, filter filter.SortData) ([]entity.DataTmps, error)
+	GetDataLatestYearPeakTime(bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
+	GetDataLatestYearLightTime(bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
+	GetAllBay(stationid int) ([]entity.Bay, error)
+	GetAllSubStation() ([]entity.SubStation, error)
+	GetFirstSubstation() (*entity.SubStation, error)
 }
 
 type service struct {
