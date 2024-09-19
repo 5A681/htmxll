@@ -11,9 +11,6 @@ import (
 	"htmxll/repository"
 	"htmxll/services"
 	"io"
-	"log"
-	"os"
-	"path/filepath"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -65,7 +62,8 @@ func main() {
 	e.Static("/static", "static")
 	e.Renderer = newTemplate()
 
-	hand := handler.NewHandler(service)
+	excelFile := excelize.NewFile()
+	hand := handler.NewHandler(service, services.NewExportExcel(excelFile))
 	defaultData := models.DefaultData{
 		OptionDateTime: "Optioin",
 	}
@@ -115,32 +113,8 @@ func main() {
 	e.GET("/data", hand.GetDailyReport)
 	e.GET("/bay-list", hand.GetBayList)
 	e.GET("/station-list", hand.GetStationList)
+	e.GET("/export-pdf", hand.ExportPdf)
+	e.GET("/export-excel", hand.ExportExcel)
+
 	e.Logger.Fatal(e.Start(":3000"))
-}
-
-func DeleteFile() {
-	pdfFiles, err := filepath.Glob(filepath.Join("", "*.pdf"))
-	if err != nil {
-		log.Println(err)
-	}
-
-	// Iterate over the list of files and delete each one
-	for _, file := range pdfFiles {
-		err := os.Remove(file)
-		if err != nil {
-			log.Println(err)
-		}
-		log.Printf("Deleted: %s\n", file)
-	}
-	xlsxFiles, err := filepath.Glob(filepath.Join("", "*.xlsx"))
-	if err != nil {
-		log.Println(err)
-	}
-	for _, file := range xlsxFiles {
-		err := os.Remove(file)
-		if err != nil {
-			log.Println(err)
-		}
-		log.Printf("Deleted: %s\n", file)
-	}
 }

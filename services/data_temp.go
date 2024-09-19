@@ -329,3 +329,17 @@ func (s service) GetFirstSubstation() (*entity.SubStation, error) {
 	}
 	return res, nil
 }
+func (s service) GetBayById(bayId int) (*entity.Bay, error) {
+	res, err := s.repo.GetBayById(bayId)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+func (s service) GetSubStationById(sId int) (*entity.SubStation, error) {
+	res, err := s.repo.GetSubStationById(sId)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}

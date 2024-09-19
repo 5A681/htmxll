@@ -17,6 +17,8 @@ type Service interface {
 	GetAllBay(stationid int) ([]entity.Bay, error)
 	GetAllSubStation() ([]entity.SubStation, error)
 	GetFirstSubstation() (*entity.SubStation, error)
+	GetBayById(bayId int) (*entity.Bay, error)
+	GetSubStationById(sId int) (*entity.SubStation, error)
 }
 
 type service struct {

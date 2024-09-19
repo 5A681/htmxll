@@ -2,7 +2,7 @@ package services
 
 import (
 	"fmt"
-	"htmxll/entity"
+	"htmxll/dto"
 	_ "image/png"
 	"log"
 	"os"
@@ -11,7 +11,7 @@ import (
 )
 
 type ExportExcel interface {
-	ExportExcelDaily(dailyData []entity.DataTmps, fileName string) error
+	ExportExcelDaily(dailyData []dto.DataTmps, fileName string) error
 }
 type exportExcel struct {
 	excel *excelize.File
@@ -21,8 +21,7 @@ func NewExportExcel(excel *excelize.File) ExportExcel {
 	return exportExcel{excel}
 }
 
-func (e exportExcel) ExportExcelDaily(dailyData []entity.DataTmps, fileName string) error {
-	filePath := fileName
+func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string) error {
 
 	sheetName := "Sheet1"
 
@@ -76,9 +75,9 @@ func (e exportExcel) ExportExcelDaily(dailyData []entity.DataTmps, fileName stri
 	// }
 	for row, data := range dailyData {
 		cell := "A" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, data.DataDatetime.Format("02/01/2006"))
+		e.excel.SetCellValue(sheetName, cell, data.Date)
 		cell = "B" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, data.DataDatetime.Format("15:04"))
+		e.excel.SetCellValue(sheetName, cell, data.Time)
 		cell = "C" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, "")
 		cell = "D" + fmt.Sprintf("%d", 8+row)
@@ -114,6 +113,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []entity.DataTmps, fileName stri
 
 	// Create a table with the defined range
 	disable := true
+
 	if err := e.excel.AddTable(sheetName, &excelize.Table{
 		Range:             tableRange,
 		Name:              "Table1",
@@ -132,7 +132,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []entity.DataTmps, fileName stri
 	// 	Color: "000000",
 	// 	Style: 2, // Bold border style
 	// }
-	imagePath := "static/image.png"
+	imagePath := "static/css/icons/image.png"
 
 	if _, err := os.Stat(imagePath); os.IsNotExist(err) {
 		log.Fatalf("Image file does not exist: %v", err)
@@ -172,10 +172,13 @@ func (e exportExcel) ExportExcelDaily(dailyData []entity.DataTmps, fileName stri
 
 	// Set active sheet and save the file
 	e.excel.SetActiveSheet(index)
-
-	if err = e.excel.SaveAs(filePath); err != nil {
+	if err = e.excel.SaveAs(fileName); err != nil {
 		return err
 	}
 
+	err = e.excel.DeleteTable("Table1")
+	if err != nil {
+		return err
+	}
 	return nil
 }

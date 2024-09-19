@@ -1,24 +1,31 @@
 {{ block "navbar" .}}
 <nav class="bg-white border-gray-200 dark:bg-gray-900">
-    <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-2xl p-4">
-        <a href="https://flowbite.com" class="flex items-center space-x-3 rtl:space-x-reverse">
-            <img src="/static/css/icons/image.png" class="h-8" alt="Flowbite Logo" />
+    <div class="">
+        <a  class="flex left-0">
+            <img src="/static/css/icons/image.png"  class="h-12" alt="Flowbite Logo" />
             <span
-                class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white text-purple-700">PEA</span>
+                class="self-center text-3xl font-semibold whitespace-nowrap dark:text-white text-purple-700">PEA</span>
         </a>
         <div class="flex space-x-2">
-            <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold w-20 h-12 rounded-full">
-                PDF
-            </button>
-            <button class="bg-red-500 hover:bg-red-700 text-white font-bold w-20 h-12 rounded-full">
-                EXCEL
-            </button>
-
             <div class="flex space-x-2">
                 {{template "time-list"}}
                 {{template "station-list" .}}
                 {{template "bay-list" .}}
             </div>
+            <form action="/export-pdf">
+                <button type="submit" class="bg-purple-500 hover:bg-purple-700 text-white font-bold w-20 h-12 rounded-full">
+                    PDF
+                </button>
+            </form>
+            <form action="/export-excel">
+                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold w-20 h-12 rounded-full">
+                EXCEL
+            </button>
+            </form>
+
+            
+
+            
 
         </div>
 
