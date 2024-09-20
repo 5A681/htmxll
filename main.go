@@ -46,6 +46,14 @@ type FormData struct {
 }
 
 func main() {
+
+	timeSpace := ""
+	stationName := ""
+	bayName := ""
+	stationId := 0
+	bayId := 0
+	ttime := ""
+
 	config := config.NewConfig()
 	db := database.NewPostgresDatabase(config)
 	repo := repository.NewRepository(db)
@@ -63,7 +71,7 @@ func main() {
 	e.Renderer = newTemplate()
 
 	excelFile := excelize.NewFile()
-	hand := handler.NewHandler(service, services.NewExportExcel(excelFile))
+	hand := handler.NewHandler(service, services.NewExportExcel(excelFile), &timeSpace, &stationName, &bayName, &stationId, &bayId, &ttime)
 	defaultData := models.DefaultData{
 		OptionDateTime: "Optioin",
 	}
@@ -73,6 +81,11 @@ func main() {
 	count := Count{Count: 0}
 	e.GET("/", func(c echo.Context) error {
 		//c.Render(200, "index", nil)
+		timeSpace = ""
+		stationName = ""
+		bayName = ""
+		stationId = 0
+		bayId = 0
 		return c.Render(200, "index", nil)
 	})
 	e.GET("/monthly", func(c echo.Context) error {
@@ -115,6 +128,7 @@ func main() {
 	e.GET("/station-list", hand.GetStationList)
 	e.GET("/export-pdf", hand.ExportPdf)
 	e.GET("/export-excel", hand.ExportExcel)
+	e.GET("/select-date", hand.SelectDate)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

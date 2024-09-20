@@ -8,39 +8,67 @@ import (
 	"time"
 )
 
-func (s service) GetLatestData(bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+func (s service) GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error) {
 
-	maxdate, err := s.repo.GetMaxDate()
-	if err != nil {
-		return nil, err
-	}
-
-	if maxdate != nil {
-		data, err := s.repo.GetLatestDataByBayId(bayId, filter, *maxdate)
+	if ttime == "" {
+		maxdate, err := s.repo.GetMaxDate()
 		if err != nil {
 			return nil, err
 		}
 
-		var res []dto.DataTmps
-		for _, d := range data {
-			res = append(res, dto.DataTmps{
-				Id:            d.Id,
-				CurrentPhaseA: d.CurrentPhaseA,
-				CurrentPhaseB: d.CurrentPhaseB,
-				CurrentPhaseC: d.CurrentPhaseC,
-				ActivePower:   d.ActivePower,
-				ReactivePower: d.ReactivePower,
-				PowerFactor:   d.PowerFactor,
-				Date:          d.DataDatetime.Format("02/01/2006"),
-				Time:          d.DataDatetime.Format("15:04"),
-				BayId:         d.BayId,
-				CreatedAt:     d.CreatedAt,
-			})
+		if maxdate != nil {
+			data, err := s.repo.GetLatestDataByBayId(bayId, *maxdate)
+			if err != nil {
+				return nil, err
+			}
+
+			var res []dto.DataTmps
+			for _, d := range data {
+				res = append(res, dto.DataTmps{
+					Id:            d.Id,
+					CurrentPhaseA: d.CurrentPhaseA,
+					CurrentPhaseB: d.CurrentPhaseB,
+					CurrentPhaseC: d.CurrentPhaseC,
+					ActivePower:   d.ActivePower,
+					ReactivePower: d.ReactivePower,
+					PowerFactor:   d.PowerFactor,
+					Date:          d.DataDatetime.Format("02/01/2006"),
+					Time:          d.DataDatetime.Format("15:04"),
+					BayId:         d.BayId,
+					CreatedAt:     d.CreatedAt,
+				})
+			}
+			return res, nil
 		}
-		return res, nil
 	}
 
-	return nil, nil
+	maxdate, err := time.Parse("2006-01-02", ttime)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := s.repo.GetLatestDataByBayId(bayId, maxdate)
+	if err != nil {
+		return nil, err
+	}
+
+	var res []dto.DataTmps
+	for _, d := range data {
+		res = append(res, dto.DataTmps{
+			Id:            d.Id,
+			CurrentPhaseA: d.CurrentPhaseA,
+			CurrentPhaseB: d.CurrentPhaseB,
+			CurrentPhaseC: d.CurrentPhaseC,
+			ActivePower:   d.ActivePower,
+			ReactivePower: d.ReactivePower,
+			PowerFactor:   d.PowerFactor,
+			Date:          d.DataDatetime.Format("02/01/2006"),
+			Time:          d.DataDatetime.Format("15:04"),
+			BayId:         d.BayId,
+			CreatedAt:     d.CreatedAt,
+		})
+	}
+	return res, nil
 
 }
 

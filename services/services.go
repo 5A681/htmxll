@@ -8,7 +8,7 @@ import (
 )
 
 type Service interface {
-	GetLatestData(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
+	GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error)
 	GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
 	GetDataLatestMonthNightTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
 	GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
@@ -19,6 +19,7 @@ type Service interface {
 	GetFirstSubstation() (*entity.SubStation, error)
 	GetBayById(bayId int) (*entity.Bay, error)
 	GetSubStationById(sId int) (*entity.SubStation, error)
+	GetLatestYear() (int, error)
 }
 
 type service struct {
@@ -27,4 +28,12 @@ type service struct {
 
 func NewService(repo repository.Repository) Service {
 	return service{repo}
+}
+
+func (s service) GetLatestYear() (int, error) {
+	year, err := s.repo.GetLatestYear()
+	if err != nil {
+		return 0, err
+	}
+	return year, nil
 }

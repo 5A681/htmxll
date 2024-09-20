@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"htmxll/entity"
 	"htmxll/filter"
-	"log"
 	"time"
 )
 
@@ -44,19 +43,12 @@ func (s repository) GetDataTempsByBayId(bayId int, sort filter.SortData) ([]enti
 	return dataTemps, nil
 }
 
-func (s repository) GetLatestDataByBayId(bayId int, sort filter.SortData, date time.Time) ([]entity.DataTmps, error) {
+func (s repository) GetLatestDataByBayId(bayId int, date time.Time) ([]entity.DataTmps, error) {
 	var dataTemps []entity.DataTmps
 
-	if sort.Time {
-		err := s.db.Select(&dataTemps, `select * from data_tmps where bay_id = $1 and date(data_datetime) = date($2) order by data_datetime desc`, bayId, date)
-		if err != nil {
-			return nil, err
-		}
-	} else if !sort.Time {
-		err := s.db.Select(&dataTemps, `select * from data_tmps where bay_id = $1 and date(data_datetime) = date($2) order by data_datetime asc`, bayId, date)
-		if err != nil {
-			return nil, err
-		}
+	err := s.db.Select(&dataTemps, `select * from data_tmps where bay_id = $1 and date(data_datetime) = date($2) order by data_datetime asc`, bayId, date)
+	if err != nil {
+		return nil, err
 	}
 
 	return dataTemps, nil
@@ -117,13 +109,23 @@ func (s repository) GetMaxDataPerDayPerTimeTwoTime(bayId int, minTime1 time.Time
 	// query := `select * from data_tmps where bay_id = $1 and data_datetime  between $2 and $3 or data_datetime  between $4 and $5
 	// 	order by active_power desc,data_datetime asc`
 	//query := "select * from data_tmps where bay_id = $1"
-	log.Println("get data ", bayId)
 	err := s.db.Get(&dataTemps, `select * from data_tmps where bay_id = $1 and (data_datetime between $2 and $3 or data_datetime between $4 and $5 ) 
 		order by active_power desc,data_datetime asc`, bayId, minTime1, maxTime1, minTime2, maxTime2)
 	if err != nil {
 		return nil, err
 	}
-	log.Println("koe", dataTemps.BayId, bayId, minTime1, maxTime1)
 
 	return &dataTemps, nil
+}
+
+func (s repository) GetLatestYear() (int, error) {
+	type Result struct {
+		Year int `db:"year"`
+	}
+	r := Result{}
+	err := s.db.Get(&r, `select max(extract(year from data_datetime)) as year from data_tmps dt`)
+	if err != nil {
+		return 0, err
+	}
+	return r.Year, nil
 }

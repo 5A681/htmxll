@@ -18,7 +18,7 @@ type Repository interface {
 	GetDataTmpsById(id int) (*entity.DataTmps, error)
 	CreateDataTmep(data entity.DataTmps) error
 	GetDataTempsByBayId(bayId int, sort filter.SortData) ([]entity.DataTmps, error)
-	GetLatestDataByBayId(bayId int, sort filter.SortData, date time.Time) ([]entity.DataTmps, error)
+	GetLatestDataByBayId(bayId int, date time.Time) ([]entity.DataTmps, error)
 	GetMaxDate() (*time.Time, error)
 	GetMaxDataPerDayPerTime(bayId int, minTime time.Time, maxTime time.Time) (*entity.DataTmps, error)
 	CheckPreviousMonth() error
@@ -34,6 +34,7 @@ type Repository interface {
 	GetFirstSubstation() (*entity.SubStation, error)
 	GetFileName(name string) (*entity.FileTemps, error)
 	CreateFileTemps(file *entity.FileTemps) error
+	GetLatestYear() (int, error)
 }
 
 type repository struct {
