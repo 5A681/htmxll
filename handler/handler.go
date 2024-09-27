@@ -34,6 +34,8 @@ type handler struct {
 	stationId   *int
 	bayId       *int
 	time        *string
+	month       *int
+	year        *int
 }
 
 func NewHandler(srv services.Service, excel services.ExportExcel, timeSpace *string,
@@ -41,9 +43,9 @@ func NewHandler(srv services.Service, excel services.ExportExcel, timeSpace *str
 	bayName *string,
 	stationId *int,
 	bayId *int,
-	time *string) Handler {
+	time *string, month *int, year *int) Handler {
 
-	return handler{srv, excel, timeSpace, stationName, bayName, stationId, bayId, time}
+	return handler{srv, excel, timeSpace, stationName, bayName, stationId, bayId, time, month, year}
 }
 
 func (h handler) GetDailyReport(c echo.Context) error {
@@ -105,15 +107,15 @@ func (h handler) GetDailyReport(c echo.Context) error {
 			response["DailyData"] = data
 			return c.Render(200, "content", response)
 		} else if *h.timeSpace == "monthly" {
-			DayData, err := h.srv.GetDataLatestMonthDayTime(*h.bayId, filter.SortData{})
+			DayData, err := h.srv.GetDataLatestMonthDayTime(*h.time, *h.bayId, filter.SortData{})
 			if err != nil {
 				return c.Render(200, "content", response)
 			}
-			NightData, err := h.srv.GetDataLatestMonthNightTime(*h.bayId, filter.SortData{})
+			NightData, err := h.srv.GetDataLatestMonthNightTime(*h.time, *h.bayId, filter.SortData{})
 			if err != nil {
 				return c.Render(200, "content", response)
 			}
-			AllData, err := h.srv.GetDataLatestMonthAllTime(*h.bayId, filter.SortData{})
+			AllData, err := h.srv.GetDataLatestMonthAllTime(*h.time, *h.bayId, filter.SortData{})
 			if err != nil {
 				return c.Render(200, "content", response)
 			}
@@ -121,11 +123,11 @@ func (h handler) GetDailyReport(c echo.Context) error {
 			response["MonthlyData"] = map[string]interface{}{"Day": DayData, "Night": NightData, "All": AllData}
 			return c.Render(200, "content", response)
 		} else if *h.timeSpace == "yearly" {
-			peak, err := h.srv.GetDataLatestYearPeakTime(*h.bayId, 2024, filter.SortData{})
+			peak, err := h.srv.GetDataLatestYearPeakTime(*h.time, *h.bayId, 2024, filter.SortData{})
 			if err != nil {
 				return c.Render(200, "content", response)
 			}
-			light, err := h.srv.GetDataLatestYearLightTime(*h.bayId, 2024, filter.SortData{})
+			light, err := h.srv.GetDataLatestYearLightTime(*h.time, *h.bayId, 2024, filter.SortData{})
 			if err != nil {
 				log.Println("error = ", err)
 				return c.Render(200, "content", response)
@@ -251,17 +253,17 @@ func (h handler) ExportPdf(c echo.Context) error {
 		return c.Blob(http.StatusOK, "application/pdf", buf.Bytes())
 	} else if *h.timeSpace == "monthly" {
 
-		day, err := h.srv.GetDataLatestMonthDayTime(*h.bayId, filter.SortData{})
+		day, err := h.srv.GetDataLatestMonthDayTime(*h.time, *h.bayId, filter.SortData{})
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-		night, err := h.srv.GetDataLatestMonthNightTime(*h.bayId, filter.SortData{})
+		night, err := h.srv.GetDataLatestMonthNightTime(*h.time, *h.bayId, filter.SortData{})
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-		all, err := h.srv.GetDataLatestMonthAllTime(*h.bayId, filter.SortData{})
+		all, err := h.srv.GetDataLatestMonthAllTime(*h.time, *h.bayId, filter.SortData{})
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -281,12 +283,12 @@ func (h handler) ExportPdf(c echo.Context) error {
 		return c.Blob(http.StatusOK, "application/pdf", buf.Bytes())
 	}
 
-	peak, err := h.srv.GetDataLatestYearPeakTime(*h.bayId, 2024, filter.SortData{})
+	peak, err := h.srv.GetDataLatestYearPeakTime(*h.time, *h.bayId, 2024, filter.SortData{})
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
 	}
-	light, err := h.srv.GetDataLatestYearLightTime(*h.bayId, 2024, filter.SortData{})
+	light, err := h.srv.GetDataLatestYearLightTime(*h.time, *h.bayId, 2024, filter.SortData{})
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
@@ -324,17 +326,17 @@ func (h handler) ExportExcel(c echo.Context) error {
 		defer os.Remove("test.xlsx")
 		return c.Attachment("test.xlsx", fileName)
 	} else if *h.timeSpace == "monthly" {
-		day, err := h.srv.GetDataLatestMonthDayTime(*h.bayId, filter.SortData{})
+		day, err := h.srv.GetDataLatestMonthDayTime(*h.time, *h.bayId, filter.SortData{})
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-		night, err := h.srv.GetDataLatestMonthNightTime(*h.bayId, filter.SortData{})
+		night, err := h.srv.GetDataLatestMonthNightTime(*h.time, *h.bayId, filter.SortData{})
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-		all, err := h.srv.GetDataLatestMonthAllTime(*h.bayId, filter.SortData{})
+		all, err := h.srv.GetDataLatestMonthAllTime(*h.time, *h.bayId, filter.SortData{})
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -349,12 +351,12 @@ func (h handler) ExportExcel(c echo.Context) error {
 		defer os.Remove("test.xlsx")
 		return c.Attachment("test.xlsx", fileName)
 	}
-	peak, err := h.srv.GetDataLatestYearPeakTime(*h.bayId, 2024, filter.SortData{})
+	peak, err := h.srv.GetDataLatestYearPeakTime(*h.time, *h.bayId, 2024, filter.SortData{})
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
 	}
-	light, err := h.srv.GetDataLatestYearLightTime(*h.bayId, 2024, filter.SortData{})
+	light, err := h.srv.GetDataLatestYearLightTime(*h.time, *h.bayId, 2024, filter.SortData{})
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)

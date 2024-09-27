@@ -53,6 +53,8 @@ func main() {
 	stationId := 0
 	bayId := 0
 	ttime := ""
+	year := 0
+	month := 0
 
 	config := config.NewConfig()
 	db := database.NewPostgresDatabase(config)
@@ -71,7 +73,7 @@ func main() {
 	e.Renderer = newTemplate()
 
 	excelFile := excelize.NewFile()
-	hand := handler.NewHandler(service, services.NewExportExcel(excelFile), &timeSpace, &stationName, &bayName, &stationId, &bayId, &ttime)
+	hand := handler.NewHandler(service, services.NewExportExcel(excelFile), &timeSpace, &stationName, &bayName, &stationId, &bayId, &ttime, &month, &year)
 	defaultData := models.DefaultData{
 		OptionDateTime: "Optioin",
 	}
@@ -86,6 +88,7 @@ func main() {
 		bayName = ""
 		stationId = 0
 		bayId = 0
+		ttime = ""
 		return c.Render(200, "index", nil)
 	})
 	e.GET("/monthly", func(c echo.Context) error {

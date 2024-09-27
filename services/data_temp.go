@@ -72,7 +72,7 @@ func (s service) GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error) 
 
 }
 
-func (s service) GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+func (s service) GetDataLatestMonthDayTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
 	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
@@ -82,28 +82,61 @@ func (s service) GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([
 			return nil, err
 		}
 		for i := 0; i < 31; i++ {
-			min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 8, 0, 0, 0, time.Local)
-			max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 15, 30, 0, 0, time.Local)
-			data, err := s.repo.GetMaxDataPerDayPerTime(bayId, min, max)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			if data != nil {
-				res = append(res, dto.DataTmps{
-					Id:            data.Id,
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
-					Date:          data.DataDatetime.Format("02/01/2006"),
-					Time:          data.DataDatetime.Format("15:04"),
-					BayId:         data.BayId,
-					CreatedAt:     data.CreatedAt,
-				})
 
+			if ttime == "" {
+				min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 8, 0, 0, 0, time.Local)
+				max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 15, 30, 0, 0, time.Local)
+				data, err := s.repo.GetMaxDataPerDayPerTime(bayId, min, max)
+				if err != nil {
+					log.Println(err.Error())
+				}
+				if data != nil {
+					res = append(res, dto.DataTmps{
+						Id:            data.Id,
+						CurrentPhaseA: data.CurrentPhaseA,
+						CurrentPhaseB: data.CurrentPhaseB,
+						CurrentPhaseC: data.CurrentPhaseC,
+						ActivePower:   data.ActivePower,
+						ReactivePower: data.ReactivePower,
+						PowerFactor:   data.PowerFactor,
+						Date:          data.DataDatetime.Format("02/01/2006"),
+						Time:          data.DataDatetime.Format("15:04"),
+						BayId:         data.BayId,
+						CreatedAt:     data.CreatedAt,
+					})
+
+				}
+			} else {
+
+				maxdate, err := time.Parse("2006-01-02", ttime)
+				if err != nil {
+					return nil, err
+				}
+
+				min := time.Date(maxdate.Year(), maxdate.Month(), i+1, 8, 0, 0, 0, time.Local)
+				max := time.Date(maxdate.Year(), maxdate.Month(), i+1, 15, 30, 0, 0, time.Local)
+				data, err := s.repo.GetMaxDataPerDayPerTime(bayId, min, max)
+				if err != nil {
+					log.Println(err.Error())
+				}
+				if data != nil {
+					res = append(res, dto.DataTmps{
+						Id:            data.Id,
+						CurrentPhaseA: data.CurrentPhaseA,
+						CurrentPhaseB: data.CurrentPhaseB,
+						CurrentPhaseC: data.CurrentPhaseC,
+						ActivePower:   data.ActivePower,
+						ReactivePower: data.ReactivePower,
+						PowerFactor:   data.PowerFactor,
+						Date:          data.DataDatetime.Format("02/01/2006"),
+						Time:          data.DataDatetime.Format("15:04"),
+						BayId:         data.BayId,
+						CreatedAt:     data.CreatedAt,
+					})
+
+				}
 			}
+
 		}
 
 	} else {
@@ -138,7 +171,7 @@ func (s service) GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([
 
 }
 
-func (s service) GetDataLatestMonthNightTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+func (s service) GetDataLatestMonthNightTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
 	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
@@ -148,28 +181,60 @@ func (s service) GetDataLatestMonthNightTime(bayId int, filter filter.SortData) 
 			return nil, err
 		}
 		for i := 0; i < 31; i++ {
-			min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 0, 0, 0, 0, time.Local)
-			max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 7, 30, 0, 0, time.Local)
-			min2 := time.Date(currentTime.Year(), currentTime.Month(), i+1, 16, 0, 0, 0, time.Local)
-			max2 := time.Date(currentTime.Year(), currentTime.Month(), i+1, 23, 30, 0, 0, time.Local)
-			data, err := s.repo.GetMaxDataPerDayPerTimeTwoTime(bayId, min, max, min2, max2)
-			if err != nil {
-				log.Println(err.Error(), i)
-			}
-			if data != nil {
-				res = append(res, dto.DataTmps{
-					Id:            data.Id,
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
-					Date:          data.DataDatetime.Format("02/01/2006"),
-					Time:          data.DataDatetime.Format("15:04"),
-					BayId:         data.BayId,
-					CreatedAt:     data.CreatedAt,
-				})
+			if ttime == "" {
+				min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 0, 0, 0, 0, time.Local)
+				max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 7, 30, 0, 0, time.Local)
+				min2 := time.Date(currentTime.Year(), currentTime.Month(), i+1, 16, 0, 0, 0, time.Local)
+				max2 := time.Date(currentTime.Year(), currentTime.Month(), i+1, 23, 30, 0, 0, time.Local)
+				data, err := s.repo.GetMaxDataPerDayPerTimeTwoTime(bayId, min, max, min2, max2)
+				if err != nil {
+					log.Println(err.Error(), i)
+				}
+				if data != nil {
+					res = append(res, dto.DataTmps{
+						Id:            data.Id,
+						CurrentPhaseA: data.CurrentPhaseA,
+						CurrentPhaseB: data.CurrentPhaseB,
+						CurrentPhaseC: data.CurrentPhaseC,
+						ActivePower:   data.ActivePower,
+						ReactivePower: data.ReactivePower,
+						PowerFactor:   data.PowerFactor,
+						Date:          data.DataDatetime.Format("02/01/2006"),
+						Time:          data.DataDatetime.Format("15:04"),
+						BayId:         data.BayId,
+						CreatedAt:     data.CreatedAt,
+					})
+				}
+			} else {
+
+				maxdate, err := time.Parse("2006-01-02", ttime)
+				if err != nil {
+					return nil, err
+				}
+
+				min := time.Date(maxdate.Year(), maxdate.Month(), i+1, 0, 0, 0, 0, time.Local)
+				max := time.Date(maxdate.Year(), maxdate.Month(), i+1, 7, 30, 0, 0, time.Local)
+				min2 := time.Date(maxdate.Year(), maxdate.Month(), i+1, 16, 0, 0, 0, time.Local)
+				max2 := time.Date(maxdate.Year(), maxdate.Month(), i+1, 23, 30, 0, 0, time.Local)
+				data, err := s.repo.GetMaxDataPerDayPerTimeTwoTime(bayId, min, max, min2, max2)
+				if err != nil {
+					log.Println(err.Error(), i)
+				}
+				if data != nil {
+					res = append(res, dto.DataTmps{
+						Id:            data.Id,
+						CurrentPhaseA: data.CurrentPhaseA,
+						CurrentPhaseB: data.CurrentPhaseB,
+						CurrentPhaseC: data.CurrentPhaseC,
+						ActivePower:   data.ActivePower,
+						ReactivePower: data.ReactivePower,
+						PowerFactor:   data.PowerFactor,
+						Date:          data.DataDatetime.Format("02/01/2006"),
+						Time:          data.DataDatetime.Format("15:04"),
+						BayId:         data.BayId,
+						CreatedAt:     data.CreatedAt,
+					})
+				}
 			}
 		}
 
@@ -206,7 +271,7 @@ func (s service) GetDataLatestMonthNightTime(bayId int, filter filter.SortData) 
 	return res, nil
 
 }
-func (s service) GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+func (s service) GetDataLatestMonthAllTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
 	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
@@ -216,26 +281,54 @@ func (s service) GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([
 			return nil, err
 		}
 		for i := 0; i < 31; i++ {
-			min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 0, 0, 0, 0, time.Local)
-			max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 23, 30, 0, 0, time.Local)
-			data, err := s.repo.GetMinDataPerDayPerTime(bayId, min, max)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			if data != nil {
-				res = append(res, dto.DataTmps{
-					Id:            data.Id,
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
-					Date:          data.DataDatetime.Format("02/01/2006"),
-					Time:          data.DataDatetime.Format("15:04"),
-					BayId:         data.BayId,
-					CreatedAt:     data.CreatedAt,
-				})
+			if ttime == "" {
+				min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 0, 0, 0, 0, time.Local)
+				max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 23, 30, 0, 0, time.Local)
+				data, err := s.repo.GetMinDataPerDayPerTime(bayId, min, max)
+				if err != nil {
+					log.Println(err.Error())
+				}
+				if data != nil {
+					res = append(res, dto.DataTmps{
+						Id:            data.Id,
+						CurrentPhaseA: data.CurrentPhaseA,
+						CurrentPhaseB: data.CurrentPhaseB,
+						CurrentPhaseC: data.CurrentPhaseC,
+						ActivePower:   data.ActivePower,
+						ReactivePower: data.ReactivePower,
+						PowerFactor:   data.PowerFactor,
+						Date:          data.DataDatetime.Format("02/01/2006"),
+						Time:          data.DataDatetime.Format("15:04"),
+						BayId:         data.BayId,
+						CreatedAt:     data.CreatedAt,
+					})
+				}
+			} else {
+				maxdate, err := time.Parse("2006-01-02", ttime)
+				if err != nil {
+					return nil, err
+				}
+				min := time.Date(maxdate.Year(), maxdate.Month(), i+1, 0, 0, 0, 0, time.Local)
+				max := time.Date(maxdate.Year(), maxdate.Month(), i+1, 23, 30, 0, 0, time.Local)
+				data, err := s.repo.GetMinDataPerDayPerTime(bayId, min, max)
+				if err != nil {
+					log.Println(err.Error())
+				}
+				if data != nil {
+					res = append(res, dto.DataTmps{
+						Id:            data.Id,
+						CurrentPhaseA: data.CurrentPhaseA,
+						CurrentPhaseB: data.CurrentPhaseB,
+						CurrentPhaseC: data.CurrentPhaseC,
+						ActivePower:   data.ActivePower,
+						ReactivePower: data.ReactivePower,
+						PowerFactor:   data.PowerFactor,
+						Date:          data.DataDatetime.Format("02/01/2006"),
+						Time:          data.DataDatetime.Format("15:04"),
+						BayId:         data.BayId,
+						CreatedAt:     data.CreatedAt,
+					})
+				}
 			}
 		}
 
@@ -271,30 +364,57 @@ func (s service) GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([
 
 }
 
-func (s service) GetDataLatestYearPeakTime(bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
+func (s service) GetDataLatestYearPeakTime(ttime string, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
 	var datas []dto.DataTmpsYear
 
 	for i := 0; i < 12; i++ {
 
-		data, err := s.repo.GetMaxDataPerMonth(bayId, year, i+1)
-		if err != nil {
-			log.Println(err.Error(), 1)
-		}
-		if data != nil {
-			datas = append(datas, dto.DataTmpsYear{
-				Id:            data.Id,
-				Month:         data.DataDatetime.Format("Jan"),
-				Date:          data.DataDatetime.Format("02"),
-				Time:          data.DataDatetime.Format("15:04"),
-				CurrentPhaseA: data.CurrentPhaseA,
-				CurrentPhaseB: data.CurrentPhaseB,
-				CurrentPhaseC: data.CurrentPhaseC,
-				ActivePower:   data.ActivePower,
-				ReactivePower: data.ReactivePower,
-				PowerFactor:   data.PowerFactor,
-				CreatedAt:     data.CreatedAt,
-				BayId:         data.BayId,
-			})
+		if ttime == "" {
+			data, err := s.repo.GetMaxDataPerMonth(bayId, year, i+1)
+			if err != nil {
+				log.Println(err.Error(), 1)
+			}
+			if data != nil {
+				datas = append(datas, dto.DataTmpsYear{
+					Id:            data.Id,
+					Month:         data.DataDatetime.Format("Jan"),
+					Date:          data.DataDatetime.Format("02"),
+					Time:          data.DataDatetime.Format("15:04"),
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					CreatedAt:     data.CreatedAt,
+					BayId:         data.BayId,
+				})
+			}
+		} else {
+			maxdate, err := time.Parse("2006-01-02", ttime)
+			if err != nil {
+				return nil, err
+			}
+			data, err := s.repo.GetMaxDataPerMonth(bayId, maxdate.Year(), i+1)
+			if err != nil {
+				log.Println(err.Error(), 1)
+			}
+			if data != nil {
+				datas = append(datas, dto.DataTmpsYear{
+					Id:            data.Id,
+					Month:         data.DataDatetime.Format("Jan"),
+					Date:          data.DataDatetime.Format("02"),
+					Time:          data.DataDatetime.Format("15:04"),
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					CreatedAt:     data.CreatedAt,
+					BayId:         data.BayId,
+				})
+			}
 		}
 	}
 
@@ -302,31 +422,58 @@ func (s service) GetDataLatestYearPeakTime(bayId int, year int, filter filter.So
 
 }
 
-func (s service) GetDataLatestYearLightTime(bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
+func (s service) GetDataLatestYearLightTime(ttime string, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
 
 	var datas []dto.DataTmpsYear
 
 	for i := 0; i < 12; i++ {
 
-		data, err := s.repo.GetMinDataPerMonth(bayId, year, i+1)
-		if err != nil {
-			log.Println(err.Error(), 3)
-		}
-		if data != nil {
-			datas = append(datas, dto.DataTmpsYear{
-				Id:            data.Id,
-				Month:         data.DataDatetime.Format("Jan"),
-				Date:          data.DataDatetime.Format("02"),
-				Time:          data.DataDatetime.Format("15:04"),
-				CurrentPhaseA: data.CurrentPhaseA,
-				CurrentPhaseB: data.CurrentPhaseB,
-				CurrentPhaseC: data.CurrentPhaseC,
-				ActivePower:   data.ActivePower,
-				ReactivePower: data.ReactivePower,
-				PowerFactor:   data.PowerFactor,
-				CreatedAt:     data.CreatedAt,
-				BayId:         data.BayId,
-			})
+		if ttime == "" {
+			data, err := s.repo.GetMinDataPerMonth(bayId, year, i+1)
+			if err != nil {
+				log.Println(err.Error(), 3)
+			}
+			if data != nil {
+				datas = append(datas, dto.DataTmpsYear{
+					Id:            data.Id,
+					Month:         data.DataDatetime.Format("Jan"),
+					Date:          data.DataDatetime.Format("02"),
+					Time:          data.DataDatetime.Format("15:04"),
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					CreatedAt:     data.CreatedAt,
+					BayId:         data.BayId,
+				})
+			}
+		} else {
+			maxdate, err := time.Parse("2006-01-02", ttime)
+			if err != nil {
+				return nil, err
+			}
+			data, err := s.repo.GetMinDataPerMonth(bayId, maxdate.Year(), i+1)
+			if err != nil {
+				log.Println(err.Error(), 3)
+			}
+			if data != nil {
+				datas = append(datas, dto.DataTmpsYear{
+					Id:            data.Id,
+					Month:         data.DataDatetime.Format("Jan"),
+					Date:          data.DataDatetime.Format("02"),
+					Time:          data.DataDatetime.Format("15:04"),
+					CurrentPhaseA: data.CurrentPhaseA,
+					CurrentPhaseB: data.CurrentPhaseB,
+					CurrentPhaseC: data.CurrentPhaseC,
+					ActivePower:   data.ActivePower,
+					ReactivePower: data.ReactivePower,
+					PowerFactor:   data.PowerFactor,
+					CreatedAt:     data.CreatedAt,
+					BayId:         data.BayId,
+				})
+			}
 		}
 	}
 

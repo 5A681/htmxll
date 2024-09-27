@@ -54,7 +54,7 @@ func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmp
 		return err
 	}
 
-	if err := excel.SetCellValue(sheetName, "A6", fmt.Sprintf("xxx kV %s No.xx", bayName)); err != nil {
+	if err := excel.SetCellValue(sheetName, "A6", bayName); err != nil {
 		return err
 	}
 	if err := excel.SetCellValue(sheetName, "A7", timeTitle); err != nil {
@@ -204,7 +204,7 @@ func (e exportExcel) CreateSheetMonthly(excel *excelize.File, datas []dto.DataTm
 		return err
 	}
 
-	if err := excel.SetCellValue(sheetName, "A6", fmt.Sprintf("xxx kV %s No.xx", bayName)); err != nil {
+	if err := excel.SetCellValue(sheetName, "A6", bayName); err != nil {
 		return err
 	}
 	if err := excel.SetCellValue(sheetName, "A7", timeTitle); err != nil {
@@ -399,7 +399,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string)
 		return err
 	}
 
-	if err := e.excel.SetCellValue(sheetName, "A6", fmt.Sprintf("xxx kV %s No.xx", bayName)); err != nil {
+	if err := e.excel.SetCellValue(sheetName, "A6", bayName); err != nil {
 		return err
 	}
 

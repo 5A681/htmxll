@@ -9,11 +9,11 @@ import (
 
 type Service interface {
 	GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error)
-	GetDataLatestMonthDayTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
-	GetDataLatestMonthNightTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
-	GetDataLatestMonthAllTime(bayId int, filter filter.SortData) ([]dto.DataTmps, error)
-	GetDataLatestYearPeakTime(bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
-	GetDataLatestYearLightTime(bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
+	GetDataLatestMonthDayTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error)
+	GetDataLatestMonthNightTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error)
+	GetDataLatestMonthAllTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error)
+	GetDataLatestYearPeakTime(ttime string, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
+	GetDataLatestYearLightTime(ttime string, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
 	GetAllBay(stationid int) ([]entity.Bay, error)
 	GetAllSubStation() ([]entity.SubStation, error)
 	GetFirstSubstation() (*entity.SubStation, error)

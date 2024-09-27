@@ -11,7 +11,7 @@ import (
 func ExportPdfDaily(dailyData []dto.DataTmps, sName string, bName string) (*bytes.Buffer, error) {
 
 	substationName := sName
-	bayName := fmt.Sprintf("XXX kV %s No. XX", bName)
+	bayName := bName
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 
@@ -62,7 +62,7 @@ func ExportPdfDaily(dailyData []dto.DataTmps, sName string, bName string) (*byte
 func ExportPdfMonthly(day []dto.DataTmps, night []dto.DataTmps, all []dto.DataTmps, sName string, bName string) (*bytes.Buffer, error) {
 
 	substationName := sName
-	bayName := fmt.Sprintf("XXX kV %s No. XX", bName)
+	bayName := bName
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 
@@ -181,7 +181,7 @@ func ExportPdfMonthly(day []dto.DataTmps, night []dto.DataTmps, all []dto.DataTm
 func ExportPdfYearly(peak []dto.DataTmpsYear, light []dto.DataTmpsYear, sName string, bName string) (*bytes.Buffer, error) {
 
 	substationName := sName
-	bayName := fmt.Sprintf("XXX kV %s No. XX", bName)
+	bayName := bName
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 
