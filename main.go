@@ -60,8 +60,6 @@ func main() {
 	db := database.NewPostgresDatabase(config)
 	repo := repository.NewRepository(db)
 	service := services.NewService(repo)
-	f := excelize.NewFile()
-	defer f.Close()
 
 	readFile := filedata.NewFileData(repo)
 	go readFile.CheckNewFileRealTime()
@@ -93,7 +91,8 @@ func main() {
 	})
 	e.GET("/monthly", func(c echo.Context) error {
 		//c.Render(200, "index", nil)
-		return c.Render(200, "monthly", nil)
+
+		return c.Render(200, "new-monthly", nil)
 	})
 	e.POST("/count", func(c echo.Context) error {
 		count.Count++
@@ -132,6 +131,10 @@ func main() {
 	e.GET("/export-pdf", hand.ExportPdf)
 	e.GET("/export-excel", hand.ExportExcel)
 	e.GET("/select-date", hand.SelectDate)
+	e.GET("/month-bay-list", hand.GetMonthBayList)
+	e.GET("/month-table-day", hand.GetMonthlyDay)
+	e.GET("/month-table-night", hand.GetMonthlyNight)
+	e.GET("/month-table-all", hand.GetMonthlyAll)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

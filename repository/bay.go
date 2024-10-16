@@ -14,10 +14,19 @@ func (s repository) GetBayById(id int) (*entity.Bay, error) {
 	}
 	return &bay, nil
 }
-func (s repository) GetBays(stationId int) ([]entity.Bay, error) {
+func (s repository) GetBaysByStationId(stationId int) ([]entity.Bay, error) {
 
 	var bays []entity.Bay
 	err := s.db.Select(&bays, `select * from bays where sub_station_id = $1 order by CAST(SUBSTRING(name FROM '[0-9]+') AS INTEGER) ASC;`, stationId)
+	if err != nil {
+		return nil, err
+	}
+	return bays, nil
+}
+
+func (s repository) GetBays() ([]entity.Bay, error) {
+	var bays []entity.Bay
+	err := s.db.Select(&bays, `select * from bays  order by CAST(SUBSTRING(name FROM '[0-9]+') AS INTEGER) ASC;`)
 	if err != nil {
 		return nil, err
 	}

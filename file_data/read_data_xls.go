@@ -6,25 +6,33 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/extrame/xls"
 )
 
-func ReadFileXls(filepath string, sheet int, wg *sync.WaitGroup, dataTempRepo repository.Repository) {
-	defer wg.Done()
-	xlsFile, err := xls.Open(filepath, "utf-8")
+func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository) {
+	xlsFile, err := xls.Open(filePath, "utf-8")
 	if err != nil {
 		log.Printf("Failed to open .xls file: %v", err)
-		log.Println("Done sheet", sheet)
+		return
+	}
+	if xlsFile == nil {
 		return
 	}
 	_ = xlsFile
 	ws := xlsFile.GetSheet(sheet)
+	if ws == nil {
+		return
+	}
+	log.Println("koe sheet name", ws.Name)
 	maxRow := int(ws.MaxRow)
+	if maxRow <= 0 {
+		return
+	}
 	maxCol := ws.Row(0).LastCol()
 	stationAndBay := ws.Row(1).Col(2)
+
 	splitName := strings.Split(stationAndBay, ".")
 	if len(splitName) < 2 {
 		return
@@ -44,18 +52,20 @@ func ReadFileXls(filepath string, sheet int, wg *sync.WaitGroup, dataTempRepo re
 		}
 
 	}
-	if splitName[1] != "" {
+	subId := 0
+	if ws.Name != "" {
 		sub, err := dataTempRepo.GetSubStationByName(splitName[0])
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		_, err = dataTempRepo.GetBayByNameAndSubStationId(sub.Id, splitName[1])
+		subId = sub.Id
+		_, err = dataTempRepo.GetBayByNameAndSubStationId(sub.Id, ws.Name)
 		if err != nil {
 			if err.Error() == "sql: no rows in result set" {
-				log.Println("error is")
+				log.Println("Bay name = ", ws.Name)
 				dataTempRepo.CreateBay(&entity.Bay{
-					Name:         splitName[1],
+					Name:         ws.Name,
 					SubStationId: sub.Id,
 				})
 			} else {
@@ -64,85 +74,198 @@ func ReadFileXls(filepath string, sheet int, wg *sync.WaitGroup, dataTempRepo re
 		}
 
 	}
-
-	for r := 5; r < maxRow; r++ {
-
-		if ws.Row(r).Col(0) != "" {
-			tempData := entity.DataTmps{
-				BayId: sheet - 2,
-			}
-			for c := 0; c < maxCol; c++ {
-
-				if c == 0 {
-
-					//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
-					dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
-					if dateTime != nil {
-						tempData.DataDatetime = *dateTime
-					}
-				}
-				if c == 2 || c == 4 || c == 6 || c == 8 || c == 10 || c == 12 {
-					//fmt.Printf("%v \t", ws.Row(r).Col(c))
-					if c > 12 {
-						continue
-					} else if c == 2 {
-						floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-						if err != nil {
-							tempData.CurrentPhaseA = 0
-						} else {
-							tempData.CurrentPhaseA = float32(floatData)
-						}
-					} else if c == 4 {
-						floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-						if err != nil {
-							tempData.CurrentPhaseB = 0
-						} else {
-							tempData.CurrentPhaseB = float32(floatData)
-						}
-					} else if c == 6 {
-						floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-						if err != nil {
-							tempData.CurrentPhaseC = 0
-						} else {
-							tempData.CurrentPhaseC = float32(floatData)
-						}
-					} else if c == 8 {
-						floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-						if err != nil {
-							tempData.ActivePower = 0
-						} else {
-							tempData.ActivePower = float32(floatData)
-						}
-					} else if c == 10 {
-						floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-						if err != nil {
-							tempData.ReactivePower = 0
-						} else {
-							tempData.ReactivePower = float32(floatData)
-						}
-					} else if c == 12 {
-						floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-						if err != nil {
-							tempData.PowerFactor = 0
-						} else {
-							tempData.PowerFactor = float32(floatData)
-						}
-					}
-				} else {
-					continue
-				}
-
-			}
-			tempData.CreatedAt = time.Now()
-
-			err = dataTempRepo.CreateDataTmep(tempData)
-			if err != nil {
-				log.Println("could not insrt temp data", err.Error())
-			}
-		}
-
-		//fmt.Printf("\n\n")
+	if subId == 0 {
+		log.Println("subId = 0")
+		return
 	}
+	bay, err := dataTempRepo.GetBayByNameAndSubStationId(subId, ws.Name)
+	if err != nil {
+		log.Println("error get bay", err)
+		return
+	}
+	log.Println("ColumnName = ", ws.Row(2).Col(2))
+	if ws.Row(2).Col(2) == "VOLTAGE PHASE B-C" {
+		log.Println("OK Phongphat", ws.Name)
+		for r := 5; r < maxRow; r++ {
+
+			if ws.Row(r).Col(0) != "" {
+
+				tempData := entity.DataTmps{
+					BayId: bay.Id,
+				}
+				for c := 0; c < maxCol; c++ {
+
+					if c == 0 {
+
+						//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
+						dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
+						if dateTime != nil {
+							tempData.DataDatetime = *dateTime
+						}
+					}
+
+					if c == 2 || c == 4 || c == 6 || c == 8 || c == 10 || c == 12 || c == 14 {
+						//fmt.Printf("%v \t", ws.Row(r).Col(c))
+						if c > 14 {
+							continue
+						} else if c == 2 {
+
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.VoltageBC = 0
+							} else {
+								tempData.VoltageBC = float32(floatData)
+							}
+							if ws.Name == "INCOMING1" {
+								log.Println("Hello InComming", tempData.VoltageBC)
+							}
+
+						} else if c == 4 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseA = 0
+							} else {
+								tempData.CurrentPhaseA = float32(floatData)
+							}
+						} else if c == 6 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseB = 0
+							} else {
+								tempData.CurrentPhaseB = float32(floatData)
+							}
+						} else if c == 8 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseC = 0
+
+							} else {
+								tempData.CurrentPhaseC = float32(floatData)
+
+							}
+						} else if c == 10 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.ActivePower = 0
+
+							} else {
+								tempData.ActivePower = float32(floatData)
+							}
+						} else if c == 12 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.ReactivePower = 0
+							} else {
+								tempData.PowerFactor = float32(floatData)
+							}
+						} else if c == 14 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.PowerFactor = 0
+
+							} else {
+								tempData.PowerFactor = float32(floatData)
+							}
+						}
+					} else {
+						continue
+					}
+
+				}
+				log.Println("bayId = ", bay.Id)
+				tempData.CreatedAt = time.Now()
+				err := dataTempRepo.CreateDataTmep(tempData)
+				if err != nil {
+					log.Println("could not insrt temp data", err.Error())
+				}
+			}
+
+			//fmt.Printf("\n\n")
+		}
+	} else {
+		log.Println("Not OK Phongphat")
+		for r := 5; r < maxRow; r++ {
+
+			if ws.Row(r).Col(0) != "" {
+
+				tempData := entity.DataTmps{
+					BayId: bay.Id,
+				}
+				for c := 0; c < maxCol; c++ {
+
+					if c == 0 {
+
+						//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
+						dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
+						if dateTime != nil {
+							tempData.DataDatetime = *dateTime
+						}
+					}
+
+					if c == 2 || c == 4 || c == 6 || c == 8 || c == 10 || c == 12 {
+						//fmt.Printf("%v \t", ws.Row(r).Col(c))
+						if c > 12 {
+							continue
+						} else if c == 2 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseA = 0
+							} else {
+								tempData.CurrentPhaseA = float32(floatData)
+							}
+						} else if c == 4 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseB = 0
+							} else {
+								tempData.CurrentPhaseB = float32(floatData)
+							}
+						} else if c == 6 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseC = 0
+							} else {
+								tempData.CurrentPhaseC = float32(floatData)
+							}
+						} else if c == 8 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.ActivePower = 0
+							} else {
+								tempData.ActivePower = float32(floatData)
+							}
+						} else if c == 10 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.ReactivePower = 0
+							} else {
+								tempData.ReactivePower = float32(floatData)
+							}
+						} else if c == 12 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.PowerFactor = 0
+							} else {
+								tempData.PowerFactor = float32(floatData)
+							}
+						}
+					} else {
+						continue
+					}
+
+				}
+				tempData.CreatedAt = time.Now()
+
+				err := dataTempRepo.CreateDataTmep(tempData)
+				if err != nil {
+					log.Println("could not insrt temp data", err.Error())
+				}
+			}
+
+			//fmt.Printf("\n\n")
+		}
+	}
+
 }
 
 func ReadDateTimeColumn(datetime string) *time.Time {

@@ -17,9 +17,9 @@ func (s repository) GetDataTmpsById(id int) (*entity.DataTmps, error) {
 }
 func (s repository) CreateDataTmep(data entity.DataTmps) error {
 	sqlCreate := `insert into data_tmps (current_phase_a,current_phase_b,current_phase_c,
-	active_power,reactive_power,power_factor,data_datetime,created_at,bay_id) values($1,$2,$3,$4,$5,$6,$7,$8,$9)`
+	active_power,reactive_power,power_factor,data_datetime,created_at,bay_id,voltage_bc) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`
 	_, err := s.db.Exec(sqlCreate, data.CurrentPhaseA, data.CurrentPhaseB, data.CurrentPhaseC, data.ActivePower, data.ReactivePower,
-		data.PowerFactor, data.DataDatetime, data.CreatedAt, data.BayId)
+		data.PowerFactor, data.DataDatetime, data.CreatedAt, data.BayId, data.VoltageBC)
 	if err != nil {
 		return err
 	}

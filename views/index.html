@@ -19,7 +19,7 @@
      {{template "navbar"}}
     
      <div>
-          <div id="content">
+          <div id="content" class="flex">
                {{template "content" .}}
           </div>
      </div>
@@ -32,6 +32,6 @@
 
 {{block "content" .}}
 {{template "daily" .}}
-{{template "monthly" .}}
+{{template "new-monthly" .}}
 {{template "yearly" .}}
 {{end}}

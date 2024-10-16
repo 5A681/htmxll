@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 	"sync"
-	"time"
 
+	"github.com/extrame/xls"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
@@ -89,19 +89,22 @@ func (f fileData) CheckNewFileRealTime() {
 
 func (f fileData) readFile(filePath string) {
 	// Wait briefly to ensure the file is fully written
+	xlsFile, err := xls.Open(filePath, "utf-8")
+	if err != nil {
+		log.Printf("Failed to open .xls file: %v", err)
+		return
+	}
+	numSheet := xlsFile.NumSheets()
 	var wg sync.WaitGroup
-	wg.Add(10)
-	time.Sleep(1 * time.Second)
-	go ReadFileXls(filePath, 3, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 4, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 5, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 6, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 7, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 8, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 9, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 10, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 11, &wg, f.dataTempRepo)
-	go ReadFileXls(filePath, 12, &wg, f.dataTempRepo)
+	// Sheets usually start at index 0, so use 0-based indexing
+	for i := 1; i <= numSheet; i++ {
+		wg.Add(1)
+		go func(sheetIndex int) {
+			defer wg.Done()
+			ReadFileXls(filePath, sheetIndex, f.dataTempRepo)
+		}(i) // Pass the loop variable as a parameter to avoid closure issue
+	}
+
 	wg.Wait()
 	log.Println("Read ", filePath, "finish")
 }

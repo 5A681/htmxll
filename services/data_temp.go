@@ -481,8 +481,16 @@ func (s service) GetDataLatestYearLightTime(ttime string, bayId int, year int, f
 
 }
 
-func (s service) GetAllBay(stationId int) ([]entity.Bay, error) {
-	res, err := s.repo.GetBays(stationId)
+func (s service) GetAllBayByStationId(stationId int) ([]entity.Bay, error) {
+	res, err := s.repo.GetBaysByStationId(stationId)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (s service) GetAllBay() ([]entity.Bay, error) {
+	res, err := s.repo.GetBays()
 	if err != nil {
 		return nil, err
 	}

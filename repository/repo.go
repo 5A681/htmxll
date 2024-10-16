@@ -30,7 +30,8 @@ type Repository interface {
 	GetAllYears() ([]int, error)
 	CreateSubStation(sub *entity.SubStation) error
 	CreateBay(bay *entity.Bay) error
-	GetBays(stationId int) ([]entity.Bay, error)
+	GetBays() ([]entity.Bay, error)
+	GetBaysByStationId(stationId int) ([]entity.Bay, error)
 	GetFirstSubstation() (*entity.SubStation, error)
 	GetFileName(name string) (*entity.FileTemps, error)
 	CreateFileTemps(file *entity.FileTemps) error

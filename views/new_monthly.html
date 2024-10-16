@@ -1,0 +1,294 @@
+{{ block "new-monthly" .}}
+
+<div hx-get="/month-bay-list" hx-target="#first-column" hx-swap="outerHTML" hx-trigger="load"></div>
+<div hx-get="/month-table-day" hx-target="#monthly-table-day" hx-swap="outerHTML" hx-trigger="load"></div>
+<div hx-get="/month-table-night" hx-target="#monthly-table-night" hx-swap="outerHTML" hx-trigger="load"></div>
+<div hx-get="/month-table-all" hx-target="#monthly-table-all" hx-swap="outerHTML" hx-trigger="load"></div>
+<div class="flex">
+    {{template "first-column" .}}
+    <div class="flex-2">
+        <div>
+            {{template "monthly-table-day" .}}
+        </div>
+        <div>
+            {{template "monthly-table-night" .}}
+            {{template "monthly-table-all" .}}
+        </div>
+
+
+    </div>
+</div>
+
+{{ end }}
+
+
+
+{{ block "first-column" .}}
+<div id="first-column">
+    <table >
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                    <tr>
+                        <th class="px-6 py-3">
+                            TP1/25MVA
+                        </th>
+                    </tr>
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            TP2/25MVA
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .}}
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                            {{ .Name }}
+                        </th>
+
+                    </tr>
+                    {{ end }}
+
+                </tbody>
+            </table>
+        </div>
+    </table>
+</div>
+{{end}}
+
+{{ block "monthly-table-day" .}}
+<div id="monthly-table-day">
+<table>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                <tr>
+                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
+                        08:00-15:30
+                    </th>
+                </tr>
+                <tr>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Time
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        kV
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ia
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Ib
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ic
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        MW
+                    </th>
+                    <th scope="col" class="px-6 py-3 ">
+                        MVAR
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .}}
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                        {{ .Date }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ .Time }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        0
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseA}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.CurrentPhaseB}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseC}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.ActivePower}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{.ReactivePower}}
+                    </td>
+
+                </tr>
+                {{ end }}
+
+            </tbody>
+        </table>
+    </div>
+</table>
+</div>
+{{end}}
+
+
+{{ block "monthly-table-night" .}}
+<div id="monthly-table-night">
+<table>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                <tr>
+                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
+                        16:00-23:30
+                    </th>
+                </tr>
+                <tr>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Time
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        kV
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ia
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Ib
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ic
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        MW
+                    </th>
+                    <th scope="col" class="px-6 py-3 ">
+                        MVAR
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .}}
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                        {{ .Date }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ .Time }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        0
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseA}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.CurrentPhaseB}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseC}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.ActivePower}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{.ReactivePower}}
+                    </td>
+
+                </tr>
+                {{ end }}
+
+            </tbody>
+        </table>
+    </div>
+</table>
+</div>
+{{end}}
+
+{{ block "monthly-table-all" .}}
+<div id="monthly-table-all">
+<table>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                <tr>
+                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
+                        00:00-23:30
+                    </th>
+                </tr>
+                <tr>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Time
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        kV
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ia
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Ib
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ic
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        MW
+                    </th>
+                    <th scope="col" class="px-6 py-3 ">
+                        MVAR
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .}}
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                        {{ .Date }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ .Time }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        0
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseA}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.CurrentPhaseB}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseC}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.ActivePower}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{.ReactivePower}}
+                    </td>
+
+                </tr>
+                {{ end }}
+
+            </tbody>
+        </table>
+    </div>
+</table>
+</div>
+{{end}}

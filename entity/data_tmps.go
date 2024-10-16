@@ -13,4 +13,5 @@ type DataTmps struct {
 	DataDatetime  time.Time `db:"data_datetime"`
 	CreatedAt     time.Time `db:"created_at"`
 	BayId         int       `db:"bay_id"`
+	VoltageBC     float32   `db:"voltage_bc"`
 }

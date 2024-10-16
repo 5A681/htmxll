@@ -23,6 +23,10 @@ type Handler interface {
 	ExportPdf(c echo.Context) error
 	ExportExcel(c echo.Context) error
 	SelectDate(c echo.Context) error
+	GetMonthBayList(c echo.Context) error
+	GetMonthlyDay(c echo.Context) error
+	GetMonthlyNight(c echo.Context) error
+	GetMonthlyAll(c echo.Context) error
 }
 
 type handler struct {
@@ -139,6 +143,37 @@ func (h handler) GetDailyReport(c echo.Context) error {
 	return c.Render(200, "content", response)
 
 }
+func (h handler) GetMonthBayList(c echo.Context) error {
+	bays, err := h.srv.GetAllBay()
+	if err != nil {
+		log.Println(err)
+		return c.Render(200, "first-column", bays)
+	}
+	return c.Render(200, "first-column", bays)
+}
+
+func (h handler) GetMonthlyDay(c echo.Context) error {
+	Data, err := h.srv.GetDataLatestMonthDayTime(*h.time, *h.bayId, filter.SortData{})
+	if err != nil {
+		return c.Render(200, "monthly-table-day", Data)
+	}
+	return c.Render(200, "monthly-table-day", Data)
+
+}
+func (h handler) GetMonthlyNight(c echo.Context) error {
+	Data, err := h.srv.GetDataLatestMonthNightTime(*h.time, *h.bayId, filter.SortData{})
+	if err != nil {
+		return c.Render(200, "monthly-table-night", Data)
+	}
+	return c.Render(200, "monthly-table-night", Data)
+}
+func (h handler) GetMonthlyAll(c echo.Context) error {
+	Data, err := h.srv.GetDataLatestMonthAllTime(*h.time, *h.bayId, filter.SortData{})
+	if err != nil {
+		return c.Render(200, "monthly-table-all", Data)
+	}
+	return c.Render(200, "monthly-table-all", Data)
+}
 
 func (h handler) GetOptionText(c echo.Context) error {
 	name := c.QueryParam("name")
@@ -180,7 +215,7 @@ func (h handler) GetBayList(c echo.Context) error {
 			*h.stationName = s.Name
 		}
 	}
-	res, err := h.srv.GetAllBay(*h.stationId)
+	res, err := h.srv.GetAllBayByStationId(*h.stationId)
 	if err != nil {
 		log.Println(err)
 		return c.Render(200, "bay-list", nil)
