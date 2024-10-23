@@ -17,10 +17,10 @@
 <body hx-get="/station-list" hx-target="#station-list" hx-trigger="load" hx-swap="outerHTML">
     
      {{template "navbar"}}
-    
+ 
+
      <div>
           <div id="content" class="flex">
-               {{template "content" .}}
           </div>
      </div>
 
@@ -30,8 +30,3 @@
 </html>
 {{ end }}
 
-{{block "content" .}}
-{{template "daily" .}}
-{{template "new-monthly" .}}
-{{template "yearly" .}}
-{{end}}

@@ -21,6 +21,7 @@ type Service interface {
 	GetBayById(bayId int) (*entity.Bay, error)
 	GetSubStationById(sId int) (*entity.SubStation, error)
 	GetLatestYear() (int, error)
+	GetRowsMonthlyData(ttime string) ([]dto.MonthlyRowData, error)
 }
 
 type service struct {

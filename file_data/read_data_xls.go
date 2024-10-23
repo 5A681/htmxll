@@ -117,7 +117,6 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 								tempData.VoltageBC = float32(floatData)
 							}
 							if ws.Name == "INCOMING1" {
-								log.Println("Hello InComming", tempData.VoltageBC)
 							}
 
 						} else if c == 4 {

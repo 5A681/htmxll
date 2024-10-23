@@ -1140,14 +1140,6 @@ input:checked + .toggle-bg {
   z-index: 50;
 }
 
-.col-span-3 {
-  grid-column: span 3 / span 3;
-}
-
-.col-span-8 {
-  grid-column: span 8 / span 8;
-}
-
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -1225,14 +1217,6 @@ input:checked + .toggle-bg {
   height: 2.25rem;
 }
 
-.h-16 {
-  height: 4rem;
-}
-
-.h-32 {
-  height: 8rem;
-}
-
 .w-1\/2 {
   width: 50%;
 }
@@ -1269,18 +1253,6 @@ input:checked + .toggle-bg {
   width: 100%;
 }
 
-.w-24 {
-  width: 6rem;
-}
-
-.w-48 {
-  width: 12rem;
-}
-
-.min-w-full {
-  min-width: 100%;
-}
-
 .max-w-sm {
   max-width: 24rem;
 }
@@ -1291,10 +1263,6 @@ input:checked + .toggle-bg {
 
 .flex-shrink {
   flex-shrink: 1;
-}
-
-.border-collapse {
-  border-collapse: collapse;
 }
 
 .origin-top-right {
@@ -1492,11 +1460,6 @@ input:checked + .toggle-bg {
   background-color: rgb(249 250 251 / var(--tw-bg-opacity)) !important;
 }
 
-.bg-blue-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(63 131 248 / var(--tw-bg-opacity));
-}
-
 .bg-blue-700 {
   --tw-bg-opacity: 1;
   background-color: rgb(26 86 219 / var(--tw-bg-opacity));
@@ -1586,10 +1549,6 @@ input:checked + .toggle-bg {
   padding: 1rem;
 }
 
-.p-8 {
-  padding: 2rem;
-}
-
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -1640,11 +1599,6 @@ input:checked + .toggle-bg {
   padding-bottom: 1rem;
 }
 
-.py-6 {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-}
-
 .ps-10 {
   padding-inline-start: 2.5rem;
 }
@@ -1663,10 +1617,6 @@ input:checked + .toggle-bg {
 
 .text-center {
   text-align: center;
-}
-
-.align-middle {
-  vertical-align: middle;
 }
 
 .text-3xl {
@@ -1720,6 +1670,10 @@ input:checked + .toggle-bg {
 
 .leading-9 {
   line-height: 2.25rem;
+}
+
+.leading-none {
+  line-height: 1;
 }
 
 .text-blue-600 {
@@ -1919,6 +1873,11 @@ input:checked + .toggle-bg {
   border-color: rgb(63 131 248 / var(--tw-border-opacity));
 }
 
+.focus\:border-indigo-500:focus {
+  --tw-border-opacity: 1;
+  border-color: rgb(104 117 245 / var(--tw-border-opacity));
+}
+
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -1949,6 +1908,11 @@ input:checked + .toggle-bg {
 .focus\:ring-gray-200:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(229 231 235 / var(--tw-ring-opacity));
+}
+
+.focus\:ring-indigo-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(104 117 245 / var(--tw-ring-opacity));
 }
 
 .dark\:border-blue-500:is(.dark *) {

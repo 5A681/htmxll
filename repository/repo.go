@@ -36,6 +36,8 @@ type Repository interface {
 	GetFileName(name string) (*entity.FileTemps, error)
 	CreateFileTemps(file *entity.FileTemps) error
 	GetLatestYear() (int, error)
+	GetMaxDataByBayIdAndMonth(bayId int, year int, month int, minHour int, maxHour int) (*entity.DataTmps, error)
+	GetMinDataByBayIdAndMonth(bayId int, year int, month int, minHour int, maxHour int) (*entity.DataTmps, error)
 }
 
 type repository struct {

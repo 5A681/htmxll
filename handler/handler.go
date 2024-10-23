@@ -27,6 +27,8 @@ type Handler interface {
 	GetMonthlyDay(c echo.Context) error
 	GetMonthlyNight(c echo.Context) error
 	GetMonthlyAll(c echo.Context) error
+	GetRowsMonthlyData(c echo.Context) error
+	GetDateTimePickerFormat(c echo.Context) error
 }
 
 type handler struct {
@@ -109,38 +111,24 @@ func (h handler) GetDailyReport(c echo.Context) error {
 			}
 
 			response["DailyData"] = data
-			return c.Render(200, "content", response)
+			return c.Render(200, "daily", response)
 		} else if *h.timeSpace == "monthly" {
-			DayData, err := h.srv.GetDataLatestMonthDayTime(*h.time, *h.bayId, filter.SortData{})
-			if err != nil {
-				return c.Render(200, "content", response)
-			}
-			NightData, err := h.srv.GetDataLatestMonthNightTime(*h.time, *h.bayId, filter.SortData{})
-			if err != nil {
-				return c.Render(200, "content", response)
-			}
-			AllData, err := h.srv.GetDataLatestMonthAllTime(*h.time, *h.bayId, filter.SortData{})
-			if err != nil {
-				return c.Render(200, "content", response)
-			}
-
-			response["MonthlyData"] = map[string]interface{}{"Day": DayData, "Night": NightData, "All": AllData}
-			return c.Render(200, "content", response)
+			return h.GetRowsMonthlyData(c)
 		} else if *h.timeSpace == "yearly" {
 			peak, err := h.srv.GetDataLatestYearPeakTime(*h.time, *h.bayId, 2024, filter.SortData{})
 			if err != nil {
-				return c.Render(200, "content", response)
+				return c.Render(200, "yearly", response)
 			}
 			light, err := h.srv.GetDataLatestYearLightTime(*h.time, *h.bayId, 2024, filter.SortData{})
 			if err != nil {
 				log.Println("error = ", err)
-				return c.Render(200, "content", response)
+				return c.Render(200, "yearly", response)
 			}
 			response["YearlyData"] = map[string]interface{}{"Peak": peak, "Light": light}
-			return c.Render(200, "content", response)
+			return c.Render(200, "yearly", response)
 		}
 	}
-	return c.Render(200, "content", response)
+	return c.Render(200, "daily", response)
 
 }
 func (h handler) GetMonthBayList(c echo.Context) error {
@@ -236,6 +224,16 @@ func (h handler) GetStationList(c echo.Context) error {
 		"Time": *h.timeSpace,
 	}
 	return c.Render(200, "station-list", data)
+}
+
+func (h handler) GetRowsMonthlyData(c echo.Context) error {
+	log.Println("Phongphat")
+	res, err := h.srv.GetRowsMonthlyData(*h.time)
+	if err != nil {
+		log.Println("Hello Test")
+		return c.Render(200, "monthly-rows", res)
+	}
+	return c.Render(200, "monthly-rows", res)
 }
 
 func DeleteFile() {

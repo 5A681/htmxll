@@ -135,6 +135,7 @@ func main() {
 	e.GET("/month-table-day", hand.GetMonthlyDay)
 	e.GET("/month-table-night", hand.GetMonthlyNight)
 	e.GET("/month-table-all", hand.GetMonthlyAll)
-
+	e.GET("/monthly-rows", hand.GetRowsMonthlyData)
+	e.GET("/time-picker", hand.GetDateTimePickerFormat)
 	e.Logger.Fatal(e.Start(":3000"))
 }

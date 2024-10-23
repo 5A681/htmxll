@@ -1,7 +1,7 @@
 {{ block "daily" .}}
-{{if .DailyData}}
 <div id="daily-table">
 
+<div hx-get="/time-picker" hx-target="#date-picker-input" hx-swap="innerHTML" hx-trigger="load"  ></div>
     <div class="flex space-x-2">
 
 
@@ -99,7 +99,4 @@
         </table>
     </div>
 </div>
-{{else}}
-<div id="daily-table"></div>
-{{end}}
 {{ end }}
