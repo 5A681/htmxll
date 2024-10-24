@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"htmxll/entity"
 	"htmxll/filter"
+	"log"
 	"time"
 )
 
@@ -46,7 +47,10 @@ func (s repository) GetDataTempsByBayId(bayId int, sort filter.SortData) ([]enti
 func (s repository) GetLatestDataByBayId(bayId int, date time.Time) ([]entity.DataTmps, error) {
 	var dataTemps []entity.DataTmps
 
-	err := s.db.Select(&dataTemps, `select * from data_tmps where bay_id = $1 and date(data_datetime) = date($2) order by data_datetime asc`, bayId, date)
+	query := fmt.Sprintf(`select * from data_tmps where bay_id = %d and date(data_datetime) = date('%s') order by data_datetime asc`, bayId, date.Format("2006-01-02"))
+	log.Println(query)
+
+	err := s.db.Select(&dataTemps, query)
 	if err != nil {
 		return nil, err
 	}

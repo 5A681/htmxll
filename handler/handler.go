@@ -183,17 +183,34 @@ func (h handler) GetStationOptionText(c echo.Context) error {
 
 func (h handler) GetBayList(c echo.Context) error {
 
+	if *h.timeSpace == "monthly" {
+		return c.String(200, `<select 
+    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " disabled
+    hx-get="/data" hx-target="#content" name="bay" hx-trigger="change" hx-swap="innerHTML">
+<option selected >Choose Bay</option>
+   
+</select>`)
+	}
+
 	station, err := h.srv.GetFirstSubstation()
 	if err != nil {
-		log.Println(err)
-		return c.Render(200, "bay-list", nil)
+		data := map[string]interface{}{
+			"Data": nil,
+			"Name": *h.bayName,
+			"Time": *h.timeSpace,
+		}
+		return c.Render(200, "bay-list", data)
 	}
 	*h.stationId = station.Id
 	if c.QueryParam("station") != "" {
 		id, err := strconv.Atoi(c.QueryParam("station"))
 		if err != nil {
-			log.Println(err)
-			return c.Render(200, "bay-list", nil)
+			data := map[string]interface{}{
+				"Data": nil,
+				"Name": *h.bayName,
+				"Time": *h.timeSpace,
+			}
+			return c.Render(200, "bay-list", data)
 		}
 		*h.stationId = id
 		s, err := h.srv.GetSubStationById(*h.stationId)
@@ -206,10 +223,19 @@ func (h handler) GetBayList(c echo.Context) error {
 	res, err := h.srv.GetAllBayByStationId(*h.stationId)
 	if err != nil {
 		log.Println(err)
-		return c.Render(200, "bay-list", nil)
+		data := map[string]interface{}{
+			"Data": res,
+			"Name": *h.bayName,
+			"Time": *h.timeSpace,
+		}
+		return c.Render(200, "bay-list", data)
+	}
+	if *h.bayName == "" {
+		*h.bayName = "Choose Bays"
 	}
 	data := map[string]interface{}{
 		"Data": res,
+		"Name": *h.bayName,
 		"Time": *h.timeSpace,
 	}
 	return c.Render(200, "bay-list", data)
@@ -227,10 +253,8 @@ func (h handler) GetStationList(c echo.Context) error {
 }
 
 func (h handler) GetRowsMonthlyData(c echo.Context) error {
-	log.Println("Phongphat")
 	res, err := h.srv.GetRowsMonthlyData(*h.time)
 	if err != nil {
-		log.Println("Hello Test")
 		return c.Render(200, "monthly-rows", res)
 	}
 	return c.Render(200, "monthly-rows", res)

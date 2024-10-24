@@ -67,7 +67,7 @@ func (s service) GetNewMonthlyPeakDay(bayId int, ttime string) (*dto.MonthlyData
 			}
 		} else {
 
-			maxdate, err := time.Parse("2006-01-02", ttime)
+			maxdate, err := time.Parse("2006-01-02", ttime+"-01")
 			if err != nil {
 				return nil, err
 			}
@@ -141,7 +141,7 @@ func (s service) GetNewMonthlyPeakNight(bayId int, ttime string) (*dto.MonthlyDa
 			}
 		} else {
 
-			maxdate, err := time.Parse("2006-01-02", ttime)
+			maxdate, err := time.Parse("2006-01-02", ttime+"-01")
 			if err != nil {
 				return nil, err
 			}
@@ -203,6 +203,7 @@ func (s service) GetNewMonthlyLowAll(bayId int, ttime string) (*dto.MonthlyData,
 				log.Println(err.Error())
 			}
 			if data != nil {
+
 				res.Date = data.DataDatetime.Format("02/01/2006")
 				res.Time = data.DataDatetime.Format("15:04")
 				res.Kv = data.VoltageBC
@@ -214,8 +215,7 @@ func (s service) GetNewMonthlyLowAll(bayId int, ttime string) (*dto.MonthlyData,
 
 			}
 		} else {
-
-			maxdate, err := time.Parse("2006-01-02", ttime)
+			maxdate, err := time.Parse("2006-01-02", ttime+"-01")
 			if err != nil {
 				return nil, err
 			}

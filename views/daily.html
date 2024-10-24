@@ -1,7 +1,8 @@
 {{ block "daily" .}}
-<div id="daily-table">
+<div id="daily-table" class="w-full">
 
 <div hx-get="/time-picker" hx-target="#date-picker-input" hx-swap="innerHTML" hx-trigger="load"  ></div>
+<div hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="load" hx-swap="innerHTML"></div>
     <div class="flex space-x-2">
 
 
@@ -26,13 +27,7 @@
                         Time
                     </th>
                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                        Vab (kV)
-                    </th>
-                    <th scope="col" class="px-6 py-3">
                         Vbc (kV)
-                    </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                        Vca (kV)
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Ia (A)
@@ -65,13 +60,7 @@
                         {{ .Time }}
                     </td>
                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        0
-                    </td>
-                    <td class="px-6 py-4">
-                        0
-                    </td>
-                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        0
+                        {{ .Kv }}
                     </td>
                     <td class="px-6 py-4 ">
                         {{.CurrentPhaseA}}

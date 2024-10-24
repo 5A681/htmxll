@@ -1,7 +1,6 @@
 {{ block "monthly" .}}
 {{if .MonthlyData}}
 <div id="monthly-table">
-
     <div class="flex space-x-2">
        
         <div class="flex justify-center">
@@ -29,13 +28,7 @@
                         Time
                     </th>
                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                        Vab (kV)
-                    </th>
-                    <th scope="col" class="px-6 py-3">
                         Vbc (kV)
-                    </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                        Vca (kV)
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Ia (A)
@@ -68,13 +61,7 @@
                         {{ .Time }}
                     </td>
                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        0
-                    </td>
-                    <td class="px-6 py-4">
-                        0
-                    </td>
-                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        0
+                        {{ .Kv }}
                     </td>
                     <td class="px-6 py-4 ">
                         {{.CurrentPhaseA}}
@@ -116,13 +103,7 @@
                         Time
                     </th>
                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                        Vab (kV)
-                    </th>
-                    <th scope="col" class="px-6 py-3">
                         Vbc (kV)
-                    </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                        Vca (kV)
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Ia (A)
@@ -155,13 +136,7 @@
                         {{ .Time }}
                     </td>
                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        0
-                    </td>
-                    <td class="px-6 py-4">
-                        0
-                    </td>
-                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        0
+                        {{ .Kv }}
                     </td>
                     <td class="px-6 py-4">
                         {{.CurrentPhaseA}}
@@ -202,15 +177,11 @@
                     <th scope="col" class="px-6 py-3">
                         Time
                     </th>
+                    
                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                        Vab (kV)
-                    </th>
-                    <th scope="col" class="px-6 py-3">
                         Vbc (kV)
                     </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                        Vca (kV)
-                    </th>
+                   
                     <th scope="col" class="px-6 py-3">
                         Ia (A)
                     </th>
@@ -242,13 +213,7 @@
                         {{ .Time }}
                     </td>
                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        0
-                    </td>
-                    <td class="px-6 py-4">
-                        0
-                    </td>
-                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        0
+                        {{ .Kv }}
                     </td>
                     <td class="px-6 py-4 ">
                         {{.CurrentPhaseA}}

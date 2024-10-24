@@ -21,6 +21,7 @@
 
 {{ block "monthly-rows" .}}
 <div hx-get="/time-picker" hx-target="#date-picker-input" hx-swap="outerHTML" hx-trigger="load"  ></div>
+<div hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="load" hx-swap="innerHTML"></div>
 <div id="monthly-rows">
     <table>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
