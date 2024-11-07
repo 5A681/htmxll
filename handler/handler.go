@@ -42,6 +42,7 @@ type handler struct {
 	time        *string
 	month       *int
 	year        *int
+	day         *int
 }
 
 func NewHandler(srv services.Service, excel services.ExportExcel, timeSpace *string,
@@ -49,9 +50,9 @@ func NewHandler(srv services.Service, excel services.ExportExcel, timeSpace *str
 	bayName *string,
 	stationId *int,
 	bayId *int,
-	time *string, month *int, year *int) Handler {
+	time *string, month *int, year *int, day *int) Handler {
 
-	return handler{srv, excel, timeSpace, stationName, bayName, stationId, bayId, time, month, year}
+	return handler{srv, excel, timeSpace, stationName, bayName, stationId, bayId, time, month, year, day}
 }
 
 func (h handler) GetDailyReport(c echo.Context) error {
@@ -107,7 +108,11 @@ func (h handler) GetDailyReport(c echo.Context) error {
 		if *h.timeSpace == "daily" {
 			data, err := h.srv.GetLatestData(*h.bayId, *h.time)
 			if err != nil {
+				log.Println("This Error", err)
 				return c.Render(200, "daily", response)
+			}
+			if len(data) > 0 {
+				*h.time = data[0].Date
 			}
 
 			response["DailyData"] = data
@@ -183,26 +188,8 @@ func (h handler) GetStationOptionText(c echo.Context) error {
 
 func (h handler) GetBayList(c echo.Context) error {
 
-	if *h.timeSpace == "monthly" {
-		return c.String(200, `<select 
-    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " disabled
-    hx-get="/data" hx-target="#content" name="bay" hx-trigger="change" hx-swap="innerHTML">
-<option selected >Choose Bay</option>
-   
-</select>`)
-	}
-
-	station, err := h.srv.GetFirstSubstation()
-	if err != nil {
-		data := map[string]interface{}{
-			"Data": nil,
-			"Name": *h.bayName,
-			"Time": *h.timeSpace,
-		}
-		return c.Render(200, "bay-list", data)
-	}
-	*h.stationId = station.Id
 	if c.QueryParam("station") != "" {
+		log.Println("hello station")
 		id, err := strconv.Atoi(c.QueryParam("station"))
 		if err != nil {
 			data := map[string]interface{}{
@@ -219,7 +206,17 @@ func (h handler) GetBayList(c echo.Context) error {
 		} else {
 			*h.stationName = s.Name
 		}
+		log.Println("station data = ", s.Name)
 	}
+	if *h.timeSpace == "monthly" {
+		return c.String(200, `<select 
+    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " disabled
+    hx-get="/data" hx-target="#content" name="bay" hx-trigger="change" hx-swap="innerHTML">
+<option selected >Choose Bay</option>
+   
+</select>`)
+	}
+
 	res, err := h.srv.GetAllBayByStationId(*h.stationId)
 	if err != nil {
 		log.Println(err)
@@ -256,6 +253,9 @@ func (h handler) GetRowsMonthlyData(c echo.Context) error {
 	res, err := h.srv.GetRowsMonthlyData(*h.time)
 	if err != nil {
 		return c.Render(200, "monthly-rows", res)
+	}
+	if len(res) > 0 {
+		*h.time = res[0].PeakDay.Date
 	}
 	return c.Render(200, "monthly-rows", res)
 }
@@ -310,22 +310,12 @@ func (h handler) ExportPdf(c echo.Context) error {
 		return c.Blob(http.StatusOK, "application/pdf", buf.Bytes())
 	} else if *h.timeSpace == "monthly" {
 
-		day, err := h.srv.GetDataLatestMonthDayTime(*h.time, *h.bayId, filter.SortData{})
+		data, err := h.srv.GetRowsMonthlyData(*h.time)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-		night, err := h.srv.GetDataLatestMonthNightTime(*h.time, *h.bayId, filter.SortData{})
-		if err != nil {
-			log.Println("err:", err.Error())
-			return c.String(200, ``)
-		}
-		all, err := h.srv.GetDataLatestMonthAllTime(*h.time, *h.bayId, filter.SortData{})
-		if err != nil {
-			log.Println("err:", err.Error())
-			return c.String(200, ``)
-		}
-		buf, err := services.ExportPdfMonthly(day, night, all, *h.stationName, *h.bayName)
+		buf, err := services.ExportPdfMonthly(data, *h.stationName, *h.bayName)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -383,23 +373,13 @@ func (h handler) ExportExcel(c echo.Context) error {
 		defer os.Remove("test.xlsx")
 		return c.Attachment("test.xlsx", fileName)
 	} else if *h.timeSpace == "monthly" {
-		day, err := h.srv.GetDataLatestMonthDayTime(*h.time, *h.bayId, filter.SortData{})
-		if err != nil {
-			log.Println("err:", err.Error())
-			return c.String(200, ``)
-		}
-		night, err := h.srv.GetDataLatestMonthNightTime(*h.time, *h.bayId, filter.SortData{})
-		if err != nil {
-			log.Println("err:", err.Error())
-			return c.String(200, ``)
-		}
-		all, err := h.srv.GetDataLatestMonthAllTime(*h.time, *h.bayId, filter.SortData{})
+		data, err := h.srv.GetRowsMonthlyData(*h.time)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
 
-		err = h.excel.ExportExcelMonthly(day, night, all, "test.xlsx", *h.stationName, *h.bayName)
+		err = h.excel.ExportExcelMonthly(data, "test.xlsx", *h.stationName, *h.bayName)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)

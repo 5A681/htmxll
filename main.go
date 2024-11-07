@@ -55,6 +55,7 @@ func main() {
 	ttime := ""
 	year := 0
 	month := 0
+	day := 0
 
 	config := config.NewConfig()
 	db := database.NewPostgresDatabase(config)
@@ -71,7 +72,7 @@ func main() {
 	e.Renderer = newTemplate()
 
 	excelFile := excelize.NewFile()
-	hand := handler.NewHandler(service, services.NewExportExcel(excelFile), &timeSpace, &stationName, &bayName, &stationId, &bayId, &ttime, &month, &year)
+	hand := handler.NewHandler(service, services.NewExportExcel(excelFile), &timeSpace, &stationName, &bayName, &stationId, &bayId, &ttime, &month, &year, &day)
 	defaultData := models.DefaultData{
 		OptionDateTime: "Optioin",
 	}

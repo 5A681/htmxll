@@ -47,7 +47,6 @@ func (s service) GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error) 
 	if err != nil {
 		return nil, err
 	}
-
 	data, err := s.repo.GetLatestDataByBayId(bayId, maxdate)
 	if err != nil {
 		return nil, err
@@ -55,7 +54,6 @@ func (s service) GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error) 
 
 	var res []dto.DataTmps
 	for _, d := range data {
-		log.Println("my data", d.VoltageBC)
 		res = append(res, dto.DataTmps{
 			Id:            d.Id,
 			CurrentPhaseA: d.CurrentPhaseA,
@@ -112,7 +110,7 @@ func (s service) GetDataLatestMonthDayTime(ttime string, bayId int, filter filte
 				}
 			} else {
 
-				maxdate, err := time.Parse("2006-01-02", ttime)
+				maxdate, err := time.Parse("2006-01-02", ttime+"-"+"01")
 				if err != nil {
 					return nil, err
 				}
@@ -214,7 +212,7 @@ func (s service) GetDataLatestMonthNightTime(ttime string, bayId int, filter fil
 				}
 			} else {
 
-				maxdate, err := time.Parse("2006-01-02", ttime)
+				maxdate, err := time.Parse("2006-01-02", ttime+"-01")
 				if err != nil {
 					return nil, err
 				}
@@ -314,7 +312,7 @@ func (s service) GetDataLatestMonthAllTime(ttime string, bayId int, filter filte
 					})
 				}
 			} else {
-				maxdate, err := time.Parse("2006-01-02", ttime)
+				maxdate, err := time.Parse("2006-01-02", ttime+"-01")
 				if err != nil {
 					return nil, err
 				}

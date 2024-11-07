@@ -18,7 +18,7 @@ func (s service) GetRowsMonthlyData(ttime string) ([]dto.MonthlyRowData, error) 
 			log.Println("error :", err)
 			return nil, err
 		}
-		night, err := s.GetNewMonthlyPeakNight(item.Id, ttime)
+		night, err := s.GetNewMonthlyLowNight(item.Id, ttime)
 		if err != nil {
 			log.Println("error :", err)
 			return nil, err
@@ -112,7 +112,7 @@ func (s service) GetNewMonthlyPeakDay(bayId int, ttime string) (*dto.MonthlyData
 	return &res, nil
 }
 
-func (s service) GetNewMonthlyPeakNight(bayId int, ttime string) (*dto.MonthlyData, error) {
+func (s service) GetNewMonthlyLowNight(bayId int, ttime string) (*dto.MonthlyData, error) {
 	res := dto.MonthlyData{}
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
@@ -124,7 +124,7 @@ func (s service) GetNewMonthlyPeakNight(bayId int, ttime string) (*dto.MonthlyDa
 
 		if ttime == "" {
 
-			data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 16, 23)
+			data, err := s.repo.GetMinDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 16, 23)
 			if err != nil {
 				log.Println(err.Error())
 			}
@@ -146,7 +146,7 @@ func (s service) GetNewMonthlyPeakNight(bayId int, ttime string) (*dto.MonthlyDa
 				return nil, err
 			}
 
-			data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, maxdate.Year(), int(maxdate.Month()), 16, 23)
+			data, err := s.repo.GetMinDataByBayIdAndMonth(bayId, maxdate.Year(), int(maxdate.Month()), 16, 23)
 			if err != nil {
 				log.Println(err.Error())
 			}
@@ -167,7 +167,7 @@ func (s service) GetNewMonthlyPeakNight(bayId int, ttime string) (*dto.MonthlyDa
 		currentTime := time.Now()
 		currentTime = currentTime.AddDate(0, -1, 0)
 
-		data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 16, 23)
+		data, err := s.repo.GetMinDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 16, 23)
 		if err != nil {
 			log.Println(err.Error())
 		}
