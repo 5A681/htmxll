@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-func (s service) GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error) {
+func (s service) GetLatestData(bayId int, ttime time.Time) ([]dto.DataTmps, error) {
 
-	if ttime == "" {
+	if ttime.IsZero() {
 		maxdate, err := s.repo.GetMaxDate()
 		if err != nil {
 			return nil, err
@@ -43,10 +43,7 @@ func (s service) GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error) 
 		}
 	}
 
-	maxdate, err := time.Parse("2006-01-02", ttime)
-	if err != nil {
-		return nil, err
-	}
+	maxdate := ttime
 	data, err := s.repo.GetLatestDataByBayId(bayId, maxdate)
 	if err != nil {
 		return nil, err
@@ -73,7 +70,7 @@ func (s service) GetLatestData(bayId int, ttime string) ([]dto.DataTmps, error) 
 
 }
 
-func (s service) GetDataLatestMonthDayTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+func (s service) GetDataLatestMonthDayTime(ttime time.Time, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
 	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
@@ -84,7 +81,7 @@ func (s service) GetDataLatestMonthDayTime(ttime string, bayId int, filter filte
 		}
 		for i := 0; i < 31; i++ {
 
-			if ttime == "" {
+			if ttime.IsZero() {
 				min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 8, 0, 0, 0, time.Local)
 				max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 15, 30, 0, 0, time.Local)
 				data, err := s.repo.GetMaxDataPerDayPerTime(bayId, min, max)
@@ -110,10 +107,7 @@ func (s service) GetDataLatestMonthDayTime(ttime string, bayId int, filter filte
 				}
 			} else {
 
-				maxdate, err := time.Parse("2006-01-02", ttime+"-"+"01")
-				if err != nil {
-					return nil, err
-				}
+				maxdate := ttime
 
 				min := time.Date(maxdate.Year(), maxdate.Month(), i+1, 8, 0, 0, 0, time.Local)
 				max := time.Date(maxdate.Year(), maxdate.Month(), i+1, 15, 30, 0, 0, time.Local)
@@ -175,7 +169,7 @@ func (s service) GetDataLatestMonthDayTime(ttime string, bayId int, filter filte
 
 }
 
-func (s service) GetDataLatestMonthNightTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+func (s service) GetDataLatestMonthNightTime(ttime time.Time, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
 	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
@@ -185,7 +179,7 @@ func (s service) GetDataLatestMonthNightTime(ttime string, bayId int, filter fil
 			return nil, err
 		}
 		for i := 0; i < 31; i++ {
-			if ttime == "" {
+			if ttime.IsZero() {
 				min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 0, 0, 0, 0, time.Local)
 				max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 7, 30, 0, 0, time.Local)
 				min2 := time.Date(currentTime.Year(), currentTime.Month(), i+1, 16, 0, 0, 0, time.Local)
@@ -212,10 +206,7 @@ func (s service) GetDataLatestMonthNightTime(ttime string, bayId int, filter fil
 				}
 			} else {
 
-				maxdate, err := time.Parse("2006-01-02", ttime+"-01")
-				if err != nil {
-					return nil, err
-				}
+				maxdate := ttime
 
 				min := time.Date(maxdate.Year(), maxdate.Month(), i+1, 0, 0, 0, 0, time.Local)
 				max := time.Date(maxdate.Year(), maxdate.Month(), i+1, 7, 30, 0, 0, time.Local)
@@ -278,7 +269,7 @@ func (s service) GetDataLatestMonthNightTime(ttime string, bayId int, filter fil
 	return res, nil
 
 }
-func (s service) GetDataLatestMonthAllTime(ttime string, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
+func (s service) GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter filter.SortData) ([]dto.DataTmps, error) {
 	var res []dto.DataTmps
 	err := s.repo.CheckPreviousMonth()
 	if err != nil {
@@ -288,7 +279,7 @@ func (s service) GetDataLatestMonthAllTime(ttime string, bayId int, filter filte
 			return nil, err
 		}
 		for i := 0; i < 31; i++ {
-			if ttime == "" {
+			if ttime.IsZero() {
 				min := time.Date(currentTime.Year(), currentTime.Month(), i+1, 0, 0, 0, 0, time.Local)
 				max := time.Date(currentTime.Year(), currentTime.Month(), i+1, 23, 30, 0, 0, time.Local)
 				data, err := s.repo.GetMinDataPerDayPerTime(bayId, min, max)
@@ -312,10 +303,7 @@ func (s service) GetDataLatestMonthAllTime(ttime string, bayId int, filter filte
 					})
 				}
 			} else {
-				maxdate, err := time.Parse("2006-01-02", ttime+"-01")
-				if err != nil {
-					return nil, err
-				}
+				maxdate := ttime
 				min := time.Date(maxdate.Year(), maxdate.Month(), i+1, 0, 0, 0, 0, time.Local)
 				max := time.Date(maxdate.Year(), maxdate.Month(), i+1, 23, 30, 0, 0, time.Local)
 				data, err := s.repo.GetMinDataPerDayPerTime(bayId, min, max)
@@ -374,12 +362,11 @@ func (s service) GetDataLatestMonthAllTime(ttime string, bayId int, filter filte
 
 }
 
-func (s service) GetDataLatestYearPeakTime(ttime string, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
+func (s service) GetDataLatestYearPeakTime(ttime time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
 	var datas []dto.DataTmpsYear
-
 	for i := 0; i < 12; i++ {
 
-		if ttime == "" {
+		if ttime.IsZero() {
 			data, err := s.repo.GetMaxDataPerMonth(bayId, year, i+1)
 			if err != nil {
 				log.Println(err.Error(), 1)
@@ -402,10 +389,7 @@ func (s service) GetDataLatestYearPeakTime(ttime string, bayId int, year int, fi
 				})
 			}
 		} else {
-			maxdate, err := time.Parse("2006-01-02", ttime)
-			if err != nil {
-				return nil, err
-			}
+			maxdate := ttime
 			data, err := s.repo.GetMaxDataPerMonth(bayId, maxdate.Year(), i+1)
 			if err != nil {
 				log.Println(err.Error(), 1)
@@ -434,18 +418,19 @@ func (s service) GetDataLatestYearPeakTime(ttime string, bayId int, year int, fi
 
 }
 
-func (s service) GetDataLatestYearLightTime(ttime string, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
+func (s service) GetDataLatestYearLightTime(ttime time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
 
 	var datas []dto.DataTmpsYear
 
 	for i := 0; i < 12; i++ {
 
-		if ttime == "" {
+		if ttime.IsZero() {
 			data, err := s.repo.GetMinDataPerMonth(bayId, year, i+1)
 			if err != nil {
 				log.Println(err.Error(), 3)
 			}
 			if data != nil {
+				log.Println("power =", data.PowerFactor)
 				datas = append(datas, dto.DataTmpsYear{
 					Id:            data.Id,
 					Month:         data.DataDatetime.Format("Jan"),
@@ -463,10 +448,7 @@ func (s service) GetDataLatestYearLightTime(ttime string, bayId int, year int, f
 				})
 			}
 		} else {
-			maxdate, err := time.Parse("2006-01-02", ttime)
-			if err != nil {
-				return nil, err
-			}
+			maxdate := ttime
 			data, err := s.repo.GetMinDataPerMonth(bayId, maxdate.Year(), i+1)
 			if err != nil {
 				log.Println(err.Error(), 3)

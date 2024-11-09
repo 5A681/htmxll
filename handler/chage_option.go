@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"htmxll/models"
 	"log"
-	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -30,21 +29,16 @@ func (h *changeOption) GetOptionDateTimmeText(c echo.Context) error {
 }
 
 func (h handler) GetDateTimePickerFormat(c echo.Context) error {
-	defaultTime := ""
-	defaultMonth := ""
 
-	t, err := time.Parse("02/01/2006", *h.time)
-	if err != nil {
-		log.Println("error defaultTime", defaultTime)
-	} else {
-		defaultTime = t.Format("2006-01-02")
-		defaultMonth = t.Format("2006-01")
-	}
-	log.Println("defualt time", defaultTime, "oldtime", *h.time)
+	defaultTime := h.time.Format("2006-01-02")
+	defaultMonth := h.time.Format("2006-01")
+	defaultYear := h.time.Format("2006")
+
+	log.Println("defualt month", defaultMonth, "oldtime", *h.time)
 	if *h.timeSpace == "daily" || *h.timeSpace == "" {
 		return c.String(200, fmt.Sprintf(` <div id="date-picker-input">
                     <input id="datepicker" name="time" type="date" hx-get="/data" hx-trigger="change" hx-target="#content" hx-swap="innerHTML" 
-                    hx-include="#datepicker" value="%s"
+                    hx-include="#datepicker" value="%s" datepicker-format="dd-mm-yyyy"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Select date">
                 </div>`, defaultTime))
@@ -55,7 +49,23 @@ func (h handler) GetDateTimePickerFormat(c echo.Context) error {
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Select date">
                 </div>`, defaultMonth))
+	} else if *h.timeSpace == "yearly" {
+		if h.time.IsZero() {
+			return c.String(200, `
+                     <input id="yearInput" type="text" placeholder="      Select Year" 
+                        class="w-32 p-2 border rounded-md cursor-pointer" readonly onclick="toggleDropdown()" />
+                    <div id="yearDropdown"
+                        class="absolute z-10 w-32 mt-2 overflow-y-auto bg-white border rounded-md shadow-md max-h-60 hidden">
+                    </div>`)
+		}
+		return c.String(200, fmt.Sprintf(`
+                     <input id="yearInput" type="text" placeholder="      Select Year" value="      %s"
+                        class="w-32 p-2 border rounded-md cursor-pointer" readonly onclick="toggleDropdown()" />
+                    <div id="yearDropdown"
+                        class="absolute z-10 w-32 mt-2 overflow-y-auto bg-white border rounded-md shadow-md max-h-60 hidden">
+                    </div>`, defaultYear))
 	}
+
 	return c.String(200, `<div id="date-picker-input">
                     <input id="datepicker" name="time" type="date" hx-get="/data" hx-trigger="change" hx-target="#content" hx-swap="innerHTML" 
                     hx-include="#datepicker"

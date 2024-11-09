@@ -1,7 +1,7 @@
 {{ block "daily" .}}
 <div id="daily-table" class="w-full">
 
-<div hx-get="/time-picker" hx-target="#date-picker-input" hx-swap="innerHTML" hx-trigger="load"  ></div>
+<div hx-get="/time-picker" hx-target="#date-picker-input" hx-swap="outerHTML" hx-trigger="load"  ></div>
 <div hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="load" hx-swap="innerHTML"></div>
     <div class="flex space-x-2">
 

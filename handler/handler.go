@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"htmxll/config"
 	"htmxll/filter"
 	"htmxll/services"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -39,10 +41,11 @@ type handler struct {
 	bayName     *string
 	stationId   *int
 	bayId       *int
-	time        *string
+	time        *time.Time
 	month       *int
 	year        *int
 	day         *int
+	config      config.Config
 }
 
 func NewHandler(srv services.Service, excel services.ExportExcel, timeSpace *string,
@@ -50,9 +53,9 @@ func NewHandler(srv services.Service, excel services.ExportExcel, timeSpace *str
 	bayName *string,
 	stationId *int,
 	bayId *int,
-	time *string, month *int, year *int, day *int) Handler {
+	time *time.Time, month *int, year *int, day *int, config config.Config) Handler {
 
-	return handler{srv, excel, timeSpace, stationName, bayName, stationId, bayId, time, month, year, day}
+	return handler{srv, excel, timeSpace, stationName, bayName, stationId, bayId, time, month, year, day, config}
 }
 
 func (h handler) GetDailyReport(c echo.Context) error {
@@ -100,8 +103,27 @@ func (h handler) GetDailyReport(c echo.Context) error {
 		}
 	}
 	if c.QueryParam("time") != "" {
+		var err error
 		t := c.QueryParam("time")
-		*h.time = t
+		if len(strings.Split(t, "-")) == 3 {
+			*h.time, err = time.Parse("2006-01-02", t)
+			if err != nil {
+				log.Println("error time day", err, *h.time)
+			}
+		} else if len(strings.Split(t, "-")) == 2 {
+			t += "-01"
+			log.Println("Phongphat month", t)
+			*h.time, err = time.Parse("2006-01-02", t)
+			if err != nil {
+				log.Println("error time month", err, *h.time)
+			}
+		} else {
+			t += "-01-01"
+			*h.time, err = time.Parse("2006-01-02", t)
+			if err != nil {
+				log.Println("error time year", err, *h.time)
+			}
+		}
 	}
 
 	if *h.timeSpace != "" {
@@ -112,7 +134,10 @@ func (h handler) GetDailyReport(c echo.Context) error {
 				return c.Render(200, "daily", response)
 			}
 			if len(data) > 0 {
-				*h.time = data[0].Date
+				*h.time, err = time.Parse("02/01/2006", data[0].Date)
+				if err != nil {
+					log.Println("error time", err, *h.time)
+				}
 			}
 
 			response["DailyData"] = data
@@ -252,10 +277,19 @@ func (h handler) GetStationList(c echo.Context) error {
 func (h handler) GetRowsMonthlyData(c echo.Context) error {
 	res, err := h.srv.GetRowsMonthlyData(*h.time)
 	if err != nil {
+
 		return c.Render(200, "monthly-rows", res)
 	}
 	if len(res) > 0 {
-		*h.time = res[0].PeakDay.Date
+		dataTime, err := time.Parse("02-01-2006", res[0].PeakDay.Date)
+		if err != nil {
+			log.Println("error time this", err, *h.time)
+			dataTime, err = time.Parse("02/01/2006", res[0].PeakDay.Date)
+			log.Println("error time this", err, *h.time)
+		}
+		if !dataTime.IsZero() {
+			*h.time = dataTime
+		}
 	}
 	return c.Render(200, "monthly-rows", res)
 }
@@ -295,7 +329,7 @@ func (h handler) ExportPdf(c echo.Context) error {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-		buf, err := services.ExportPdfDaily(datas, *h.stationName, *h.bayName)
+		buf, err := services.ExportPdfDaily(datas, *h.stationName, *h.bayName, h.config.EXPORT_HEADER)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -315,7 +349,7 @@ func (h handler) ExportPdf(c echo.Context) error {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-		buf, err := services.ExportPdfMonthly(data, *h.stationName, *h.bayName)
+		buf, err := services.ExportPdfMonthly(data, *h.stationName, *h.bayName, h.config.EXPORT_HEADER)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -341,7 +375,7 @@ func (h handler) ExportPdf(c echo.Context) error {
 		return c.String(200, ``)
 	}
 
-	buf, err := services.ExportPdfYearly(peak, light, *h.stationName, *h.bayName)
+	buf, err := services.ExportPdfYearly(peak, light, *h.stationName, *h.bayName, h.config.EXPORT_HEADER)
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
@@ -364,7 +398,7 @@ func (h handler) ExportExcel(c echo.Context) error {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-		err = h.excel.ExportExcelDaily(datas, "test.xlsx")
+		err = h.excel.ExportExcelDaily(datas, "test.xlsx", *h.bayName, h.config.EXPORT_HEADER)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -379,7 +413,7 @@ func (h handler) ExportExcel(c echo.Context) error {
 			return c.String(200, ``)
 		}
 
-		err = h.excel.ExportExcelMonthly(data, "test.xlsx", *h.stationName, *h.bayName)
+		err = h.excel.ExportExcelMonthly(data, "test.xlsx", *h.stationName, *h.bayName, h.config.EXPORT_HEADER)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -426,8 +460,8 @@ func (h handler) SelectDate(c echo.Context) error {
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Select date">
             </div>`)
-	}
-	return c.String(200, `<div class="relative max-w-sm" id="select-date">
+	} else if *h.timeSpace == "monthly" {
+		return c.String(200, `<div class="relative max-w-sm" id="select-date">
                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                     <svg class="w-4 h-4 text-gray-200 dark:text-gray-400" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -440,4 +474,19 @@ func (h handler) SelectDate(c echo.Context) error {
                     class="bg-gray-50 border border-gray-300 text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Select date">
             </div>`)
+	}
+	return c.String(200, `<div class="relative">
+  <button class="w-full py-2 px-4 bg-gray-300 text-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+    Select Year
+  </button>
+  <div class="absolute mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+    <ul class="list-none p-2 space-y-1">
+      <li><button class="w-full py-2 px-4 text-left text-gray-700 hover:bg-gray-200">2020</button></li>
+      <li><button class="w-full py-2 px-4 text-left text-gray-700 hover:bg-gray-200">2021</button></li>
+      <li><button class="w-full py-2 px-4 text-left text-gray-700 hover:bg-gray-200">2022</button></li>
+      <li><button class="w-full py-2 px-4 text-left text-gray-700 hover:bg-gray-200">2023</button></li>
+      <li><button class="w-full py-2 px-4 text-left text-gray-700 hover:bg-gray-200">2024</button></li>
+    </ul>
+  </div>
+</div>`)
 }

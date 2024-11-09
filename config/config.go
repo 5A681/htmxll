@@ -5,12 +5,13 @@ import (
 )
 
 type Config struct {
-	DB_HOST   string
-	DB_NAME   string
-	DB_USER   string
-	DB_PASS   string
-	DB_PORT   int
-	HTTP_PORT int
+	DB_HOST       string
+	DB_NAME       string
+	DB_USER       string
+	DB_PASS       string
+	DB_PORT       int
+	HTTP_PORT     int
+	EXPORT_HEADER string
 }
 
 func NewConfig() Config {
@@ -30,5 +31,6 @@ func NewConfig() Config {
 	config.DB_PASS = viper.GetString("DB_PASS")
 	config.DB_PORT = viper.GetInt("DB_PORT")
 	config.HTTP_PORT = viper.GetInt("HTTP_PORT")
+	config.EXPORT_HEADER = viper.GetString("EXPORT_HEADER")
 	return config
 }

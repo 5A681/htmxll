@@ -11,8 +11,8 @@ import (
 )
 
 type ExportExcel interface {
-	ExportExcelDaily(dailyData []dto.DataTmps, fileName string) error
-	ExportExcelMonthly(items []dto.MonthlyRowData, fileName string, subS string, bay string) error
+	ExportExcelDaily(dailyData []dto.DataTmps, fileName string, bayName string, exportHeader string) error
+	ExportExcelMonthly(items []dto.MonthlyRowData, fileName string, subS string, bay string, exportHeader string) error
 	ExportExcelYearly(peak []dto.DataTmpsYear, light []dto.DataTmpsYear, fileName string, subS string, bay string) error
 }
 type exportExcel struct {
@@ -190,7 +190,7 @@ func (e exportExcel) ExportExcelYearly(peak []dto.DataTmpsYear, light []dto.Data
 	return nil
 }
 
-func (e exportExcel) ExportExcelMonthly(items []dto.MonthlyRowData, fileName string, subS string, bay string) error {
+func (e exportExcel) ExportExcelMonthly(items []dto.MonthlyRowData, fileName string, subS string, bay string, exportHeader string) error {
 	f := excelize.NewFile()
 	defer f.Close()
 	sheetName := "Sheet1"
@@ -324,7 +324,7 @@ func (e exportExcel) ExportExcelMonthly(items []dto.MonthlyRowData, fileName str
 	}
 
 	Title := "Monthly Load Report"
-	SubSstationName := subS
+	SubSstationName := exportHeader
 
 	if err := f.SetCellValue(sheetName, "A5", Title); err != nil {
 		return err
@@ -393,14 +393,14 @@ func (e exportExcel) ExportExcelMonthly(items []dto.MonthlyRowData, fileName str
 
 }
 
-func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string) error {
+func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string, bayName string, exportHeader string) error {
 
 	sheetName := "Sheet1"
 
 	index, _ := e.excel.NewSheet(sheetName)
 
 	// Set table headers
-	headers := []string{"Date", "Time", "Vab (kV)", "Vbc (kV)", "Vca (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (PW)", "Q (MVAR)", "PF (%)"}
+	headers := []string{"Date", "Time", "Vbc (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (PW)", "Q (MVAR)", "PF (%)"}
 	for i, header := range headers {
 		cell := string(rune('A'+i)) + "7" // A1, B1, C1, etc.
 		e.excel.SetCellValue(sheetName, cell, header)
@@ -418,8 +418,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string)
 	}
 
 	Title := "Daily Load Report"
-	SubSstationName := "Substation Name"
-	bayName := "Bay Name"
+	SubSstationName := exportHeader
 	if err := e.excel.SetCellValue(sheetName, "A4", Title); err != nil {
 		return err
 	}
@@ -451,37 +450,33 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string)
 		cell = "B" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.Time)
 		cell = "C" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, "")
+		e.excel.SetCellValue(sheetName, cell, data.Kv)
 		cell = "D" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, "")
-		cell = "E" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, "")
-		cell = "F" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseA)
-		cell = "G" + fmt.Sprintf("%d", 8+row)
+		cell = "E" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseB)
-		cell = "H" + fmt.Sprintf("%d", 8+row)
+		cell = "F" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseC)
-		cell = "I" + fmt.Sprintf("%d", 8+row)
+		cell = "G" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.ActivePower)
-		cell = "J" + fmt.Sprintf("%d", 8+row)
+		cell = "H" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.ReactivePower)
-		cell = "K" + fmt.Sprintf("%d", 8+row)
+		cell = "I" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.PowerFactor)
 	}
 
-	if err := e.excel.MergeCell(sheetName, "A4", "K4"); err != nil {
+	if err := e.excel.MergeCell(sheetName, "A4", "I4"); err != nil {
 		return err
 	}
-	if err := e.excel.MergeCell(sheetName, "A5", "K5"); err != nil {
+	if err := e.excel.MergeCell(sheetName, "A5", "I5"); err != nil {
 		return err
 	}
-	if err := e.excel.MergeCell(sheetName, "A6", "K6"); err != nil {
+	if err := e.excel.MergeCell(sheetName, "A6", "I6"); err != nil {
 		return err
 	}
 
 	// Define the table range
-	tableRange := "A7:K55" // Includes headers and data
+	tableRange := "A7:I55" // Includes headers and data
 
 	// Create a table with the defined range
 	disable := true
@@ -489,7 +484,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string)
 	if err := e.excel.AddTable(sheetName, &excelize.Table{
 		Range:             tableRange,
 		Name:              "Table1",
-		StyleName:         "TableStyleMedium9",
+		StyleName:         "TableStyleMedium1",
 		ShowFirstColumn:   false,
 		ShowLastColumn:    false,
 		ShowRowStripes:    &disable,
@@ -520,7 +515,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string)
 		return err
 	}
 
-	if err := e.excel.SetColWidth(sheetName, "A", "K", 15); err != nil {
+	if err := e.excel.SetColWidth(sheetName, "A", "I", 15); err != nil {
 		return err
 	}
 
@@ -537,7 +532,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string)
 		return err
 	}
 	// Apply bold borders to all sides
-	err = e.excel.SetCellStyle(sheetName, "A6", "K55", stypeId)
+	err = e.excel.SetCellStyle(sheetName, "A6", "I55", stypeId)
 	if err != nil {
 		return err
 	}

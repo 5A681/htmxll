@@ -4,13 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"htmxll/dto"
+	"log"
 
 	"github.com/jung-kurt/gofpdf"
 )
 
-func ExportPdfDaily(dailyData []dto.DataTmps, sName string, bName string) (*bytes.Buffer, error) {
-
-	substationName := sName
+func ExportPdfDaily(dailyData []dto.DataTmps, sName string, bName string, exportHeader string) (*bytes.Buffer, error) {
 	bayName := bName
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
@@ -19,35 +18,42 @@ func ExportPdfDaily(dailyData []dto.DataTmps, sName string, bName string) (*byte
 	pdf.Image(imagePath, 10, 15, 20, 0, false, "", 0, "")
 	// Set font
 	pdf.SetFont("Arial", "B", 10)
-	pdf.CellFormat(187, 10, "Daily Load Report", "", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 10, "Daily Load Report", "", 0, "C", false, 0, "")
 	pdf.Ln(-1)
-	pdf.CellFormat(187, 10, substationName, "", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 10, exportHeader, "", 0, "C", false, 0, "")
 	pdf.Ln(-1)
-	pdf.CellFormat(187, 10, bayName, "LTRB", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 10, bayName, "LTRB", 0, "C", false, 0, "")
 	pdf.SetY(40)
 
 	// Header
-	headers := []string{"Date", "Time", "Vab (kV)", "Vbc (kV)", "Vca (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (MW)", "Q (MVAR)", "PF (%)"}
+	headers := []string{"Date", "Time", "kV", "Ia", "Ib", "Ic", "MW", "MVAR", "PF"}
 	for _, header := range headers {
-		pdf.CellFormat(17, 10, header, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, header, "1", 0, "C", false, 0, "")
 	}
 	pdf.Ln(-1)
 
 	// Table rows
 	pdf.SetFont("Arial", "", 8)
 
-	for _, data := range dailyData {
-		pdf.CellFormat(17, 10, data.Date, "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, data.Time, "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, fmt.Sprintf("%.2f", data.CurrentPhaseA), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, fmt.Sprintf("%.2f", data.CurrentPhaseB), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, fmt.Sprintf("%.2f", data.CurrentPhaseC), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, fmt.Sprintf("%.2f", data.ActivePower), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, fmt.Sprintf("%.2f", data.ReactivePower), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(17, 10, fmt.Sprintf("%.2f", data.PowerFactor), "1", 0, "C", false, 0, "")
+	for i, data := range dailyData {
+		if i == 22 {
+			pdf.SetFont("Arial", "B", 10)
+			headers := []string{"Date", "Time", "kV", "Ia", "Ib", "Ic", "MW", "MVAR", "PF"}
+			for _, header := range headers {
+				pdf.CellFormat(21, 10, header, "1", 0, "C", false, 0, "")
+			}
+			pdf.SetFont("Arial", "", 8)
+			pdf.Ln(-1)
+		}
+		pdf.CellFormat(21, 10, data.Date, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, data.Time, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.Kv), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseA), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseB), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseC), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.ActivePower), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.ReactivePower), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.PowerFactor), "1", 0, "C", false, 0, "")
 		pdf.Ln(-1)
 	}
 	var buf bytes.Buffer
@@ -59,10 +65,9 @@ func ExportPdfDaily(dailyData []dto.DataTmps, sName string, bName string) (*byte
 	return &buf, nil
 }
 
-func ExportPdfMonthly(items []dto.MonthlyRowData, sName string, bName string) (*bytes.Buffer, error) {
-
-	substationName := sName
-	bayName := bName
+func ExportPdfMonthly(items []dto.MonthlyRowData, sName string, bName string, exportHeader string) (*bytes.Buffer, error) {
+	log.Println("Substation name = ", exportHeader)
+	substationName := exportHeader
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 
@@ -70,11 +75,9 @@ func ExportPdfMonthly(items []dto.MonthlyRowData, sName string, bName string) (*
 	pdf.Image(imagePath, 10, 15, 20, 0, false, "", 0, "")
 	// Set font
 	pdf.SetFont("Arial", "B", 10)
-	pdf.CellFormat(189, 10, "Daily Load Report", "", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 20, "Monthly Load Report", "", 0, "C", false, 0, "")
 	pdf.Ln(-1)
 	pdf.CellFormat(189, 10, substationName, "", 0, "C", false, 0, "")
-	pdf.Ln(-1)
-	pdf.CellFormat(189, 10, bayName, "", 0, "C", false, 0, "")
 	pdf.SetY(40)
 
 	pdf.Ln(-1)
@@ -184,9 +187,9 @@ func ExportPdfMonthly(items []dto.MonthlyRowData, sName string, bName string) (*
 	return &buf, nil
 }
 
-func ExportPdfYearly(peak []dto.DataTmpsYear, light []dto.DataTmpsYear, sName string, bName string) (*bytes.Buffer, error) {
+func ExportPdfYearly(peak []dto.DataTmpsYear, light []dto.DataTmpsYear, sName string, bName string, exportHeader string) (*bytes.Buffer, error) {
 
-	substationName := sName
+	substationName := exportHeader
 	bayName := bName
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
@@ -195,21 +198,21 @@ func ExportPdfYearly(peak []dto.DataTmpsYear, light []dto.DataTmpsYear, sName st
 	pdf.Image(imagePath, 10, 15, 20, 0, false, "", 0, "")
 	// Set font
 	pdf.SetFont("Arial", "B", 10)
-	pdf.CellFormat(187, 10, "Daily Load Report", "", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 10, "Yearly Load Report", "", 0, "C", false, 0, "")
 	pdf.Ln(-1)
-	pdf.CellFormat(187, 10, substationName, "", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 10, substationName, "", 0, "C", false, 0, "")
 	pdf.Ln(-1)
-	pdf.CellFormat(187, 10, bayName, "", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 10, bayName, "", 0, "C", false, 0, "")
 	pdf.SetY(40)
 
 	pdf.Ln(-1)
-	pdf.CellFormat(187, 10, "Peak", "", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 10, "Peak Load", "1", 0, "C", false, 0, "")
 	pdf.Ln(-1)
 
 	// Header
-	headers := []string{"Month", "Date", "Time", "Vab (kV)", "Vbc (kV)", "Vca (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (MW)", "Q (MVAR)", "PF (%)"}
+	headers := []string{"Month", "Date", "Time", "Vbc (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (MW)", "Q (MVAR)"}
 	for _, header := range headers {
-		pdf.CellFormat(16, 10, header, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, header, "1", 0, "C", false, 0, "")
 	}
 	pdf.Ln(-1)
 
@@ -217,29 +220,26 @@ func ExportPdfYearly(peak []dto.DataTmpsYear, light []dto.DataTmpsYear, sName st
 	pdf.SetFont("Arial", "", 8)
 
 	for _, data := range peak {
-		pdf.CellFormat(16, 10, data.Month, "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, data.Date, "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, data.Time, "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.CurrentPhaseA), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.CurrentPhaseB), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.CurrentPhaseC), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.ActivePower), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.ReactivePower), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.PowerFactor), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, data.Month, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, data.Date, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, data.Time, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.Kv), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseA), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseB), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseC), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.ActivePower), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.ReactivePower), "1", 0, "C", false, 0, "")
 		pdf.Ln(-1)
 	}
 
 	pdf.SetFont("Arial", "B", 10)
 	pdf.Ln(-1)
-	pdf.CellFormat(187, 10, "Light Load", "", 0, "C", false, 0, "")
+	pdf.CellFormat(189, 10, "Light Load", "1", 0, "C", false, 0, "")
 	pdf.Ln(-1)
 	//night
 
 	for _, header := range headers {
-		pdf.CellFormat(16, 10, header, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, header, "1", 0, "C", false, 0, "")
 	}
 	pdf.Ln(-1)
 
@@ -247,18 +247,15 @@ func ExportPdfYearly(peak []dto.DataTmpsYear, light []dto.DataTmpsYear, sName st
 	pdf.SetFont("Arial", "", 8)
 
 	for _, data := range light {
-		pdf.CellFormat(16, 10, data.Month, "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, data.Date, "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, data.Time, "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, "", "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.CurrentPhaseA), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.CurrentPhaseB), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.CurrentPhaseC), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.ActivePower), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.ReactivePower), "1", 0, "C", false, 0, "")
-		pdf.CellFormat(16, 10, fmt.Sprintf("%.2f", data.PowerFactor), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, data.Month, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, data.Date, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, data.Time, "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.Kv), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseA), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseB), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.CurrentPhaseC), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.ActivePower), "1", 0, "C", false, 0, "")
+		pdf.CellFormat(21, 10, fmt.Sprintf("%.2f", data.ReactivePower), "1", 0, "C", false, 0, "")
 		pdf.Ln(-1)
 	}
 

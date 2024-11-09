@@ -87,7 +87,7 @@ func (s repository) GetMinDataPerDayPerTime(bayId int, minTime time.Time, maxTim
 func (s repository) GetMaxDataPerMonth(bayId int, year int, month int) (*entity.DataTmps, error) {
 	var dataTemps entity.DataTmps
 	query := `select * from  data_tmps dt where dt.bay_id= $1 and EXTRACT(YEAR FROM dt.data_datetime) = $2 and EXTRACT(MONTH FROM dt.data_datetime) = $3 order  by active_power desc,data_datetime asc limit 1`
-
+	log.Println("this ", bayId)
 	err := s.db.Get(&dataTemps, query, bayId, year, month)
 	if err != nil {
 		return nil, err

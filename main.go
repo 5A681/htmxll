@@ -11,6 +11,7 @@ import (
 	"htmxll/repository"
 	"htmxll/services"
 	"io"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -52,7 +53,7 @@ func main() {
 	bayName := ""
 	stationId := 0
 	bayId := 0
-	ttime := ""
+	ttime := time.Time{}
 	year := 0
 	month := 0
 	day := 0
@@ -60,7 +61,7 @@ func main() {
 	config := config.NewConfig()
 	db := database.NewPostgresDatabase(config)
 	repo := repository.NewRepository(db)
-	service := services.NewService(repo)
+	service := services.NewService(repo, config)
 
 	readFile := filedata.NewFileData(repo)
 	go readFile.CheckNewFileRealTime()
@@ -72,7 +73,7 @@ func main() {
 	e.Renderer = newTemplate()
 
 	excelFile := excelize.NewFile()
-	hand := handler.NewHandler(service, services.NewExportExcel(excelFile), &timeSpace, &stationName, &bayName, &stationId, &bayId, &ttime, &month, &year, &day)
+	hand := handler.NewHandler(service, services.NewExportExcel(excelFile), &timeSpace, &stationName, &bayName, &stationId, &bayId, &ttime, &month, &year, &day, config)
 	defaultData := models.DefaultData{
 		OptionDateTime: "Optioin",
 	}
@@ -87,7 +88,7 @@ func main() {
 		bayName = ""
 		stationId = 0
 		bayId = 0
-		ttime = ""
+		ttime = time.Time{}
 		return c.Render(200, "index", nil)
 	})
 	e.GET("/monthly", func(c echo.Context) error {
