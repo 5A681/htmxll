@@ -1,0 +1,38 @@
+{{block "time-list" .}}
+<form class="max-w-sm mx-auto"></form>
+<select id="time-list"
+    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    hx-get="/data" hx-target="#content" name="component" hx-trigger="change" hx-swap="innerHTML">
+<option selected>Choose Time</option>
+    <option value="daily" hx-get="/data?component=daily" hx-target="#content">Daily</option>
+    <option value="monthly" hx-get="/data?component=monthly" hx-target="#content">Monthly</option>
+    <option value="yearly" hx-get="/data?component=yearly" hx-target="#content">Yearly</option>
+</select>
+</form>
+{{ end }}
+
+{{block "bay-list" .}}
+<form id="bay-list" class="max-w-sm mx-auto no"  >
+<select 
+    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
+    hx-get="/data" hx-target="#content" name="bay" hx-trigger="change" hx-swap="innerHTML">
+<option selected >{{.Name}}</option>
+    {{range .Data}}
+    <option value="{{.Id}}">{{.Name}}</option>
+    {{end}}
+</select>
+</form>
+{{ end }}
+
+{{block "station-list" .}}
+<form id="station-list" class="max-w-sm mx-auto" >
+<select 
+    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[250px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="change" hx-swap="innerHTML">
+<option selected>Choose station</option>
+    {{range .Data}}
+    <option value="{{.Id}}">{{.Name}}</option>
+    {{end}}
+</select>
+</form>
+{{ end }}

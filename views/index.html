@@ -1,0 +1,32 @@
+{{ block "index" .}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <title></title>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- <link rel="stylesheet" href="/main.css" /> -->
+     <link href="/static/css/style.css" rel="stylesheet">
+     <script src="static/htmx.min.js"></script>
+     <script src="/static/flowbite.min.js"></script>
+     <script src="static/css/yearPicker.js" defer></script>
+     <title>Load Report</title>
+</head>
+
+<body hx-get="/station-list" hx-target="#station-list" hx-trigger="load" hx-swap="outerHTML">
+    
+     {{template "navbar"}}
+     <div hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="load" hx-swap="innerHTML"></div>
+     
+     <div>
+          <div id="content" class="flex">
+          </div>
+     </div>
+     
+    
+</body>
+
+</html>
+{{ end }}
+

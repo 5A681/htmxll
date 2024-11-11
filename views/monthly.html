@@ -1,0 +1,247 @@
+{{ block "monthly" .}}
+{{if .MonthlyData}}
+<div id="monthly-table">
+    <div class="flex space-x-2">
+       
+        <div class="flex justify-center">
+            <h1 class="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-3xl "><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Monthly Load
+                    Report</span>
+            </h1>
+        </div>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <caption class=" text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl"><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">Day Time
+                    Peak</span></caption>
+            <caption class=" text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl"><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">08:00-15:30</span>
+            </caption>
+            <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Time
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Vbc (kV)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ia (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Ib (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ic (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        P (MW)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Q (MVAR)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        PF (%)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .MonthlyData.Day}}
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                        {{ .Date }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ .Time }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{ .Kv }}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseA}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.CurrentPhaseB}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseC}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.ActivePower}}
+                    </td>
+                    <td class="">
+                        {{.ReactivePower}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.PowerFactor}}
+                    </td>
+
+                </tr>
+                {{ end }}
+
+            </tbody>
+        </table>
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <caption class=" text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl"><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">Night Time
+                    Peak</span></caption>
+            <caption class=" text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl"><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">00:00-07:30,
+                    16:00-23:30</span></caption>
+            <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Time
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Vbc (kV)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ia (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Ib (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ic (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        P (MW)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Q (MVAR)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        PF (%)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .MonthlyData.Night}}
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                        {{ .Date }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ .Time }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{ .Kv }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{.CurrentPhaseA}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.CurrentPhaseB}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseC}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.ActivePower}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.ReactivePower}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.PowerFactor}}
+                    </td>
+
+                </tr>
+                {{ end }}
+
+            </tbody>
+        </table>
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <caption class=" text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl"><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">Day & Night Light Load
+                    Peak</span></caption>
+            <caption class=" text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl"><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">00:00-23:30</span></caption>
+            
+            <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Time
+                    </th>
+                    
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Vbc (kV)
+                    </th>
+                   
+                    <th scope="col" class="px-6 py-3">
+                        Ia (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Ib (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ic (A)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        P (MW)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Q (MVAR)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        PF (%)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .MonthlyData.All}}
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                        {{ .Date }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ .Time }}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{ .Kv }}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseA}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.CurrentPhaseB}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.CurrentPhaseC}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.ActivePower}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{.ReactivePower}}
+                    </td>
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.PowerFactor}}
+                    </td>
+
+                </tr>
+                {{ end }}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+{{else}}
+<div id="monthly-table"></div>
+{{end}}
+{{ end }}
