@@ -1,12 +1,13 @@
 package services
 
 import (
+	"htmxll/config"
 	"htmxll/dto"
 	"log"
 	"time"
 )
 
-func (s service) GetRowsMonthlyData(ttime time.Time) ([]dto.MonthlyRowData, error) {
+func (s service) GetRowsMonthlyData(config config.Config, ttime time.Time) ([]dto.MonthlyRowData, error) {
 	bays, err := s.GetAllBay()
 	if err != nil {
 		return nil, err
@@ -28,12 +29,17 @@ func (s service) GetRowsMonthlyData(ttime time.Time) ([]dto.MonthlyRowData, erro
 			log.Println("error :", err)
 			return nil, err
 		}
-		res = append(res, dto.MonthlyRowData{
+		if item.Name == "TP1" || item.Name == "TP2" {
+			item.Name = "line " + config.LINE_KV + "/" + item.Name
+		}
+		data := dto.MonthlyRowData{
 			Bay:       item.Name,
 			PeakDay:   *day,
 			PeakNight: *night,
 			AllLow:    *all,
-		})
+		}
+
+		res = append(res, data)
 	}
 	return res, nil
 }

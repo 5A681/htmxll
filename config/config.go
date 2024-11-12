@@ -12,6 +12,7 @@ type Config struct {
 	DB_PORT       int
 	HTTP_PORT     int
 	EXPORT_HEADER string
+	LINE_KV       string
 }
 
 func NewConfig() Config {
@@ -32,5 +33,6 @@ func NewConfig() Config {
 	config.DB_PORT = viper.GetInt("DB_PORT")
 	config.HTTP_PORT = viper.GetInt("HTTP_PORT")
 	config.EXPORT_HEADER = viper.GetString("EXPORT_HEADER")
+	config.LINE_KV = viper.GetString("LINE_KV")
 	return config
 }

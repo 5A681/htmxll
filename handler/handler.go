@@ -275,7 +275,7 @@ func (h handler) GetStationList(c echo.Context) error {
 }
 
 func (h handler) GetRowsMonthlyData(c echo.Context) error {
-	res, err := h.srv.GetRowsMonthlyData(*h.time)
+	res, err := h.srv.GetRowsMonthlyData(h.config, *h.time)
 	if err != nil {
 
 		return c.Render(200, "monthly-rows", res)
@@ -344,7 +344,7 @@ func (h handler) ExportPdf(c echo.Context) error {
 		return c.Blob(http.StatusOK, "application/pdf", buf.Bytes())
 	} else if *h.timeSpace == "monthly" {
 
-		data, err := h.srv.GetRowsMonthlyData(*h.time)
+		data, err := h.srv.GetRowsMonthlyData(h.config, *h.time)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -407,7 +407,7 @@ func (h handler) ExportExcel(c echo.Context) error {
 		defer os.Remove("test.xlsx")
 		return c.Attachment("test.xlsx", fileName)
 	} else if *h.timeSpace == "monthly" {
-		data, err := h.srv.GetRowsMonthlyData(*h.time)
+		data, err := h.srv.GetRowsMonthlyData(h.config, *h.time)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)

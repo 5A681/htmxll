@@ -23,7 +23,7 @@ type Service interface {
 	GetBayById(bayId int) (*entity.Bay, error)
 	GetSubStationById(sId int) (*entity.SubStation, error)
 	GetLatestYear() (int, error)
-	GetRowsMonthlyData(ttime time.Time) ([]dto.MonthlyRowData, error)
+	GetRowsMonthlyData(config config.Config, ttime time.Time) ([]dto.MonthlyRowData, error)
 }
 
 type service struct {
