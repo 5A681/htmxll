@@ -214,7 +214,6 @@ func (h handler) GetStationOptionText(c echo.Context) error {
 func (h handler) GetBayList(c echo.Context) error {
 
 	if c.QueryParam("station") != "" {
-		log.Println("hello station")
 		id, err := strconv.Atoi(c.QueryParam("station"))
 		if err != nil {
 			data := map[string]interface{}{
@@ -230,8 +229,8 @@ func (h handler) GetBayList(c echo.Context) error {
 			log.Println(err)
 		} else {
 			*h.stationName = s.Name
+
 		}
-		log.Println("station data = ", s.Name)
 	}
 	if *h.timeSpace == "monthly" {
 		return c.String(200, `<select 
@@ -242,7 +241,7 @@ func (h handler) GetBayList(c echo.Context) error {
 </select>`)
 	}
 
-	res, err := h.srv.GetAllBayByStationId(*h.stationId)
+	res, err := h.srv.GetAllBayByStationId(h.config, *h.stationId)
 	if err != nil {
 		log.Println(err)
 		data := map[string]interface{}{

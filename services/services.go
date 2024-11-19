@@ -17,7 +17,7 @@ type Service interface {
 	GetDataLatestYearPeakTime(ttime time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
 	GetDataLatestYearLightTime(ttime time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
 	GetAllBay() ([]entity.Bay, error)
-	GetAllBayByStationId(stationId int) ([]entity.Bay, error)
+	GetAllBayByStationId(config config.Config, stationId int) ([]entity.Bay, error)
 	GetAllSubStation() ([]entity.SubStation, error)
 	GetFirstSubstation() (*entity.SubStation, error)
 	GetBayById(bayId int) (*entity.Bay, error)

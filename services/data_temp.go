@@ -1,6 +1,7 @@
 package services
 
 import (
+	"htmxll/config"
 	"htmxll/dto"
 	"htmxll/entity"
 	"htmxll/filter"
@@ -477,12 +478,26 @@ func (s service) GetDataLatestYearLightTime(ttime time.Time, bayId int, year int
 
 }
 
-func (s service) GetAllBayByStationId(stationId int) ([]entity.Bay, error) {
+func (s service) GetAllBayByStationId(config config.Config, stationId int) ([]entity.Bay, error) {
 	res, err := s.repo.GetBaysByStationId(stationId)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	bays := []entity.Bay{}
+	for _, bay := range res {
+		if bay.Name == "TP1" || bay.Name == "TP2" {
+			bay.Name = "line " + config.LINE_KV + "/" + bay.Name
+		}
+		log.Println("bayName = ", bay.Name)
+		bays = append(bays, entity.Bay{
+			Id:           bay.Id,
+			Name:         bay.Name,
+			CreatedAt:    bay.CreatedAt,
+			SubStationId: bay.SubStationId,
+		})
+	}
+
+	return bays, nil
 }
 
 func (s service) GetAllBay() ([]entity.Bay, error) {

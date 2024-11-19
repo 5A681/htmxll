@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-     <title></title>
+     <title>Load Report</title>
      <meta charset="UTF-8">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <!-- <link rel="stylesheet" href="/main.css" /> -->
@@ -11,19 +11,40 @@
      <script src="static/htmx.min.js"></script>
      <script src="/static/flowbite.min.js"></script>
      <script src="static/css/yearPicker.js" defer></script>
+     <script src="static/index.js"></script>
      <title>Load Report</title>
 </head>
 
 <body hx-get="/station-list" hx-target="#station-list" hx-trigger="load" hx-swap="outerHTML">
-    
+
      {{template "navbar"}}
      <div hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="load" hx-swap="innerHTML"></div>
-     
+
      <div>
           <div id="content" class="flex">
           </div>
      </div>
-     
+<script>
+
+function initializeDatePicker() {
+    const datepickerInputs = document.querySelectorAll("[datepicker]");
+    datepickerInputs.forEach((input) => {
+        // Check if the date picker has already been initialized
+        if (!input.hasAttribute("data-initialized")) {
+            // Initialize the date picker
+            input.datepicker = new Datepicker(input, {
+                format: input.getAttribute("datepicker-format") || "dd-mm-yyyy",
+            });
+
+            // Mark as initialized to prevent duplicate initializations
+            input.setAttribute("data-initialized", "true");
+        }
+    });
+}
+
+
+document.addEventListener("htmx:afterSettle", initializeDatePicker);
+</script>
     
 </body>
 

@@ -155,7 +155,7 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 							if err != nil {
 								tempData.ReactivePower = 0
 							} else {
-								tempData.PowerFactor = float32(floatData)
+								tempData.ReactivePower = float32(floatData)
 							}
 						} else if c == 14 {
 							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)

@@ -25,11 +25,10 @@ func NewExportExcel(excel *excelize.File) ExportExcel {
 
 func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmpsYear, fileName string, sheetName string, title string, subStation string, bay string, timeTitle string) error {
 	index, _ := excel.NewSheet(sheetName)
-
 	// Set table headers
-	headers := []string{"Month", "Date", "Time", "Vab (kV)", "Vbc (kV)", "Vca (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (PW)", "Q (MVAR)", "PF (%)"}
+	headers := []string{"Month", "Date", "Time", "Vbc (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (PW)", "Q (MVAR)", "PF (%)"}
 	for i, header := range headers {
-		cell := string(rune('A'+i)) + "9" // A1, B1, C1, etc.
+		cell := string(rune('A'+i)) + "8" // A1, B1, C1, etc.
 		excel.SetCellValue(sheetName, cell, header)
 	}
 
@@ -69,40 +68,36 @@ func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmp
 		cell = "C" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.Time)
 		cell = "D" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, "")
+		excel.SetCellValue(sheetName, cell, data.Kv)
 		cell = "E" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, "")
-		cell = "F" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, "")
-		cell = "G" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.CurrentPhaseA)
-		cell = "H" + fmt.Sprintf("%d", 9+row)
+		cell = "F" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.CurrentPhaseB)
-		cell = "I" + fmt.Sprintf("%d", 9+row)
+		cell = "G" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.CurrentPhaseC)
-		cell = "J" + fmt.Sprintf("%d", 9+row)
+		cell = "H" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.ActivePower)
-		cell = "K" + fmt.Sprintf("%d", 9+row)
+		cell = "I" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.ReactivePower)
-		cell = "L" + fmt.Sprintf("%d", 9+row)
+		cell = "J" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.PowerFactor)
 	}
 
-	if err := excel.MergeCell(sheetName, "A4", "Z4"); err != nil {
+	if err := excel.MergeCell(sheetName, "A4", "J4"); err != nil {
 		return err
 	}
-	if err := excel.MergeCell(sheetName, "A5", "Z5"); err != nil {
+	if err := excel.MergeCell(sheetName, "A5", "J5"); err != nil {
 		return err
 	}
-	if err := excel.MergeCell(sheetName, "A6", "Z6"); err != nil {
+	if err := excel.MergeCell(sheetName, "A6", "J6"); err != nil {
 		return err
 	}
-	if err := excel.MergeCell(sheetName, "A7", "Z7"); err != nil {
+	if err := excel.MergeCell(sheetName, "A7", "J7"); err != nil {
 		return err
 	}
 
 	// Define the table range
-	tableRange := "A8:Z56" // Includes headers and data
+	tableRange := "A8:J56" // Includes headers and data
 
 	// Create a table with the defined range
 	disable := true
@@ -141,7 +136,7 @@ func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmp
 		return err
 	}
 
-	if err := excel.SetColWidth(sheetName, "A", "Z", 15); err != nil {
+	if err := excel.SetColWidth(sheetName, "A", "J", 15); err != nil {
 		return err
 	}
 
@@ -158,7 +153,7 @@ func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmp
 		return err
 	}
 	// Apply bold borders to all sides
-	err = excel.SetCellStyle(sheetName, "A6", "Z56", stypeId)
+	err = excel.SetCellStyle(sheetName, "A6", "J56", stypeId)
 	if err != nil {
 		return err
 	}

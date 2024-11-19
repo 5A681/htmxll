@@ -4,6 +4,7 @@ module.exports = {
   content: [
     './views/*.html',
     './**/*.go',
+    './**/*.js',
     "./node_modules/flowbite/**/*.js",
   ],
   theme: {

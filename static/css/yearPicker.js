@@ -1,5 +1,8 @@
+
+
 document.addEventListener("DOMContentLoaded", function () {
     initializeYearPicker();
+   
 });
 
 function toggleDropdown() {
@@ -10,6 +13,7 @@ function toggleDropdown() {
 }
 
 document.body.addEventListener('htmx:afterSwap', (event) => {
+    
     initializeYearPicker();
 });
 function initializeYearPicker() {
@@ -59,3 +63,4 @@ function initializeYearPicker() {
         }
     });
 }
+
