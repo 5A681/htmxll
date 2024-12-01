@@ -1,10 +1,10 @@
 {{ block "yearly" .}}
 <div id="yearly-table" class="w-full">
-<div hx-get="/time-picker" hx-target="#date-picker-input" hx-swap="innerHTML" hx-trigger="load"></div>
-        <div hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="load" hx-swap="innerHTML"></div>
+    <div hx-get="/time-picker" hx-target="#date-picker-input" hx-swap="innerHTML" hx-trigger="load"></div>
+    <div hx-get="/bay-list" hx-target="#bay-list" name="station" hx-trigger="load" hx-swap="innerHTML"></div>
     <div class="flex space-x-2">
 
-        
+
         <div class="flex justify-center">
             <h1 class="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-3xl "><span
                     class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Yearly Load

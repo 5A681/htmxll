@@ -7,4 +7,5 @@ type Bay struct {
 	Name         string    `db:"name"`
 	CreatedAt    time.Time `db:"created_at"`
 	SubStationId int       `db:"sub_station_id"`
+	SheetNumber  int       `db:"sheet_number"`
 }

@@ -15,7 +15,6 @@ func (s repository) GetMaxDataByBayIdAndMonth(bayId int, year int, month int, mi
 
 	err := s.db.Get(&dataTemps, query)
 	if err != nil {
-		log.Println("this error", err)
 		return nil, err
 	}
 

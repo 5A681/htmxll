@@ -59,6 +59,7 @@ func NewHandler(srv services.Service, excel services.ExportExcel, timeSpace *str
 }
 
 func (h handler) GetDailyReport(c echo.Context) error {
+	log.Println("phongphat time = ", *h.time)
 	response := map[string]interface{}{
 		"DailyData":   nil,
 		"MonthlyData": nil,
@@ -106,13 +107,12 @@ func (h handler) GetDailyReport(c echo.Context) error {
 		var err error
 		t := c.QueryParam("time")
 		if len(strings.Split(t, "-")) == 3 {
-			*h.time, err = time.Parse("2006-01-02", t)
+			*h.time, err = time.Parse("02-01-2006", t)
 			if err != nil {
 				log.Println("error time day", err, *h.time)
 			}
 		} else if len(strings.Split(t, "-")) == 2 {
 			t += "-01"
-			log.Println("Phongphat month", t)
 			*h.time, err = time.Parse("2006-01-02", t)
 			if err != nil {
 				log.Println("error time month", err, *h.time)
@@ -138,6 +138,8 @@ func (h handler) GetDailyReport(c echo.Context) error {
 				if err != nil {
 					log.Println("error time", err, *h.time)
 				}
+			} else {
+				*h.time = time.Now()
 			}
 
 			response["DailyData"] = data

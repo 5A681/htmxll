@@ -2,7 +2,6 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     initializeYearPicker();
-   
 });
 
 function toggleDropdown() {
@@ -63,4 +62,37 @@ function initializeYearPicker() {
         }
     });
 }
+function initializeFlatpickr(target) {
+            flatpickr(target, {
+                dateFormat: "d-m-Y", // Custom date format
+                onChange: function(selectedDates, dateStr, instance) {
+                    // Trigger HTMX manually when a date is selected
+                    target.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+            console.log("Flatpickr initialized on:", target);
+        }
 
+        // Initialize Flatpickr on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.querySelector('#datepicker-format');
+            if (input) {
+                initializeFlatpickr(input);
+            }
+        });
+
+        // Reinitialize Flatpickr after HTMX content updates
+        document.body.addEventListener('htmx:afterRequest', function (event) {
+            // Check if the swapped content contains the date-picker input
+            const newInput = event.target.querySelector('#datepicker-format');
+            if (newInput) {
+                initializeFlatpickr(newInput);
+            }
+        });
+         document.body.addEventListener('htmx:beforeRequest', function (event) {
+            // Check if the swapped content contains the date-picker input
+            const newInput = event.target.querySelector('#datepicker-format');
+            if (newInput) {
+                initializeFlatpickr(newInput);
+            }
+        });

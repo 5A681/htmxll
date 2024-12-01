@@ -25,7 +25,6 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 	if ws == nil {
 		return
 	}
-	log.Println("koe sheet name", ws.Name)
 	maxRow := int(ws.MaxRow)
 	if maxRow <= 0 {
 		return
@@ -63,10 +62,11 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 		_, err = dataTempRepo.GetBayByNameAndSubStationId(sub.Id, ws.Name)
 		if err != nil {
 			if err.Error() == "sql: no rows in result set" {
-				log.Println("Bay name = ", ws.Name)
+				log.Println("bay name = ", ws.Name)
 				dataTempRepo.CreateBay(&entity.Bay{
 					Name:         ws.Name,
 					SubStationId: sub.Id,
+					SheetNumber:  sheet,
 				})
 			} else {
 				log.Println(err)
@@ -75,7 +75,6 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 
 	}
 	if subId == 0 {
-		log.Println("subId = 0")
 		return
 	}
 	bay, err := dataTempRepo.GetBayByNameAndSubStationId(subId, ws.Name)
@@ -83,9 +82,7 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 		log.Println("error get bay", err)
 		return
 	}
-	log.Println("ColumnName = ", ws.Row(2).Col(2))
 	if ws.Row(2).Col(2) == "VOLTAGE PHASE B-C" {
-		log.Println("OK Phongphat", ws.Name)
 		for r := 5; r < maxRow; r++ {
 
 			if ws.Row(r).Col(0) != "" {
@@ -171,7 +168,6 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 					}
 
 				}
-				log.Println("bayId = ", bay.Id)
 				tempData.CreatedAt = time.Now()
 				err := dataTempRepo.CreateDataTmep(tempData)
 				if err != nil {
@@ -182,7 +178,6 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 			//fmt.Printf("\n\n")
 		}
 	} else {
-		log.Println("Not OK Phongphat")
 		for r := 5; r < maxRow; r++ {
 
 			if ws.Row(r).Col(0) != "" {
