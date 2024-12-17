@@ -36,7 +36,9 @@ func (s service) GetLatestData(bayId int, ttime time.Time) ([]dto.DataTmps, erro
 					Date:          d.DataDatetime.Format("02/01/2006"),
 					Time:          d.DataDatetime.Format("15:04"),
 					BayId:         d.BayId,
-					Kv:            d.VoltageBC,
+					Vab:           d.VoltageAB,
+					Vca:           d.VoltageCA,
+					Vbc:           d.VoltageBC,
 					CreatedAt:     d.CreatedAt,
 				})
 			}
@@ -63,7 +65,9 @@ func (s service) GetLatestData(bayId int, ttime time.Time) ([]dto.DataTmps, erro
 			Date:          d.DataDatetime.Format("02/01/2006"),
 			Time:          d.DataDatetime.Format("15:04"),
 			BayId:         d.BayId,
-			Kv:            d.VoltageBC,
+			Vab:           d.VoltageAB,
+			Vca:           d.VoltageCA,
+			Vbc:           d.VoltageBC,
 			CreatedAt:     d.CreatedAt,
 		})
 	}
@@ -102,7 +106,9 @@ func (s service) GetDataLatestMonthDayTime(ttime time.Time, bayId int, filter fi
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Kv:            data.VoltageBC,
+						Vab:           data.VoltageAB,
+						Vca:           data.VoltageCA,
+						Vbc:           data.VoltageBC,
 					})
 
 				}
@@ -129,7 +135,9 @@ func (s service) GetDataLatestMonthDayTime(ttime time.Time, bayId int, filter fi
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Kv:            data.VoltageBC,
+						Vab:           data.VoltageAB,
+						Vca:           data.VoltageCA,
+						Vbc:           data.VoltageBC,
 					})
 
 				}
@@ -160,7 +168,9 @@ func (s service) GetDataLatestMonthDayTime(ttime time.Time, bayId int, filter fi
 					Time:          data.DataDatetime.Format("15:04"),
 					BayId:         data.BayId,
 					CreatedAt:     data.CreatedAt,
-					Kv:            data.VoltageBC,
+					Vab:           data.VoltageAB,
+					Vca:           data.VoltageCA,
+					Vbc:           data.VoltageBC,
 				})
 			}
 		}
@@ -202,7 +212,9 @@ func (s service) GetDataLatestMonthNightTime(ttime time.Time, bayId int, filter 
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Kv:            data.VoltageBC,
+						Vab:           data.VoltageAB,
+						Vca:           data.VoltageCA,
+						Vbc:           data.VoltageBC,
 					})
 				}
 			} else {
@@ -230,7 +242,9 @@ func (s service) GetDataLatestMonthNightTime(ttime time.Time, bayId int, filter 
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Kv:            data.VoltageBC,
+						Vab:           data.VoltageAB,
+						Vca:           data.VoltageCA,
+						Vbc:           data.VoltageBC,
 					})
 				}
 			}
@@ -261,7 +275,9 @@ func (s service) GetDataLatestMonthNightTime(ttime time.Time, bayId int, filter 
 					Time:          data.DataDatetime.Format("15:04"),
 					BayId:         data.BayId,
 					CreatedAt:     data.CreatedAt,
-					Kv:            data.VoltageBC,
+					Vab:           data.VoltageAB,
+					Vca:           data.VoltageCA,
+					Vbc:           data.VoltageBC,
 				})
 			}
 		}
@@ -300,7 +316,9 @@ func (s service) GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter fi
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Kv:            data.VoltageBC,
+						Vab:           data.VoltageAB,
+						Vca:           data.VoltageCA,
+						Vbc:           data.VoltageBC,
 					})
 				}
 			} else {
@@ -324,7 +342,9 @@ func (s service) GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter fi
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Kv:            data.VoltageBC,
+						Vab:           data.VoltageAB,
+						Vca:           data.VoltageCA,
+						Vbc:           data.VoltageBC,
 					})
 				}
 			}
@@ -353,7 +373,9 @@ func (s service) GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter fi
 					Time:          data.DataDatetime.Format("15:04"),
 					BayId:         data.BayId,
 					CreatedAt:     data.CreatedAt,
-					Kv:            data.VoltageBC,
+					Vab:           data.VoltageAB,
+					Vca:           data.VoltageCA,
+					Vbc:           data.VoltageBC,
 				})
 			}
 		}
@@ -363,7 +385,7 @@ func (s service) GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter fi
 
 }
 
-func (s service) GetDataLatestYearPeakTime(ttime time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
+func (s service) GetDataLatestYearPeakTime(ttime *time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
 	var datas []dto.DataTmpsYear
 	for i := 0; i < 12; i++ {
 
@@ -373,6 +395,7 @@ func (s service) GetDataLatestYearPeakTime(ttime time.Time, bayId int, year int,
 				log.Println(err.Error(), 1)
 			}
 			if data != nil {
+				ttime = &data.DataDatetime
 				datas = append(datas, dto.DataTmpsYear{
 					Id:            data.Id,
 					Month:         data.DataDatetime.Format("Jan"),
@@ -386,7 +409,9 @@ func (s service) GetDataLatestYearPeakTime(ttime time.Time, bayId int, year int,
 					PowerFactor:   data.PowerFactor,
 					CreatedAt:     data.CreatedAt,
 					BayId:         data.BayId,
-					Kv:            data.VoltageBC,
+					Vab:           data.VoltageAB,
+					Vbc:           data.VoltageBC,
+					Vca:           data.VoltageCA,
 				})
 			}
 		} else {
@@ -409,7 +434,9 @@ func (s service) GetDataLatestYearPeakTime(ttime time.Time, bayId int, year int,
 					PowerFactor:   data.PowerFactor,
 					CreatedAt:     data.CreatedAt,
 					BayId:         data.BayId,
-					Kv:            data.VoltageBC,
+					Vab:           data.VoltageAB,
+					Vbc:           data.VoltageBC,
+					Vca:           data.VoltageCA,
 				})
 			}
 		}
@@ -419,7 +446,7 @@ func (s service) GetDataLatestYearPeakTime(ttime time.Time, bayId int, year int,
 
 }
 
-func (s service) GetDataLatestYearLightTime(ttime time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
+func (s service) GetDataLatestYearLightTime(ttime *time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error) {
 
 	var datas []dto.DataTmpsYear
 
@@ -431,7 +458,7 @@ func (s service) GetDataLatestYearLightTime(ttime time.Time, bayId int, year int
 				log.Println(err.Error(), 3)
 			}
 			if data != nil {
-				log.Println("power =", data.PowerFactor)
+				ttime = &data.DataDatetime
 				datas = append(datas, dto.DataTmpsYear{
 					Id:            data.Id,
 					Month:         data.DataDatetime.Format("Jan"),
@@ -445,7 +472,9 @@ func (s service) GetDataLatestYearLightTime(ttime time.Time, bayId int, year int
 					PowerFactor:   data.PowerFactor,
 					CreatedAt:     data.CreatedAt,
 					BayId:         data.BayId,
-					Kv:            data.VoltageBC,
+					Vab:           data.VoltageAB,
+					Vbc:           data.VoltageBC,
+					Vca:           data.VoltageCA,
 				})
 			}
 		} else {
@@ -468,7 +497,9 @@ func (s service) GetDataLatestYearLightTime(ttime time.Time, bayId int, year int
 					PowerFactor:   data.PowerFactor,
 					CreatedAt:     data.CreatedAt,
 					BayId:         data.BayId,
-					Kv:            data.VoltageBC,
+					Vab:           data.VoltageAB,
+					Vbc:           data.VoltageBC,
+					Vca:           data.VoltageCA,
 				})
 			}
 		}
@@ -488,7 +519,6 @@ func (s service) GetAllBayByStationId(config config.Config, stationId int) ([]en
 		if bay.Name == "TP1" || bay.Name == "TP2" {
 			bay.Name = "line " + config.LINE_KV + "/" + bay.Name
 		}
-		log.Println("bayName = ", bay.Name)
 		bays = append(bays, entity.Bay{
 			Id:           bay.Id,
 			Name:         bay.Name,

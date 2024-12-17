@@ -10,7 +10,9 @@ type MonthlyRowData struct {
 type MonthlyData struct {
 	Date string
 	Time string
-	Kv   float32
+	Vab  float32
+	Vbc  float32
+	Vca  float32
 	Ia   float32
 	Ib   float32
 	Ic   float32

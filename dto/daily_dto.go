@@ -8,7 +8,9 @@ type DataTmps struct {
 	CurrentPhaseB float32
 	CurrentPhaseC float32
 	ActivePower   float32
-	Kv            float32
+	Vab           float32
+	Vbc           float32
+	Vca           float32
 	ReactivePower float32
 	PowerFactor   float32
 	Date          string
@@ -22,7 +24,9 @@ type DataTmpsYear struct {
 	CurrentPhaseA float32
 	CurrentPhaseB float32
 	CurrentPhaseC float32
-	Kv            float32
+	Vab           float32
+	Vbc           float32
+	Vca           float32
 	ActivePower   float32
 	ReactivePower float32
 	PowerFactor   float32

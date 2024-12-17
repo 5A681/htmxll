@@ -88,7 +88,7 @@ func main() {
 		bayName = ""
 		stationId = 0
 		bayId = 0
-		ttime = time.Time{}
+		ttime = time.Now()
 		return c.Render(200, "index", nil)
 	})
 	e.GET("/monthly", func(c echo.Context) error {

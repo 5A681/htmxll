@@ -26,7 +26,7 @@ func NewExportExcel(excel *excelize.File) ExportExcel {
 func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmpsYear, fileName string, sheetName string, title string, subStation string, bay string, timeTitle string) error {
 	index, _ := excel.NewSheet(sheetName)
 	// Set table headers
-	headers := []string{"Month", "Date", "Time", "Vbc (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (PW)", "Q (MVAR)", "PF (%)"}
+	headers := []string{"Month", "Date", "Time", "Vab (kV)", "Vbc (kV)", "Vca (kV)", "Ia (A)", "Ib (A)", "Ic (A)", "P (PW)", "Q (MVAR)", "PF (%)"}
 	for i, header := range headers {
 		cell := string(rune('A'+i)) + "8" // A1, B1, C1, etc.
 		excel.SetCellValue(sheetName, cell, header)
@@ -68,36 +68,40 @@ func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmp
 		cell = "C" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.Time)
 		cell = "D" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, data.Kv)
+		excel.SetCellValue(sheetName, cell, data.Vab)
 		cell = "E" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, data.CurrentPhaseA)
+		excel.SetCellValue(sheetName, cell, data.Vbc)
 		cell = "F" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, data.CurrentPhaseB)
+		excel.SetCellValue(sheetName, cell, data.Vca)
 		cell = "G" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, data.CurrentPhaseC)
+		excel.SetCellValue(sheetName, cell, data.CurrentPhaseA)
 		cell = "H" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, data.ActivePower)
+		excel.SetCellValue(sheetName, cell, data.CurrentPhaseB)
 		cell = "I" + fmt.Sprintf("%d", 9+row)
-		excel.SetCellValue(sheetName, cell, data.ReactivePower)
+		excel.SetCellValue(sheetName, cell, data.CurrentPhaseC)
 		cell = "J" + fmt.Sprintf("%d", 9+row)
+		excel.SetCellValue(sheetName, cell, data.ActivePower)
+		cell = "K" + fmt.Sprintf("%d", 9+row)
+		excel.SetCellValue(sheetName, cell, data.ReactivePower)
+		cell = "L" + fmt.Sprintf("%d", 9+row)
 		excel.SetCellValue(sheetName, cell, data.PowerFactor)
 	}
 
-	if err := excel.MergeCell(sheetName, "A4", "J4"); err != nil {
+	if err := excel.MergeCell(sheetName, "A4", "L4"); err != nil {
 		return err
 	}
-	if err := excel.MergeCell(sheetName, "A5", "J5"); err != nil {
+	if err := excel.MergeCell(sheetName, "A5", "L5"); err != nil {
 		return err
 	}
-	if err := excel.MergeCell(sheetName, "A6", "J6"); err != nil {
+	if err := excel.MergeCell(sheetName, "A6", "L6"); err != nil {
 		return err
 	}
-	if err := excel.MergeCell(sheetName, "A7", "J7"); err != nil {
+	if err := excel.MergeCell(sheetName, "A7", "L7"); err != nil {
 		return err
 	}
 
 	// Define the table range
-	tableRange := "A8:J56" // Includes headers and data
+	tableRange := "A8:L56" // Includes headers and data
 
 	// Create a table with the defined range
 	disable := true
@@ -136,7 +140,7 @@ func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmp
 		return err
 	}
 
-	if err := excel.SetColWidth(sheetName, "A", "J", 15); err != nil {
+	if err := excel.SetColWidth(sheetName, "A", "L", 15); err != nil {
 		return err
 	}
 
@@ -153,7 +157,7 @@ func (e exportExcel) CreateSheetYearly(excel *excelize.File, datas []dto.DataTmp
 		return err
 	}
 	// Apply bold borders to all sides
-	err = excel.SetCellStyle(sheetName, "A6", "J56", stypeId)
+	err = excel.SetCellStyle(sheetName, "A6", "L56", stypeId)
 	if err != nil {
 		return err
 	}
@@ -191,28 +195,28 @@ func (e exportExcel) ExportExcelMonthly(items []dto.MonthlyRowData, fileName str
 	sheetName := "Sheet1"
 
 	index, _ := f.NewSheet(sheetName)
-	if err := f.MergeCell(sheetName, "B7", "I7"); err != nil {
+	if err := f.MergeCell(sheetName, "B7", "K7"); err != nil {
 		return err
 	}
-	if err := f.MergeCell(sheetName, "J7", "Q7"); err != nil {
+	if err := f.MergeCell(sheetName, "L7", "U7"); err != nil {
 		return err
 	}
-	if err := f.MergeCell(sheetName, "R7", "Y7"); err != nil {
+	if err := f.MergeCell(sheetName, "V7", "AE7"); err != nil {
 		return err
 	}
 
-	if err := f.MergeCell(sheetName, "A4", "Y4"); err != nil {
+	if err := f.MergeCell(sheetName, "A4", "AE4"); err != nil {
 		return err
 	}
-	if err := f.MergeCell(sheetName, "A5", "Y5"); err != nil {
+	if err := f.MergeCell(sheetName, "A5", "AE5"); err != nil {
 		return err
 	}
-	if err := f.MergeCell(sheetName, "A6", "Y6"); err != nil {
+	if err := f.MergeCell(sheetName, "A6", "AE6"); err != nil {
 		return err
 	}
 
 	//Define the table range
-	tableRange := "A8:Y24" // Includes headers and data
+	tableRange := "A8:AE26" // Includes headers and data
 
 	//Create a table with the defined range
 	disable := true
@@ -236,18 +240,23 @@ func (e exportExcel) ExportExcelMonthly(items []dto.MonthlyRowData, fileName str
 	f.SetCellValue(sheetName, "R7", headers[3])
 	f.SetCellValue(sheetName, "A8", "TP2/25MVA")
 
-	subheaders := []string{"Date", "Time", "Vbc", "Ia", "Ib", "Ic", "MW", "MVAR"}
+	subheaders := []string{"Date", "Time", "Vab", "Vbc", "Vca", "Ia", "Ib", "Ic", "MW", "MVAR"}
 	for j, sub := range subheaders {
 		cell := string(rune('B'+j)) + "8" // A1, B1, C1, etc.
 		f.SetCellValue(sheetName, cell, sub)
 	}
 	for j, sub := range subheaders {
-		cell := string(rune('J'+j)) + "8" // A1, B1, C1, etc.
+		cell := string(rune('L'+j)) + "8" // A1, B1, C1, etc.
 		f.SetCellValue(sheetName, cell, sub)
 	}
 	for j, sub := range subheaders {
-		cell := string(rune('R'+j)) + "8" // A1, B1, C1, etc.
+		cell := string(rune('V'+j)) + "8" // A1, B1, C1, etc.
 		f.SetCellValue(sheetName, cell, sub)
+		if j >= 5 {
+			j -= 5
+			cell := "A" + string(rune('A'+j)) + "8"
+			f.SetCellValue(sheetName, cell, sub)
+		}
 	}
 
 	for row, data := range items {
@@ -259,50 +268,62 @@ func (e exportExcel) ExportExcelMonthly(items []dto.MonthlyRowData, fileName str
 		cell = "C" + fmt.Sprintf("%d", 9+row)
 		f.SetCellValue(sheetName, cell, data.PeakDay.Time)
 		cell = "D" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakDay.Kv)
+		f.SetCellValue(sheetName, cell, data.PeakDay.Vab)
 		cell = "E" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakDay.Ia)
+		f.SetCellValue(sheetName, cell, data.PeakDay.Vbc)
 		cell = "F" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakDay.Ib)
+		f.SetCellValue(sheetName, cell, data.PeakDay.Vca)
 		cell = "G" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakDay.Ic)
+		f.SetCellValue(sheetName, cell, data.PeakDay.Ia)
 		cell = "H" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakDay.Mw)
+		f.SetCellValue(sheetName, cell, data.PeakDay.Ib)
 		cell = "I" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.PeakDay.Ic)
+		cell = "J" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.PeakDay.Mw)
+		cell = "K" + fmt.Sprintf("%d", 9+row)
 		f.SetCellValue(sheetName, cell, data.PeakDay.Mvar)
 
-		cell = "J" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakNight.Date)
-		cell = "K" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakNight.Time)
 		cell = "L" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakNight.Kv)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Date)
 		cell = "M" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakNight.Ia)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Time)
 		cell = "N" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakNight.Ib)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Vab)
 		cell = "O" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakNight.Ic)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Vbc)
 		cell = "P" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.PeakNight.Mw)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Vca)
 		cell = "Q" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Ia)
+		cell = "R" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Ib)
+		cell = "S" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Ic)
+		cell = "T" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.PeakNight.Mw)
+		cell = "U" + fmt.Sprintf("%d", 9+row)
 		f.SetCellValue(sheetName, cell, data.PeakNight.Mvar)
 
-		cell = "R" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.AllLow.Date)
-		cell = "S" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.AllLow.Time)
-		cell = "T" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.AllLow.Kv)
-		cell = "U" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.AllLow.Ia)
 		cell = "V" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.AllLow.Ib)
+		f.SetCellValue(sheetName, cell, data.AllLow.Date)
 		cell = "W" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.AllLow.Ic)
+		f.SetCellValue(sheetName, cell, data.AllLow.Time)
 		cell = "X" + fmt.Sprintf("%d", 9+row)
-		f.SetCellValue(sheetName, cell, data.AllLow.Mw)
+		f.SetCellValue(sheetName, cell, data.AllLow.Vab)
 		cell = "Y" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.AllLow.Vbc)
+		cell = "Z" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.AllLow.Vca)
+		cell = "AA" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.AllLow.Ia)
+		cell = "AB" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.AllLow.Ib)
+		cell = "AC" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.AllLow.Ic)
+		cell = "AD" + fmt.Sprintf("%d", 9+row)
+		f.SetCellValue(sheetName, cell, data.AllLow.Mw)
+		cell = "AE" + fmt.Sprintf("%d", 9+row)
 		f.SetCellValue(sheetName, cell, data.AllLow.Mvar)
 
 	}
@@ -368,7 +389,7 @@ func (e exportExcel) ExportExcelMonthly(items []dto.MonthlyRowData, fileName str
 		return err
 	}
 	// Apply bold borders to all sides
-	err = f.SetCellStyle(sheetName, "A6", "Y24", stypeId)
+	err = f.SetCellStyle(sheetName, "A6", "AE26", stypeId)
 	if err != nil {
 		return err
 	}
@@ -445,33 +466,37 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string,
 		cell = "B" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.Time)
 		cell = "C" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, data.Kv)
+		e.excel.SetCellValue(sheetName, cell, data.Vab)
 		cell = "D" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseA)
+		e.excel.SetCellValue(sheetName, cell, data.Vbc)
 		cell = "E" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseB)
+		e.excel.SetCellValue(sheetName, cell, data.Vca)
 		cell = "F" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseC)
+		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseA)
 		cell = "G" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, data.ActivePower)
+		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseB)
 		cell = "H" + fmt.Sprintf("%d", 8+row)
-		e.excel.SetCellValue(sheetName, cell, data.ReactivePower)
+		e.excel.SetCellValue(sheetName, cell, data.CurrentPhaseC)
 		cell = "I" + fmt.Sprintf("%d", 8+row)
+		e.excel.SetCellValue(sheetName, cell, data.ActivePower)
+		cell = "J" + fmt.Sprintf("%d", 8+row)
+		e.excel.SetCellValue(sheetName, cell, data.ReactivePower)
+		cell = "K" + fmt.Sprintf("%d", 8+row)
 		e.excel.SetCellValue(sheetName, cell, data.PowerFactor)
 	}
 
-	if err := e.excel.MergeCell(sheetName, "A4", "I4"); err != nil {
+	if err := e.excel.MergeCell(sheetName, "A4", "K4"); err != nil {
 		return err
 	}
-	if err := e.excel.MergeCell(sheetName, "A5", "I5"); err != nil {
+	if err := e.excel.MergeCell(sheetName, "A5", "K5"); err != nil {
 		return err
 	}
-	if err := e.excel.MergeCell(sheetName, "A6", "I6"); err != nil {
+	if err := e.excel.MergeCell(sheetName, "A6", "K6"); err != nil {
 		return err
 	}
 
 	// Define the table range
-	tableRange := "A7:I55" // Includes headers and data
+	tableRange := "A7:K55" // Includes headers and data
 
 	// Create a table with the defined range
 	disable := true
@@ -510,7 +535,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string,
 		return err
 	}
 
-	if err := e.excel.SetColWidth(sheetName, "A", "I", 15); err != nil {
+	if err := e.excel.SetColWidth(sheetName, "A", "K", 15); err != nil {
 		return err
 	}
 
@@ -527,7 +552,7 @@ func (e exportExcel) ExportExcelDaily(dailyData []dto.DataTmps, fileName string,
 		return err
 	}
 	// Apply bold borders to all sides
-	err = e.excel.SetCellStyle(sheetName, "A6", "I55", stypeId)
+	err = e.excel.SetCellStyle(sheetName, "A6", "K55", stypeId)
 	if err != nil {
 		return err
 	}

@@ -18,9 +18,9 @@ func (s repository) GetDataTmpsById(id int) (*entity.DataTmps, error) {
 }
 func (s repository) CreateDataTmep(data entity.DataTmps) error {
 	sqlCreate := `insert into data_tmps (current_phase_a,current_phase_b,current_phase_c,
-	active_power,reactive_power,power_factor,data_datetime,created_at,bay_id,voltage_bc) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`
+	active_power,reactive_power,power_factor,data_datetime,created_at,bay_id,voltage_bc,voltage_ab,voltage_ca) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`
 	_, err := s.db.Exec(sqlCreate, data.CurrentPhaseA, data.CurrentPhaseB, data.CurrentPhaseC, data.ActivePower, data.ReactivePower,
-		data.PowerFactor, data.DataDatetime, data.CreatedAt, data.BayId, data.VoltageBC)
+		data.PowerFactor, data.DataDatetime, data.CreatedAt, data.BayId, data.VoltageBC, data.VoltageBC, data.VoltageCA)
 	if err != nil {
 		return err
 	}
@@ -87,7 +87,6 @@ func (s repository) GetMinDataPerDayPerTime(bayId int, minTime time.Time, maxTim
 func (s repository) GetMaxDataPerMonth(bayId int, year int, month int) (*entity.DataTmps, error) {
 	var dataTemps entity.DataTmps
 	query := `select * from  data_tmps dt where dt.bay_id= $1 and EXTRACT(YEAR FROM dt.data_datetime) = $2 and EXTRACT(MONTH FROM dt.data_datetime) = $3 order  by active_power desc,data_datetime asc limit 1`
-	log.Println("this ", bayId)
 	err := s.db.Get(&dataTemps, query, bayId, year, month)
 	if err != nil {
 		return nil, err

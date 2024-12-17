@@ -14,8 +14,8 @@ type Service interface {
 	GetDataLatestMonthDayTime(ttime time.Time, bayId int, filter filter.SortData) ([]dto.DataTmps, error)
 	GetDataLatestMonthNightTime(ttime time.Time, bayId int, filter filter.SortData) ([]dto.DataTmps, error)
 	GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter filter.SortData) ([]dto.DataTmps, error)
-	GetDataLatestYearPeakTime(ttime time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
-	GetDataLatestYearLightTime(ttime time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
+	GetDataLatestYearPeakTime(ttime *time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
+	GetDataLatestYearLightTime(ttime *time.Time, bayId int, year int, filter filter.SortData) ([]dto.DataTmpsYear, error)
 	GetAllBay() ([]entity.Bay, error)
 	GetAllBayByStationId(config config.Config, stationId int) ([]entity.Bay, error)
 	GetAllSubStation() ([]entity.SubStation, error)
@@ -23,7 +23,7 @@ type Service interface {
 	GetBayById(bayId int) (*entity.Bay, error)
 	GetSubStationById(sId int) (*entity.SubStation, error)
 	GetLatestYear() (int, error)
-	GetRowsMonthlyData(config config.Config, ttime time.Time) ([]dto.MonthlyRowData, error)
+	GetRowsMonthlyData(config config.Config, bayId int, ttime *time.Time) ([]dto.MonthlyRowData, error)
 }
 
 type service struct {

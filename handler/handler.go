@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"htmxll/config"
+	"htmxll/entity"
 	"htmxll/filter"
 	"htmxll/services"
 	"log"
@@ -138,8 +139,6 @@ func (h handler) GetDailyReport(c echo.Context) error {
 				if err != nil {
 					log.Println("error time", err, *h.time)
 				}
-			} else {
-				*h.time = time.Now()
 			}
 
 			response["DailyData"] = data
@@ -147,14 +146,20 @@ func (h handler) GetDailyReport(c echo.Context) error {
 		} else if *h.timeSpace == "monthly" {
 			return h.GetRowsMonthlyData(c)
 		} else if *h.timeSpace == "yearly" {
-			peak, err := h.srv.GetDataLatestYearPeakTime(*h.time, *h.bayId, 2024, filter.SortData{})
+			peak, err := h.srv.GetDataLatestYearPeakTime(h.time, *h.bayId, 2024, filter.SortData{})
 			if err != nil {
 				return c.Render(200, "yearly", response)
 			}
-			light, err := h.srv.GetDataLatestYearLightTime(*h.time, *h.bayId, 2024, filter.SortData{})
+			light, err := h.srv.GetDataLatestYearLightTime(h.time, *h.bayId, 2024, filter.SortData{})
 			if err != nil {
 				log.Println("error = ", err)
 				return c.Render(200, "yearly", response)
+			}
+			if peak != nil {
+			} else if light != nil {
+
+			} else {
+
 			}
 			response["YearlyData"] = map[string]interface{}{"Peak": peak, "Light": light}
 			return c.Render(200, "yearly", response)
@@ -234,14 +239,6 @@ func (h handler) GetBayList(c echo.Context) error {
 
 		}
 	}
-	if *h.timeSpace == "monthly" {
-		return c.String(200, `<select 
-    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " disabled
-    hx-get="/data" hx-target="#content" name="bay" hx-trigger="change" hx-swap="innerHTML">
-<option selected >Choose Bay</option>
-   
-</select>`)
-	}
 
 	res, err := h.srv.GetAllBayByStationId(h.config, *h.stationId)
 	if err != nil {
@@ -253,8 +250,15 @@ func (h handler) GetBayList(c echo.Context) error {
 		}
 		return c.Render(200, "bay-list", data)
 	}
-	if *h.bayName == "" {
+	if *h.bayName == "" && *h.timeSpace != "monthly" && *h.timeSpace != "" {
 		*h.bayName = "Choose Bays"
+	} else if *h.timeSpace == "monthly" {
+		if *h.bayName == "" {
+			*h.bayName = "All"
+		}
+	}
+	if *h.timeSpace == "monthly" {
+		res = append(res, entity.Bay{Id: 0, Name: "All"})
 	}
 	data := map[string]interface{}{
 		"Data": res,
@@ -276,22 +280,22 @@ func (h handler) GetStationList(c echo.Context) error {
 }
 
 func (h handler) GetRowsMonthlyData(c echo.Context) error {
-	res, err := h.srv.GetRowsMonthlyData(h.config, *h.time)
+	res, err := h.srv.GetRowsMonthlyData(h.config, *h.bayId, h.time)
 	if err != nil {
 
 		return c.Render(200, "monthly-rows", res)
 	}
-	if len(res) > 0 {
-		dataTime, err := time.Parse("02-01-2006", res[0].PeakDay.Date)
-		if err != nil {
-			log.Println("error time this", err, *h.time)
-			dataTime, err = time.Parse("02/01/2006", res[0].PeakDay.Date)
-			log.Println("error time this", err, *h.time)
-		}
-		if !dataTime.IsZero() {
-			*h.time = dataTime
-		}
-	}
+	// if len(res) > 0 {
+	// 	dataTime, err := time.Parse("02-01-2006", res[0].PeakDay.Date)
+	// 	if err != nil {
+	// 		log.Println("error time this", err, *h.time)
+	// 		dataTime = time.Now()
+	// 		log.Println("error time this", err, *h.time)
+	// 	}
+	// 	if !dataTime.IsZero() {
+	// 		*h.time = dataTime
+	// 	}
+	// }
 	return c.Render(200, "monthly-rows", res)
 }
 
@@ -345,7 +349,7 @@ func (h handler) ExportPdf(c echo.Context) error {
 		return c.Blob(http.StatusOK, "application/pdf", buf.Bytes())
 	} else if *h.timeSpace == "monthly" {
 
-		data, err := h.srv.GetRowsMonthlyData(h.config, *h.time)
+		data, err := h.srv.GetRowsMonthlyData(h.config, *h.bayId, h.time)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -365,12 +369,12 @@ func (h handler) ExportPdf(c echo.Context) error {
 		return c.Blob(http.StatusOK, "application/pdf", buf.Bytes())
 	}
 
-	peak, err := h.srv.GetDataLatestYearPeakTime(*h.time, *h.bayId, 2024, filter.SortData{})
+	peak, err := h.srv.GetDataLatestYearPeakTime(h.time, *h.bayId, 2024, filter.SortData{})
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
 	}
-	light, err := h.srv.GetDataLatestYearLightTime(*h.time, *h.bayId, 2024, filter.SortData{})
+	light, err := h.srv.GetDataLatestYearLightTime(h.time, *h.bayId, 2024, filter.SortData{})
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
@@ -408,7 +412,7 @@ func (h handler) ExportExcel(c echo.Context) error {
 		defer os.Remove("test.xlsx")
 		return c.Attachment("test.xlsx", fileName)
 	} else if *h.timeSpace == "monthly" {
-		data, err := h.srv.GetRowsMonthlyData(h.config, *h.time)
+		data, err := h.srv.GetRowsMonthlyData(h.config, *h.bayId, h.time)
 		if err != nil {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
@@ -423,12 +427,12 @@ func (h handler) ExportExcel(c echo.Context) error {
 		defer os.Remove("test.xlsx")
 		return c.Attachment("test.xlsx", fileName)
 	}
-	peak, err := h.srv.GetDataLatestYearPeakTime(*h.time, *h.bayId, 2024, filter.SortData{})
+	peak, err := h.srv.GetDataLatestYearPeakTime(h.time, *h.bayId, 2024, filter.SortData{})
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
 	}
-	light, err := h.srv.GetDataLatestYearLightTime(*h.time, *h.bayId, 2024, filter.SortData{})
+	light, err := h.srv.GetDataLatestYearLightTime(h.time, *h.bayId, 2024, filter.SortData{})
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)

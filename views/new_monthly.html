@@ -35,22 +35,22 @@
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
                         <tr>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center " colspan="8">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center " colspan="10">
                                 <span
                                     class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
-                                    ALL DAY PEAK LOAD</span>
+                                    DAY TIME PEAK</span>
 
                             </th>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="10">
                                 <span
-                                    class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">ALL
-                                    NIGHT LOW LOAD</span>
+                                    class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
+                                    NIGHT TIME PEAK</span>
 
                             </th>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="9">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="11">
                                 <span
-                                    class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">FULL
-                                    DAY LOW LOAD</span>
+                                    class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
+                                    DAY&NIGHT LIGHT LOAD</span>
 
                             </th>
                         </tr>
@@ -59,7 +59,7 @@
                                 08:00-15:30
                             </th>
                             <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
-                                16:00-23:30
+                                00:00-07:30,16:00-23:30
                             </th>
                             <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="9">
                                 00:00-23:30
@@ -79,7 +79,13 @@
                             </th>
 
                             <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                VBC (kV)
+                                Vab (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-">
+                                Vbc (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                                Vca (kV)
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Ia
@@ -104,7 +110,13 @@
                             </th>
 
                             <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                VBC (kV)
+                                Vab (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-">
+                                Vbc (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                                Vca (kV)
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Ia
@@ -129,7 +141,13 @@
                             </th>
 
                             <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                kV
+                                Vab (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-">
+                                Vbc (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                                Vca (kV)
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Ia
@@ -163,7 +181,13 @@
                                 {{ .PeakDay.Time }}
                             </td>
                             <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .PeakDay.Kv }}
+                                {{ .PeakDay.Vab }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ .PeakDay.Vbc }}
+                            </td>
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                                {{ .PeakDay.Vca }}
                             </td>
                             <td class="px-6 py-4 ">
                                 {{ .PeakDay.Ia }}
@@ -189,7 +213,13 @@
                                 {{ .PeakNight.Time }}
                             </td>
                             <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .PeakNight.Kv }}
+                                {{ .PeakDay.Vab }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ .PeakDay.Vbc }}
+                            </td>
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                                {{ .PeakDay.Vca }}
                             </td>
                             <td class="px-6 py-4 ">
                                 {{ .PeakNight.Ia }}
@@ -214,8 +244,14 @@
                             <td class="px-6 py-4">
                                 {{ .AllLow.Time }}
                             </td>
+                           <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                                {{ .PeakDay.Vab }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ .PeakDay.Vbc }}
+                            </td>
                             <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .AllLow.Kv }}
+                                {{ .PeakDay.Vca }}
                             </td>
                             <td class="px-6 py-4 ">
                                 {{ .AllLow.Ia }}
@@ -360,7 +396,7 @@
                 <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
                     <tr>
                         <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
-                            16:00-23:30
+                            00:00-07:30,16:00-23:30
                         </th>
                     </tr>
                     <tr>

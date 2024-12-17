@@ -30,7 +30,13 @@
                         Time
                     </th>
                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Vab (kV)
+                    </th>
+                    <th scope="col" class="px-6 py-3">
                         Vbc (kV)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Vca (kV)
                     </th>
                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
                         Ia (A)
@@ -67,7 +73,13 @@
                     </td>
 
                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        {{.Kv}}
+                        {{.Vab}}
+                    </td>
+                     <td class="px-6 py-4">
+                        {{.Vbc}}
+                    </td>
+                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                        {{.Vca}}
                     </td>
 
                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
@@ -110,7 +122,13 @@
                         Time
                     </th>
                     <th scope="col" class="px-6 py-3 ">
+                        Vab (kV)
+                    </th>
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
                         Vbc (kV)
+                    </th>
+                    <th scope="col" class="px-6 py-3 ">
+                        Vca (kV)
                     </th>
                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
                         Ia (A)
@@ -146,7 +164,13 @@
                         {{ .Time }}
                     </td>
                     <td class="px-6 py-4 ">
-                        {{ .Kv}}
+                        {{ .Vab}}
+                    </td>
+                    <td class="px-6 py-4 dark:bg-gray-800">
+                        {{ .Vbc}}
+                    </td>
+                    <td class="px-6 py-4 ">
+                        {{ .Vca}}
                     </td>
 
                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">

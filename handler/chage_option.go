@@ -34,7 +34,7 @@ func (h handler) GetDateTimePickerFormat(c echo.Context) error {
 	defaultMonth := h.time.Format("2006-01")
 	defaultYear := h.time.Format("2006")
 	_ = defaultTime
-	log.Println("defualt time = ", defaultTime)
+	log.Println("defualt time = ", defaultYear)
 
 	log.Println("defualt month", defaultMonth, "oldtime", *h.time)
 	if *h.timeSpace == "daily" || *h.timeSpace == "" {

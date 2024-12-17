@@ -177,6 +177,128 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 
 			//fmt.Printf("\n\n")
 		}
+	} else if ws.Row(2).Col(2) == "BUS VOLTAGE A-B" {
+		for r := 5; r < maxRow; r++ {
+
+			if ws.Row(r).Col(0) != "" {
+
+				tempData := entity.DataTmps{
+					BayId: bay.Id,
+				}
+				for c := 0; c < maxCol; c++ {
+
+					if c == 0 {
+
+						//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
+						dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
+						if dateTime != nil {
+							tempData.DataDatetime = *dateTime
+						}
+					}
+
+					if c == 2 || c == 4 || c == 6 {
+						//fmt.Printf("%v \t", ws.Row(r).Col(c))
+						if c > 6 {
+							continue
+						} else if c == 2 {
+
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.VoltageAB = 0
+							} else {
+								tempData.VoltageAB = float32(floatData)
+							}
+
+						} else if c == 4 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.VoltageBC = 0
+							} else {
+								tempData.VoltageBC = float32(floatData)
+							}
+						} else if c == 6 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.VoltageCA = 0
+							} else {
+								tempData.VoltageCA = float32(floatData)
+							}
+						}
+					} else {
+						continue
+					}
+
+				}
+				tempData.CreatedAt = time.Now()
+				err := dataTempRepo.CreateDataTmep(tempData)
+				if err != nil {
+					log.Println("could not insrt temp data", err.Error())
+				}
+			}
+
+			//fmt.Printf("\n\n")
+		}
+	} else if ws.Row(2).Col(2) == "CURRENT PHASE A" {
+		for r := 5; r < maxRow; r++ {
+
+			if ws.Row(r).Col(0) != "" {
+
+				tempData := entity.DataTmps{
+					BayId: bay.Id,
+				}
+				for c := 0; c < maxCol; c++ {
+
+					if c == 0 {
+
+						//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
+						dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
+						if dateTime != nil {
+							tempData.DataDatetime = *dateTime
+						}
+					}
+
+					if c == 2 || c == 4 || c == 6 {
+						//fmt.Printf("%v \t", ws.Row(r).Col(c))
+						if c > 6 {
+							continue
+						} else if c == 2 {
+
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseA = 0
+							} else {
+								tempData.CurrentPhaseA = float32(floatData)
+							}
+
+						} else if c == 4 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseB = 0
+							} else {
+								tempData.CurrentPhaseB = float32(floatData)
+							}
+						} else if c == 6 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.CurrentPhaseC = 0
+							} else {
+								tempData.CurrentPhaseC = float32(floatData)
+							}
+						}
+					} else {
+						continue
+					}
+
+				}
+				tempData.CreatedAt = time.Now()
+				err := dataTempRepo.CreateDataTmep(tempData)
+				if err != nil {
+					log.Println("could not insrt temp data", err.Error())
+				}
+			}
+
+			//fmt.Printf("\n\n")
+		}
 	} else {
 		for r := 5; r < maxRow; r++ {
 
