@@ -3,7 +3,6 @@ module.exports = {
   mode: 'jit',
   content: [
     './views/*.html',
-    './**/*.go',
   ],
   theme: {
     extend: {},
