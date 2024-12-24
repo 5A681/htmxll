@@ -3,7 +3,6 @@ package handler
 import (
 	"fmt"
 	"htmxll/config"
-	"htmxll/entity"
 	"htmxll/filter"
 	"htmxll/services"
 	"log"
@@ -250,16 +249,10 @@ func (h handler) GetBayList(c echo.Context) error {
 		}
 		return c.Render(200, "bay-list", data)
 	}
-	if *h.bayName == "" && *h.timeSpace != "monthly" && *h.timeSpace != "" {
+	if *h.bayName == "" {
 		*h.bayName = "Choose Bays"
-	} else if *h.timeSpace == "monthly" {
-		if *h.bayName == "" {
-			*h.bayName = "All"
-		}
 	}
-	if *h.timeSpace == "monthly" {
-		res = append(res, entity.Bay{Id: 0, Name: "All"})
-	}
+
 	data := map[string]interface{}{
 		"Data": res,
 		"Name": *h.bayName,
@@ -380,7 +373,7 @@ func (h handler) ExportPdf(c echo.Context) error {
 		return c.String(200, ``)
 	}
 
-	buf, err := services.ExportPdfYearly(peak, light, *h.stationName, *h.bayName, h.config.EXPORT_HEADER)
+	buf, err := services.ExportPdfYearly(peak, light, *h.stationName, *h.bayName, h.config.EXPORT_HEADER, h.time.Year())
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
@@ -417,7 +410,6 @@ func (h handler) ExportExcel(c echo.Context) error {
 			log.Println("err:", err.Error())
 			return c.String(200, ``)
 		}
-
 		err = h.excel.ExportExcelMonthly(data, "test.xlsx", *h.stationName, *h.bayName, h.config.EXPORT_HEADER)
 		if err != nil {
 			log.Println("err:", err.Error())
@@ -437,8 +429,8 @@ func (h handler) ExportExcel(c echo.Context) error {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)
 	}
-
-	err = h.excel.ExportExcelYearly(peak, light, "test.xlsx", *h.stationName, *h.bayName)
+	log.Println("year === ", *h.year)
+	err = h.excel.ExportExcelYearly(peak, light, "test.xlsx", *h.stationName, *h.bayName, h.time.Year())
 	if err != nil {
 		log.Println("err:", err.Error())
 		return c.String(200, ``)

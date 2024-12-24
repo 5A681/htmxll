@@ -4,15 +4,15 @@ import "time"
 
 type DataTmps struct {
 	Id            int
-	CurrentPhaseA float32
-	CurrentPhaseB float32
-	CurrentPhaseC float32
-	ActivePower   float32
-	Vab           float32
-	Vbc           float32
-	Vca           float32
-	ReactivePower float32
-	PowerFactor   float32
+	CurrentPhaseA string
+	CurrentPhaseB string
+	CurrentPhaseC string
+	ActivePower   string
+	Vab           string
+	Vbc           string
+	Vca           string
+	ReactivePower string
+	PowerFactor   string
 	Date          string
 	Time          string
 	CreatedAt     time.Time
@@ -21,15 +21,15 @@ type DataTmps struct {
 
 type DataTmpsYear struct {
 	Id            int
-	CurrentPhaseA float32
-	CurrentPhaseB float32
-	CurrentPhaseC float32
-	Vab           float32
-	Vbc           float32
-	Vca           float32
-	ActivePower   float32
-	ReactivePower float32
-	PowerFactor   float32
+	CurrentPhaseA string
+	CurrentPhaseB string
+	CurrentPhaseC string
+	Vab           string
+	Vbc           string
+	Vca           string
+	ActivePower   string
+	ReactivePower string
+	PowerFactor   string
 	Month         string
 	Date          string
 	Time          string

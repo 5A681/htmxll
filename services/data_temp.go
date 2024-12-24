@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"htmxll/config"
 	"htmxll/dto"
 	"htmxll/entity"
@@ -18,28 +19,28 @@ func (s service) GetLatestData(bayId int, ttime time.Time) ([]dto.DataTmps, erro
 		}
 
 		if maxdate != nil {
-			data, err := s.repo.GetLatestDataByBayId(bayId, *maxdate)
+			datas, err := s.repo.GetLatestDataByBayId(bayId, *maxdate)
 			if err != nil {
 				return nil, err
 			}
 
 			var res []dto.DataTmps
-			for _, d := range data {
+			for _, data := range datas {
 				res = append(res, dto.DataTmps{
-					Id:            d.Id,
-					CurrentPhaseA: d.CurrentPhaseA,
-					CurrentPhaseB: d.CurrentPhaseB,
-					CurrentPhaseC: d.CurrentPhaseC,
-					ActivePower:   d.ActivePower,
-					ReactivePower: d.ReactivePower,
-					PowerFactor:   d.PowerFactor,
-					Date:          d.DataDatetime.Format("02/01/2006"),
-					Time:          d.DataDatetime.Format("15:04"),
-					BayId:         d.BayId,
-					Vab:           d.VoltageAB,
-					Vca:           d.VoltageCA,
-					Vbc:           d.VoltageBC,
-					CreatedAt:     d.CreatedAt,
+					Id:            data.Id,
+					CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+					CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+					CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+					ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+					ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+					PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
+					Date:          data.DataDatetime.Format("02/01/2006"),
+					Time:          data.DataDatetime.Format("15:04"),
+					BayId:         data.BayId,
+					CreatedAt:     data.CreatedAt,
+					Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+					Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+					Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 				})
 			}
 			return res, nil
@@ -47,28 +48,28 @@ func (s service) GetLatestData(bayId int, ttime time.Time) ([]dto.DataTmps, erro
 	}
 
 	maxdate := ttime
-	data, err := s.repo.GetLatestDataByBayId(bayId, maxdate)
+	datas, err := s.repo.GetLatestDataByBayId(bayId, maxdate)
 	if err != nil {
 		return nil, err
 	}
 
 	var res []dto.DataTmps
-	for _, d := range data {
+	for _, data := range datas {
 		res = append(res, dto.DataTmps{
-			Id:            d.Id,
-			CurrentPhaseA: d.CurrentPhaseA,
-			CurrentPhaseB: d.CurrentPhaseB,
-			CurrentPhaseC: d.CurrentPhaseC,
-			ActivePower:   d.ActivePower,
-			ReactivePower: d.ReactivePower,
-			PowerFactor:   d.PowerFactor,
-			Date:          d.DataDatetime.Format("02/01/2006"),
-			Time:          d.DataDatetime.Format("15:04"),
-			BayId:         d.BayId,
-			Vab:           d.VoltageAB,
-			Vca:           d.VoltageCA,
-			Vbc:           d.VoltageBC,
-			CreatedAt:     d.CreatedAt,
+			Id:            data.Id,
+			CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+			CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+			CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+			ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+			ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+			PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
+			Date:          data.DataDatetime.Format("02/01/2006"),
+			Time:          data.DataDatetime.Format("15:04"),
+			BayId:         data.BayId,
+			CreatedAt:     data.CreatedAt,
+			Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+			Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+			Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 		})
 	}
 	return res, nil
@@ -96,19 +97,19 @@ func (s service) GetDataLatestMonthDayTime(ttime time.Time, bayId int, filter fi
 				if data != nil {
 					res = append(res, dto.DataTmps{
 						Id:            data.Id,
-						CurrentPhaseA: data.CurrentPhaseA,
-						CurrentPhaseB: data.CurrentPhaseB,
-						CurrentPhaseC: data.CurrentPhaseC,
-						ActivePower:   data.ActivePower,
-						ReactivePower: data.ReactivePower,
-						PowerFactor:   data.PowerFactor,
+						CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+						CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+						CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+						ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+						ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+						PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 						Date:          data.DataDatetime.Format("02/01/2006"),
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Vab:           data.VoltageAB,
-						Vca:           data.VoltageCA,
-						Vbc:           data.VoltageBC,
+						Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+						Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+						Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 					})
 
 				}
@@ -125,19 +126,19 @@ func (s service) GetDataLatestMonthDayTime(ttime time.Time, bayId int, filter fi
 				if data != nil {
 					res = append(res, dto.DataTmps{
 						Id:            data.Id,
-						CurrentPhaseA: data.CurrentPhaseA,
-						CurrentPhaseB: data.CurrentPhaseB,
-						CurrentPhaseC: data.CurrentPhaseC,
-						ActivePower:   data.ActivePower,
-						ReactivePower: data.ReactivePower,
-						PowerFactor:   data.PowerFactor,
+						CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+						CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+						CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+						ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+						ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+						PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 						Date:          data.DataDatetime.Format("02/01/2006"),
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Vab:           data.VoltageAB,
-						Vca:           data.VoltageCA,
-						Vbc:           data.VoltageBC,
+						Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+						Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+						Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 					})
 
 				}
@@ -158,19 +159,19 @@ func (s service) GetDataLatestMonthDayTime(ttime time.Time, bayId int, filter fi
 			if data != nil {
 				res = append(res, dto.DataTmps{
 					Id:            data.Id,
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
+					CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+					CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+					CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+					ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+					ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+					PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 					Date:          data.DataDatetime.Format("02/01/2006"),
 					Time:          data.DataDatetime.Format("15:04"),
 					BayId:         data.BayId,
 					CreatedAt:     data.CreatedAt,
-					Vab:           data.VoltageAB,
-					Vca:           data.VoltageCA,
-					Vbc:           data.VoltageBC,
+					Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+					Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+					Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 				})
 			}
 		}
@@ -202,19 +203,19 @@ func (s service) GetDataLatestMonthNightTime(ttime time.Time, bayId int, filter 
 				if data != nil {
 					res = append(res, dto.DataTmps{
 						Id:            data.Id,
-						CurrentPhaseA: data.CurrentPhaseA,
-						CurrentPhaseB: data.CurrentPhaseB,
-						CurrentPhaseC: data.CurrentPhaseC,
-						ActivePower:   data.ActivePower,
-						ReactivePower: data.ReactivePower,
-						PowerFactor:   data.PowerFactor,
+						CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+						CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+						CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+						ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+						ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+						PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 						Date:          data.DataDatetime.Format("02/01/2006"),
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Vab:           data.VoltageAB,
-						Vca:           data.VoltageCA,
-						Vbc:           data.VoltageBC,
+						Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+						Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+						Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 					})
 				}
 			} else {
@@ -232,19 +233,19 @@ func (s service) GetDataLatestMonthNightTime(ttime time.Time, bayId int, filter 
 				if data != nil {
 					res = append(res, dto.DataTmps{
 						Id:            data.Id,
-						CurrentPhaseA: data.CurrentPhaseA,
-						CurrentPhaseB: data.CurrentPhaseB,
-						CurrentPhaseC: data.CurrentPhaseC,
-						ActivePower:   data.ActivePower,
-						ReactivePower: data.ReactivePower,
-						PowerFactor:   data.PowerFactor,
+						CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+						CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+						CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+						ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+						ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+						PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 						Date:          data.DataDatetime.Format("02/01/2006"),
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Vab:           data.VoltageAB,
-						Vca:           data.VoltageCA,
-						Vbc:           data.VoltageBC,
+						Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+						Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+						Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 					})
 				}
 			}
@@ -265,19 +266,19 @@ func (s service) GetDataLatestMonthNightTime(ttime time.Time, bayId int, filter 
 			if data != nil {
 				res = append(res, dto.DataTmps{
 					Id:            data.Id,
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
+					CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+					CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+					CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+					ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+					ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+					PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 					Date:          data.DataDatetime.Format("02/01/2006"),
 					Time:          data.DataDatetime.Format("15:04"),
 					BayId:         data.BayId,
 					CreatedAt:     data.CreatedAt,
-					Vab:           data.VoltageAB,
-					Vca:           data.VoltageCA,
-					Vbc:           data.VoltageBC,
+					Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+					Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+					Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 				})
 			}
 		}
@@ -306,19 +307,19 @@ func (s service) GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter fi
 				if data != nil {
 					res = append(res, dto.DataTmps{
 						Id:            data.Id,
-						CurrentPhaseA: data.CurrentPhaseA,
-						CurrentPhaseB: data.CurrentPhaseB,
-						CurrentPhaseC: data.CurrentPhaseC,
-						ActivePower:   data.ActivePower,
-						ReactivePower: data.ReactivePower,
-						PowerFactor:   data.PowerFactor,
+						CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+						CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+						CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+						ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+						ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+						PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 						Date:          data.DataDatetime.Format("02/01/2006"),
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Vab:           data.VoltageAB,
-						Vca:           data.VoltageCA,
-						Vbc:           data.VoltageBC,
+						Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+						Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+						Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 					})
 				}
 			} else {
@@ -332,19 +333,19 @@ func (s service) GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter fi
 				if data != nil {
 					res = append(res, dto.DataTmps{
 						Id:            data.Id,
-						CurrentPhaseA: data.CurrentPhaseA,
-						CurrentPhaseB: data.CurrentPhaseB,
-						CurrentPhaseC: data.CurrentPhaseC,
-						ActivePower:   data.ActivePower,
-						ReactivePower: data.ReactivePower,
-						PowerFactor:   data.PowerFactor,
+						CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+						CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+						CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+						ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+						ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+						PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 						Date:          data.DataDatetime.Format("02/01/2006"),
 						Time:          data.DataDatetime.Format("15:04"),
 						BayId:         data.BayId,
 						CreatedAt:     data.CreatedAt,
-						Vab:           data.VoltageAB,
-						Vca:           data.VoltageCA,
-						Vbc:           data.VoltageBC,
+						Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+						Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+						Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 					})
 				}
 			}
@@ -363,19 +364,19 @@ func (s service) GetDataLatestMonthAllTime(ttime time.Time, bayId int, filter fi
 			if data != nil {
 				res = append(res, dto.DataTmps{
 					Id:            data.Id,
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
+					CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+					CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+					CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+					ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+					ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+					PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 					Date:          data.DataDatetime.Format("02/01/2006"),
 					Time:          data.DataDatetime.Format("15:04"),
 					BayId:         data.BayId,
 					CreatedAt:     data.CreatedAt,
-					Vab:           data.VoltageAB,
-					Vca:           data.VoltageCA,
-					Vbc:           data.VoltageBC,
+					Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+					Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
+					Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
 				})
 			}
 		}
@@ -401,17 +402,17 @@ func (s service) GetDataLatestYearPeakTime(ttime *time.Time, bayId int, year int
 					Month:         data.DataDatetime.Format("Jan"),
 					Date:          data.DataDatetime.Format("02"),
 					Time:          data.DataDatetime.Format("15:04"),
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
+					CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+					CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+					CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+					ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+					ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+					PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 					CreatedAt:     data.CreatedAt,
 					BayId:         data.BayId,
-					Vab:           data.VoltageAB,
-					Vbc:           data.VoltageBC,
-					Vca:           data.VoltageCA,
+					Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+					Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
+					Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
 				})
 			}
 		} else {
@@ -426,17 +427,17 @@ func (s service) GetDataLatestYearPeakTime(ttime *time.Time, bayId int, year int
 					Month:         data.DataDatetime.Format("Jan"),
 					Date:          data.DataDatetime.Format("02"),
 					Time:          data.DataDatetime.Format("15:04"),
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
+					CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+					CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+					CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+					ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+					ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+					PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 					CreatedAt:     data.CreatedAt,
 					BayId:         data.BayId,
-					Vab:           data.VoltageAB,
-					Vbc:           data.VoltageBC,
-					Vca:           data.VoltageCA,
+					Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+					Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
+					Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
 				})
 			}
 		}
@@ -464,17 +465,17 @@ func (s service) GetDataLatestYearLightTime(ttime *time.Time, bayId int, year in
 					Month:         data.DataDatetime.Format("Jan"),
 					Date:          data.DataDatetime.Format("02"),
 					Time:          data.DataDatetime.Format("15:04"),
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
+					CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+					CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+					CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+					ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+					ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+					PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 					CreatedAt:     data.CreatedAt,
 					BayId:         data.BayId,
-					Vab:           data.VoltageAB,
-					Vbc:           data.VoltageBC,
-					Vca:           data.VoltageCA,
+					Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+					Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
+					Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
 				})
 			}
 		} else {
@@ -489,17 +490,17 @@ func (s service) GetDataLatestYearLightTime(ttime *time.Time, bayId int, year in
 					Month:         data.DataDatetime.Format("Jan"),
 					Date:          data.DataDatetime.Format("02"),
 					Time:          data.DataDatetime.Format("15:04"),
-					CurrentPhaseA: data.CurrentPhaseA,
-					CurrentPhaseB: data.CurrentPhaseB,
-					CurrentPhaseC: data.CurrentPhaseC,
-					ActivePower:   data.ActivePower,
-					ReactivePower: data.ReactivePower,
-					PowerFactor:   data.PowerFactor,
+					CurrentPhaseA: fmt.Sprintf("%.2f", data.CurrentPhaseA),
+					CurrentPhaseB: fmt.Sprintf("%.2f", data.CurrentPhaseB),
+					CurrentPhaseC: fmt.Sprintf("%.2f", data.CurrentPhaseC),
+					ActivePower:   fmt.Sprintf("%.2f", data.ActivePower),
+					ReactivePower: fmt.Sprintf("%.2f", data.ReactivePower),
+					PowerFactor:   fmt.Sprintf("%.2f", data.PowerFactor),
 					CreatedAt:     data.CreatedAt,
 					BayId:         data.BayId,
-					Vab:           data.VoltageAB,
-					Vbc:           data.VoltageBC,
-					Vca:           data.VoltageCA,
+					Vab:           fmt.Sprintf("%.2f", data.VoltageAB),
+					Vbc:           fmt.Sprintf("%.2f", data.VoltageBC),
+					Vca:           fmt.Sprintf("%.2f", data.VoltageCA),
 				})
 			}
 		}

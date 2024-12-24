@@ -4,18 +4,19 @@ type MonthlyRowData struct {
 	Bay       string
 	PeakDay   MonthlyData
 	PeakNight MonthlyData
-	AllLow    MonthlyData
+	All       MonthlyData
 }
 
 type MonthlyData struct {
 	Date string
 	Time string
-	Vab  float32
-	Vbc  float32
-	Vca  float32
-	Ia   float32
-	Ib   float32
-	Ic   float32
-	Mw   float32
-	Mvar float32
+	Vab  string
+	Vbc  string
+	Vca  string
+	Ia   string
+	Ib   string
+	Ic   string
+	Mw   string
+	Mvar string
+	P    string
 }

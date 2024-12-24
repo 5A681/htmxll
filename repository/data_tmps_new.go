@@ -33,3 +33,16 @@ func (s repository) GetMinDataByBayIdAndMonth(bayId int, year int, month int, mi
 
 	return &dataTemps, nil
 }
+
+func (s repository) GetDataMonthByBayAndYearAndMonth(bayId int, year int, month int) (*entity.DataTmps, error) {
+	var dataTemps entity.DataTmps
+	query := fmt.Sprintf(`select * from data_tmps dt where bay_id = %d and extract (year from dt.data_datetime) = %d and extract( month from data_datetime) = %d 
+		order by active_power asc,data_datetime asc `, bayId, year, month)
+
+	err := s.db.Get(&dataTemps, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dataTemps, nil
+}

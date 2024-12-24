@@ -239,6 +239,7 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 			//fmt.Printf("\n\n")
 		}
 	} else if ws.Row(2).Col(2) == "CURRENT PHASE A" {
+		log.Println("max col is ", maxCol)
 		for r := 5; r < maxRow; r++ {
 
 			if ws.Row(r).Col(0) != "" {
@@ -257,9 +258,9 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 						}
 					}
 
-					if c == 2 || c == 4 || c == 6 {
+					if c == 2 || c == 4 || c == 6 || c == 8 || c == 10 || c == 12 {
 						//fmt.Printf("%v \t", ws.Row(r).Col(c))
-						if c > 6 {
+						if c > 12 {
 							continue
 						} else if c == 2 {
 
@@ -284,7 +285,29 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 							} else {
 								tempData.CurrentPhaseC = float32(floatData)
 							}
+						} else if c == 8 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.ActivePower = 0
+							} else {
+								tempData.ActivePower = float32(floatData)
+							}
+						} else if c == 10 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.ReactivePower = 0
+							} else {
+								tempData.ReactivePower = float32(floatData)
+							}
+						} else if c == 12 {
+							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+							if err != nil {
+								tempData.PowerFactor = 0
+							} else {
+								tempData.PowerFactor = float32(floatData)
+							}
 						}
+
 					} else {
 						continue
 					}

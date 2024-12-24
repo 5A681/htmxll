@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"htmxll/config"
 	"htmxll/dto"
 	"log"
@@ -8,332 +9,139 @@ import (
 )
 
 func (s service) GetRowsMonthlyData(config config.Config, bayId int, ttime *time.Time) ([]dto.MonthlyRowData, error) {
-	res := []dto.MonthlyRowData{}
-	log.Println("phongphat ttime =  ", ttime)
+	var res []dto.MonthlyRowData
 	if bayId == 0 {
-		bays, err := s.GetAllBay()
-		if err != nil {
-			return nil, err
-		}
-		res := []dto.MonthlyRowData{}
-		for _, item := range bays {
-			day, err := s.GetNewMonthlyPeakDay(item.Id, ttime)
-			if err != nil {
-				log.Println("error :", err)
-				return nil, err
-			}
-
-			night, err := s.GetNewMonthlyMaxNight(item.Id, ttime)
-			if err != nil {
-				log.Println("error :", err)
-				return nil, err
-			}
-			all, err := s.GetNewMonthlyLowAll(item.Id, ttime)
-			if err != nil {
-				log.Println("error :", err)
-				return nil, err
-			}
-			if item.Name == "TP1" || item.Name == "TP2" {
-				item.Name = "line " + config.LINE_KV + "/" + item.Name
-			}
-			data := dto.MonthlyRowData{
-				Bay:       item.Name,
-				PeakDay:   *day,
-				PeakNight: *night,
-				AllLow:    *all,
-			}
-
-			res = append(res, data)
-		}
 		return res, nil
 	}
-	item, err := s.GetBayById(bayId)
-	if err != nil {
-		return nil, err
-	}
-	day, err := s.GetNewMonthlyPeakDay(item.Id, ttime)
-	if err != nil {
-		log.Println("error :", err)
-		return nil, err
-	}
-	night, err := s.GetNewMonthlyMaxNight(item.Id, ttime)
-	if err != nil {
-		log.Println("error :", err)
-		return nil, err
-	}
-	all, err := s.GetNewMonthlyLowAll(item.Id, ttime)
-	if err != nil {
-		log.Println("error :", err)
-		return nil, err
-	}
-	if item.Name == "TP1" || item.Name == "TP2" {
-		item.Name = "line " + config.LINE_KV + "/" + item.Name
-	}
-	data := dto.MonthlyRowData{
-		Bay:       item.Name,
-		PeakDay:   *day,
-		PeakNight: *night,
-		AllLow:    *all,
-	}
-	res = append(res, data)
+	if ttime != nil {
+		for i := 1; i <= getMaxDayMonth(ttime.Year(), ttime.Month()); i++ {
+			day, night, all, err := s.GetDataTable(config, bayId, ttime, i)
+			if err != nil {
+				log.Println(err)
+			}
+			res = append(res, dto.MonthlyRowData{
+				PeakDay:   day,
+				PeakNight: night,
+				All:       all,
+			})
+		}
 
+	}
 	return res, nil
 }
 
-func (s service) GetNewMonthlyPeakDay(bayId int, ttime *time.Time) (*dto.MonthlyData, error) {
-	res := dto.MonthlyData{}
-	err := s.repo.CheckPreviousMonth()
-	if err != nil {
-		log.Println(err.Error())
-		currentTime, err := s.repo.GetMaxDate()
-		if err != nil {
-			return nil, err
+func (s service) GetDataTable(config config.Config, bayId int, ttime *time.Time, i int) (dto.MonthlyData, dto.MonthlyData, dto.MonthlyData, error) {
+	var peakDay dto.MonthlyData
+	var peakNight dto.MonthlyData
+	var all dto.MonthlyData
+	dayTimeMin := time.Date(ttime.Year(), ttime.Month(), i, 8, 0, 0, 0, time.Local)
+	dayTimeMax := time.Date(ttime.Year(), ttime.Month(), i, 15, 30, 0, 0, time.Local)
+	day, _ := s.repo.GetMaxDataPerDayPerTime(bayId, dayTimeMin, dayTimeMax)
+
+	if day != nil {
+		peakDay = dto.MonthlyData{
+			Date: day.DataDatetime.Format("02/01/2006"),
+			Time: day.DataDatetime.Format("15:04"),
+			Vab:  fmt.Sprintf("%.2f", day.VoltageAB),
+			Vbc:  fmt.Sprintf("%.2f", day.VoltageBC),
+			Vca:  fmt.Sprintf("%.2f", day.VoltageCA),
+			Ia:   fmt.Sprintf("%.2f", day.CurrentPhaseA),
+			Ib:   fmt.Sprintf("%.2f", day.CurrentPhaseB),
+			Ic:   fmt.Sprintf("%.2f", day.CurrentPhaseC),
+			Mw:   fmt.Sprintf("%.2f", day.ActivePower),
+			Mvar: fmt.Sprintf("%.2f", day.ReactivePower),
+			P:    fmt.Sprintf("%.2f", day.PowerFactor),
 		}
-
-		if ttime.IsZero() {
-
-			data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 8, 15)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			if data != nil {
-				res.Date = data.DataDatetime.Format("02/01/2006")
-				res.Time = data.DataDatetime.Format("15:04")
-				res.Vab = data.VoltageAB
-				res.Vbc = data.VoltageBC
-				res.Vca = data.VoltageCA
-				res.Ia = data.CurrentPhaseA
-				res.Ib = data.CurrentPhaseB
-				res.Ic = data.CurrentPhaseC
-				res.Mw = data.ActivePower
-				res.Mvar = data.ReactivePower
-
-			}
-		} else {
-
-			maxdate := ttime
-
-			data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, maxdate.Year(), int(maxdate.Month()), 8, 15)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			if data != nil {
-				res.Date = data.DataDatetime.Format("02/01/2006")
-				res.Time = data.DataDatetime.Format("15:04")
-				res.Vab = data.VoltageAB
-				res.Vbc = data.VoltageBC
-				res.Vca = data.VoltageCA
-				res.Ia = data.CurrentPhaseA
-				res.Ib = data.CurrentPhaseB
-				res.Ic = data.CurrentPhaseC
-				res.Mw = data.ActivePower
-				res.Mvar = data.ReactivePower
-
-			}
-		}
-
 	} else {
-		currentTime := time.Now()
-		currentTime = currentTime.AddDate(0, -1, 0)
-
-		data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 8, 15)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		if data != nil {
-			res.Date = data.DataDatetime.Format("02/01/2006")
-			res.Time = data.DataDatetime.Format("15:04")
-			res.Vab = data.VoltageAB
-			res.Vbc = data.VoltageBC
-			res.Vca = data.VoltageCA
-			res.Ia = data.CurrentPhaseA
-			res.Ib = data.CurrentPhaseB
-			res.Ic = data.CurrentPhaseC
-			res.Mw = data.ActivePower
-			res.Mvar = data.ReactivePower
-
+		timeDay := time.Date(ttime.Year(), ttime.Month(), i, 0, 0, 0, 0, time.Local)
+		peakDay = dto.MonthlyData{
+			Date: timeDay.Format("02/01/2006"),
+			Time: timeDay.Format("15:04"),
+			Vab:  "0.00",
+			Vbc:  "0.00",
+			Vca:  "0.00",
+			Ia:   "0.00",
+			Ib:   "0.00",
+			Ic:   "0.00",
+			Mw:   "0.00",
+			Mvar: "0.00",
+			P:    "0.00",
 		}
 	}
-	return &res, nil
+	dayTimeMin1 := time.Date(ttime.Year(), ttime.Month(), i, 0, 0, 0, 0, time.Local)
+	dayTimeMax1 := time.Date(ttime.Year(), ttime.Month(), i, 7, 30, 0, 0, time.Local)
+	dayTimeMin2 := time.Date(ttime.Year(), ttime.Month(), i, 16, 30, 0, 0, time.Local)
+	dayTimeMax2 := time.Date(ttime.Year(), ttime.Month(), i, 23, 30, 0, 0, time.Local)
+	night, _ := s.repo.GetMaxDataPerDayPerTimeTwoTime(bayId, dayTimeMin1, dayTimeMax1, dayTimeMin2, dayTimeMax2)
+
+	if night != nil {
+		peakNight = dto.MonthlyData{
+			Date: night.DataDatetime.Format("02/01/2006"),
+			Time: night.DataDatetime.Format("15:04"),
+			Vab:  fmt.Sprintf("%.2f", night.VoltageAB),
+			Vbc:  fmt.Sprintf("%.2f", night.VoltageBC),
+			Vca:  fmt.Sprintf("%.2f", night.VoltageCA),
+			Ia:   fmt.Sprintf("%.2f", night.CurrentPhaseA),
+			Ib:   fmt.Sprintf("%.2f", night.CurrentPhaseB),
+			Ic:   fmt.Sprintf("%.2f", night.CurrentPhaseC),
+			Mw:   fmt.Sprintf("%.2f", night.ActivePower),
+			Mvar: fmt.Sprintf("%.2f", night.ReactivePower),
+			P:    fmt.Sprintf("%.2f", night.PowerFactor),
+		}
+	} else {
+		timeDay := time.Date(ttime.Year(), ttime.Month(), i, 0, 0, 0, 0, time.Local)
+		peakNight = dto.MonthlyData{
+			Date: timeDay.Format("02/01/2006"),
+			Time: timeDay.Format("15:04"),
+			Vab:  "0.00",
+			Vbc:  "0.00",
+			Vca:  "0.00",
+			Ia:   "0.00",
+			Ib:   "0.00",
+			Ic:   "0.00",
+			Mw:   "0.00",
+			Mvar: "0.00",
+			P:    "0.00",
+		}
+	}
+	dayTimeMin = time.Date(ttime.Year(), ttime.Month(), i, 0, 0, 0, 0, time.Local)
+	dayTimeMax = time.Date(ttime.Year(), ttime.Month(), i, 23, 30, 0, 0, time.Local)
+	allData, _ := s.repo.GetMinDataPerDayPerTime(bayId, dayTimeMin, dayTimeMax)
+
+	if allData != nil {
+		all = dto.MonthlyData{
+			Date: night.DataDatetime.Format("02/01/2006"),
+			Time: night.DataDatetime.Format("15:04"),
+			Vab:  fmt.Sprintf("%.2f", night.VoltageAB),
+			Vbc:  fmt.Sprintf("%.2f", night.VoltageBC),
+			Vca:  fmt.Sprintf("%.2f", night.VoltageCA),
+			Ia:   fmt.Sprintf("%.2f", night.CurrentPhaseA),
+			Ib:   fmt.Sprintf("%.2f", night.CurrentPhaseB),
+			Ic:   fmt.Sprintf("%.2f", night.CurrentPhaseC),
+			Mw:   fmt.Sprintf("%.2f", night.ActivePower),
+			Mvar: fmt.Sprintf("%.2f", night.ReactivePower),
+			P:    fmt.Sprintf("%.2f", night.PowerFactor),
+		}
+	} else {
+		timeDay := time.Date(ttime.Year(), ttime.Month(), i, 0, 0, 0, 0, time.Local)
+		all = dto.MonthlyData{
+			Date: timeDay.Format("02/01/2006"),
+			Time: timeDay.Format("15:04"),
+			Vab:  "0.00",
+			Vbc:  "0.00",
+			Vca:  "0.00",
+			Ia:   "0.00",
+			Ib:   "0.00",
+			Ic:   "0.00",
+			Mw:   "0.00",
+			Mvar: "0.00",
+			P:    "0.00",
+		}
+	}
+	return peakDay, peakNight, all, nil
 }
 
-func (s service) GetNewMonthlyMaxNight(bayId int, ttime *time.Time) (*dto.MonthlyData, error) {
-	res := dto.MonthlyData{}
-	err := s.repo.CheckPreviousMonth()
-	if err != nil {
-		log.Println(err.Error())
-		currentTime, err := s.repo.GetMaxDate()
-		if err != nil {
-			return nil, err
-		}
-
-		if ttime.IsZero() {
-
-			data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 16, 23)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			data2, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 0, 7)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			if data == nil {
-				data = data2
-			} else if data2 != nil && data.ActivePower < data2.ActivePower {
-				data = data2
-			}
-			if data != nil {
-
-				res.Date = data.DataDatetime.Format("02/01/2006")
-				res.Time = data.DataDatetime.Format("15:04")
-				res.Vab = data.VoltageAB
-				res.Vbc = data.VoltageBC
-				res.Vca = data.VoltageCA
-				res.Ia = data.CurrentPhaseA
-				res.Ib = data.CurrentPhaseB
-				res.Ic = data.CurrentPhaseC
-				res.Mw = data.ActivePower
-				res.Mvar = data.ReactivePower
-
-			}
-		} else {
-
-			maxdate := ttime
-			data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, maxdate.Year(), int(maxdate.Month()), 16, 23)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			data2, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 0, 7)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			if data == nil {
-				data = data2
-			} else if data2 != nil && data.ActivePower < data2.ActivePower {
-				data = data2
-			}
-			if data != nil {
-				res.Date = data.DataDatetime.Format("02/01/2006")
-				res.Time = data.DataDatetime.Format("15:04")
-				res.Vab = data.VoltageAB
-				res.Vbc = data.VoltageBC
-				res.Vca = data.VoltageCA
-				res.Ia = data.CurrentPhaseA
-				res.Ib = data.CurrentPhaseB
-				res.Ic = data.CurrentPhaseC
-				res.Mw = data.ActivePower
-				res.Mvar = data.ReactivePower
-
-			}
-		}
-
-	} else {
-		currentTime := time.Now()
-		currentTime = currentTime.AddDate(0, -1, 0)
-
-		data, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 16, 23)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		data2, err := s.repo.GetMaxDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 0, 7)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		if data == nil {
-			data = data2
-		} else if data2 != nil && data.ActivePower < data2.ActivePower {
-			data = data2
-		}
-		if data != nil {
-			res.Date = data.DataDatetime.Format("02/01/2006")
-			res.Time = data.DataDatetime.Format("15:04")
-			res.Vab = data.VoltageAB
-			res.Vbc = data.VoltageBC
-			res.Vca = data.VoltageCA
-			res.Ia = data.CurrentPhaseA
-			res.Ib = data.CurrentPhaseB
-			res.Ic = data.CurrentPhaseC
-			res.Mw = data.ActivePower
-			res.Mvar = data.ReactivePower
-
-		}
-	}
-	return &res, nil
-}
-
-func (s service) GetNewMonthlyLowAll(bayId int, ttime *time.Time) (*dto.MonthlyData, error) {
-	res := dto.MonthlyData{}
-	err := s.repo.CheckPreviousMonth()
-	if err != nil {
-		log.Println(err.Error())
-		currentTime, err := s.repo.GetMaxDate()
-		if err != nil {
-			return nil, err
-		}
-
-		if ttime.IsZero() {
-
-			data, err := s.repo.GetMinDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 0, 23)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			if data != nil {
-
-				res.Date = data.DataDatetime.Format("02/01/2006")
-				res.Time = data.DataDatetime.Format("15:04")
-				res.Vab = data.VoltageAB
-				res.Vbc = data.VoltageBC
-				res.Vca = data.VoltageCA
-				res.Ia = data.CurrentPhaseA
-				res.Ib = data.CurrentPhaseB
-				res.Ic = data.CurrentPhaseC
-				res.Mw = data.ActivePower
-				res.Mvar = data.ReactivePower
-
-			}
-		} else {
-			maxdate := ttime
-
-			data, err := s.repo.GetMinDataByBayIdAndMonth(bayId, maxdate.Year(), int(maxdate.Month()), 0, 23)
-			if err != nil {
-				log.Println(err.Error())
-			}
-			if data != nil {
-				res.Date = data.DataDatetime.Format("02/01/2006")
-				res.Time = data.DataDatetime.Format("15:04")
-				res.Vab = data.VoltageAB
-				res.Vbc = data.VoltageBC
-				res.Vca = data.VoltageCA
-				res.Ia = data.CurrentPhaseA
-				res.Ib = data.CurrentPhaseB
-				res.Ic = data.CurrentPhaseC
-				res.Mw = data.ActivePower
-				res.Mvar = data.ReactivePower
-
-			}
-		}
-
-	} else {
-		currentTime := time.Now()
-		currentTime = currentTime.AddDate(0, -1, 0)
-
-		data, err := s.repo.GetMinDataByBayIdAndMonth(bayId, currentTime.Year(), int(currentTime.Month()), 0, 23)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		if data != nil {
-			res.Date = data.DataDatetime.Format("02/01/2006")
-			res.Time = data.DataDatetime.Format("15:04")
-			res.Vab = data.VoltageAB
-			res.Vbc = data.VoltageBC
-			res.Vca = data.VoltageCA
-			res.Ia = data.CurrentPhaseA
-			res.Ib = data.CurrentPhaseB
-			res.Ic = data.CurrentPhaseC
-			res.Mw = data.ActivePower
-			res.Mvar = data.ReactivePower
-
-		}
-	}
-	return &res, nil
+func getMaxDayMonth(year int, month time.Month) int {
+	// The zero value of day 0 in the next month gives the last day of the current month
+	return time.Date(year, month+1, 0, 0, 0, 0, 0, time.UTC).Day()
 }

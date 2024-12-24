@@ -31,246 +31,258 @@
     </div>
     <div id="monthly-rows">
         <table>
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg  border dark:border-white/10">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400  border dark:border-white/10">
+                    <thead class="text-xs text-gray-700 uppercase dark:text-gray-400  border dark:border-white/10">
                         <tr>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center " colspan="10">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center border  dark:border-white/10" colspan="11">
                                 <span
                                     class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
                                     DAY TIME PEAK</span>
 
                             </th>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="10">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center border  dark:border-white/10" colspan="11">
                                 <span
                                     class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
                                     NIGHT TIME PEAK</span>
 
                             </th>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="11">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center border  dark:border-white/10" colspan="11">
                                 <span
                                     class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
                                     DAY&NIGHT LIGHT LOAD</span>
 
                             </th>
                         </tr>
-                        <tr>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
+                        <tr class="border  dark:border-white/10">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="11">
                                 08:00-15:30
                             </th>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="11">
                                 00:00-07:30,16:00-23:30
                             </th>
-                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="9">
+                            <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="11">
                                 00:00-23:30
                             </th>
                         </tr>
-                        <tr>
-                            <th class="px-6 py-3">
-                                TP1/25MVA
-                                TP2/25MVA
+                        <tr class="border  dark:border-white/10">
+                            
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border  dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                Date
+                            </th>
+                            <th scope="col" class="px-6 py-3 border  dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                Time
                             </th>
 
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                Vab (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-">
+                                Vbc (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                Vca (kV)
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Ia (A)
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                Ib (A)
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Ic (A)
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                P (MW)
+                            </th>
+                            <th scope="col" class="px-6 py-3 ">
+                               Q (MVAR)
+                            </th>
+                             <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                PF (%)
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 Date
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Time
                             </th>
 
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 Vab (kV)
                             </th>
                             <th scope="col" class="px-6 py-">
                                 Vbc (kV)
                             </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 Vca (kV)
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Ia
+                                Ia (A)
                             </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Ib
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                Ib (A)
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Ic
+                                Ic (A)
                             </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                MW
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                P (MW)
                             </th>
                             <th scope="col" class="px-6 py-3 ">
-                                MVAR
+                                Q (MVAR)
                             </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                             <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                PF (%)
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 Date
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Time
                             </th>
 
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 Vab (kV)
                             </th>
                             <th scope="col" class="px-6 py-">
                                 Vbc (kV)
                             </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 Vca (kV)
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Ia
+                                Ia (A)
                             </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Ib
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                Ib (A)
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Ic
+                                Ic (A)
                             </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                MW
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                P (MW)
                             </th>
                             <th scope="col" class="px-6 py-3 ">
-                                MVAR
+                                Q (MVAR)
                             </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Date
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Time
-                            </th>
-
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Vab (kV)
-                            </th>
-                            <th scope="col" class="px-6 py-">
-                                Vbc (kV)
-                            </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Vca (kV)
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Ia
-                            </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                Ib
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Ic
-                            </th>
-                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                MW
-                            </th>
-                            <th scope="col" class="px-6 py-3 ">
-                                MVAR
+                             <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                PF (%)
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {{ range .}}
-                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <tr class="border-b  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                           
                             <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                                {{ .Bay }}
-                            </th>
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakDay.Date }}
                             </th>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700 ">
                                 {{ .PeakDay.Time }}
                             </td>
                             <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
                                 {{ .PeakDay.Vab }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakDay.Vbc }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakDay.Vca }}
                             </td>
-                            <td class="px-6 py-4 ">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakDay.Ia }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakDay.Ib }}
                             </td>
-                            <td class="px-6 py-4 ">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakDay.Ic }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakDay.Mw }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakDay.Mvar }}
                             </td>
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .PeakDay.P }}
+                            </td>
 
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                            <th scope="row "
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakNight.Date }}
                             </th>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700 ">
                                 {{ .PeakNight.Time }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .PeakDay.Vab }}
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .PeakNight.Vab }}
                             </td>
-                            <td class="px-6 py-4">
-                                {{ .PeakDay.Vbc }}
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700 ">
+                                {{ .PeakNight.Vbc }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .PeakDay.Vca }}
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .PeakNight.Vca }}
                             </td>
-                            <td class="px-6 py-4 ">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakNight.Ia }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakNight.Ib }}
                             </td>
-                            <td class="px-6 py-4 ">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakNight.Ic }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
                                 {{ .PeakNight.Mw }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700 ">
                                 {{ .PeakNight.Mvar }}
                             </td>
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .PeakNight.P }}
+                            </td>
 
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                                {{ .AllLow.Date }}
+                             <th scope="row"
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Date }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ .AllLow.Time }}
+                                {{ .All.Time }}
                             </td>
-                           <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .PeakDay.Vab }}
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Vab }}
                             </td>
-                            <td class="px-6 py-4">
-                                {{ .PeakDay.Vbc }}
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Vbc }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .PeakDay.Vca }}
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Vca }}
                             </td>
-                            <td class="px-6 py-4 ">
-                                {{ .AllLow.Ia }}
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Ia }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .AllLow.Ib }}
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Ib }}
                             </td>
-                            <td class="px-6 py-4 ">
-                                {{ .AllLow.Ic }}
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Ic }}
                             </td>
-                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                {{ .AllLow.Mw }}
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Mw }}
                             </td>
-                            <td class="px-6 py-4">
-                                {{ .AllLow.Mvar }}
+                            <td class="px-6 py-4  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.Mvar }}
                             </td>
-
+                            <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800  border dark:border-white/10 border-gray-200 dark:border-gray-700">
+                                {{ .All.P }}
+                            </td>
+                        
                         </tr>
                         {{ end }}
+
 
                     </tbody>
                 </table>
@@ -281,265 +293,4 @@
 {{end}}
 
 
-{{ block "first-column" .}}
-<div id="first-column">
-    <table>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
-                    <tr>
-                        <th class="px-6 py-3">
-                            TP1/25MVA
-                        </th>
-                    </tr>
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            TP2/25MVA
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
 
-
-                </tbody>
-            </table>
-        </div>
-    </table>
-</div>
-{{end}}
-
-{{ block "monthly-table-day" .}}
-<div id="monthly-table-day">
-    <table>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
-                    <tr>
-                        <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
-                            08:00-15:30
-                        </th>
-
-                    </tr>
-                    <tr>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            Date
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Time
-                        </th>
-
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            VBC (kV)
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Ia
-                        </th>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            Ib
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Ic
-                        </th>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            MW
-                        </th>
-                        <th scope="col" class="px-6 py-3 ">
-                            MVAR
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{ range .}}
-                    <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                            {{ .Date }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ .Time }}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            0
-                        </td>
-                        <td class="px-6 py-4 ">
-                            {{.CurrentPhaseA}}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            {{.CurrentPhaseB}}
-                        </td>
-                        <td class="px-6 py-4 ">
-                            {{.CurrentPhaseC}}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            {{.ActivePower}}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{.ReactivePower}}
-                        </td>
-
-                    </tr>
-                    {{ end }}
-
-                </tbody>
-            </table>
-        </div>
-    </table>
-</div>
-{{end}}
-
-
-{{ block "monthly-table-night" .}}
-<div id="monthly-table-night">
-    <table>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
-                    <tr>
-                        <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
-                            00:00-07:30,16:00-23:30
-                        </th>
-                    </tr>
-                    <tr>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            Date
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Time
-                        </th>
-
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            kV
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Ia
-                        </th>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            Ib
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Ic
-                        </th>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            MW
-                        </th>
-                        <th scope="col" class="px-6 py-3 ">
-                            MVAR
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{ range .}}
-                    <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                            {{ .Date }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ .Time }}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            0
-                        </td>
-                        <td class="px-6 py-4 ">
-                            {{.CurrentPhaseA}}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            {{.CurrentPhaseB}}
-                        </td>
-                        <td class="px-6 py-4 ">
-                            {{.CurrentPhaseC}}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            {{.ActivePower}}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{.ReactivePower}}
-                        </td>
-
-                    </tr>
-                    {{ end }}
-
-                </tbody>
-            </table>
-        </div>
-    </table>
-</div>
-{{end}}
-
-{{ block "monthly-table-all" .}}
-<div id="monthly-table-all">
-    <table>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
-                    <tr>
-                        <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center" colspan="8">
-                            00:00-23:30
-                        </th>
-                    </tr>
-                    <tr>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            Date
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Time
-                        </th>
-
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            kV
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Ia
-                        </th>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            Ib
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Ic
-                        </th>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                            MW
-                        </th>
-                        <th scope="col" class="px-6 py-3 ">
-                            MVAR
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{ range .}}
-                    <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                            {{ .Date }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ .Time }}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            0
-                        </td>
-                        <td class="px-6 py-4 ">
-                            {{.CurrentPhaseA}}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            {{.CurrentPhaseB}}
-                        </td>
-                        <td class="px-6 py-4 ">
-                            {{.CurrentPhaseC}}
-                        </td>
-                        <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                            {{.ActivePower}}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{.ReactivePower}}
-                        </td>
-
-                    </tr>
-                    {{ end }}
-
-                </tbody>
-            </table>
-        </div>
-    </table>
-</div>
-{{end}}

@@ -22,31 +22,32 @@
                     </svg>
                 </div>
                 <div id="date-picker-input">
-                            <input id="datepicker-format" name="time" type="text" 
-                                hx-get="/data" 
-                                hx-trigger="change" 
-                                hx-target="#content" 
-                                hx-swap="innerHTML" 
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    <input id="datepicker-format" name="time" type="text" hx-get="/data" hx-trigger="change"
+                        hx-target="#content" hx-swap="innerHTML" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
                                 focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 flatpickr-input"
-                                placeholder="Select date">
+                        placeholder="Select date">
                 </div>
 
             </div>
 
 
 
-            <form action="/export-pdf">
-                <button type="submit"
-                    class="bg-purple-500 hover:bg-purple-700 text-white font-bold w-20 h-12 rounded-full">
-                    PDF
-                </button>
-            </form>
-            <form action="/export-excel">
-                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold w-20 h-12 rounded-full">
-                    EXCEL
-                </button>
-            </form>
+            <div>
+                <form action="/export-pdf">
+                    <button type="submit"
+                        class="bg-red-500 hover:bg-red-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center">
+                        PDF
+                    </button>
+                </form>
+            </div>
+            <div>
+                <form action="/export-excel">
+                    <button type="submit"
+                        class="bg-red-500 hover:bg-red-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center">
+                        EXCEL
+                    </button>
+                </form>
+            </div>
 
 
         </div>
