@@ -120,6 +120,19 @@ func (s repository) GetMaxDataPerDayPerTimeTwoTime(bayId int, minTime1 time.Time
 
 	return &dataTemps, nil
 }
+func (s repository) GetMinDataPerDayPerTimeTwoTime(bayId int, minTime1 time.Time, maxTime1 time.Time, minTime2 time.Time, maxTime2 time.Time) (*entity.DataTmps, error) {
+	var dataTemps entity.DataTmps
+	// query := `select * from data_tmps where bay_id = $1 and data_datetime  between $2 and $3 or data_datetime  between $4 and $5
+	// 	order by active_power desc,data_datetime asc`
+	//query := "select * from data_tmps where bay_id = $1"
+	err := s.db.Get(&dataTemps, `select * from data_tmps where bay_id = $1 and (data_datetime between $2 and $3 or data_datetime between $4 and $5 ) 
+		order by active_power asc,data_datetime asc`, bayId, minTime1, maxTime1, minTime2, maxTime2)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dataTemps, nil
+}
 
 func (s repository) GetLatestYear() (int, error) {
 	type Result struct {

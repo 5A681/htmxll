@@ -24,6 +24,7 @@ type Repository interface {
 	CheckPreviousMonth() error
 	CheckPreviousYear() error
 	GetMaxDataPerDayPerTimeTwoTime(bayId int, minTime1 time.Time, maxTime1 time.Time, minTime2 time.Time, maxTime2 time.Time) (*entity.DataTmps, error)
+	GetMinDataPerDayPerTimeTwoTime(bayId int, minTime1 time.Time, maxTime1 time.Time, minTime2 time.Time, maxTime2 time.Time) (*entity.DataTmps, error)
 	GetMinDataPerDayPerTime(bayId int, minTime time.Time, maxTime time.Time) (*entity.DataTmps, error)
 	GetMaxDataPerMonth(bayId int, year int, month int) (*entity.DataTmps, error)
 	GetMinDataPerMonth(bayId int, year int, month int) (*entity.DataTmps, error)

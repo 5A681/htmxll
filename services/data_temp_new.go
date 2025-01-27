@@ -32,7 +32,7 @@ func (s service) GetRowsMonthlyData(config config.Config, bayId int, ttime *time
 
 func (s service) GetDataTable(config config.Config, bayId int, ttime *time.Time, i int) (dto.MonthlyData, dto.MonthlyData, dto.MonthlyData, error) {
 	var peakDay dto.MonthlyData
-	var peakNight dto.MonthlyData
+	var lightNight dto.MonthlyData
 	var all dto.MonthlyData
 	dayTimeMin := time.Date(ttime.Year(), ttime.Month(), i, 8, 0, 0, 0, time.Local)
 	dayTimeMax := time.Date(ttime.Year(), ttime.Month(), i, 15, 30, 0, 0, time.Local)
@@ -72,10 +72,10 @@ func (s service) GetDataTable(config config.Config, bayId int, ttime *time.Time,
 	dayTimeMax1 := time.Date(ttime.Year(), ttime.Month(), i, 7, 30, 0, 0, time.Local)
 	dayTimeMin2 := time.Date(ttime.Year(), ttime.Month(), i, 16, 30, 0, 0, time.Local)
 	dayTimeMax2 := time.Date(ttime.Year(), ttime.Month(), i, 23, 30, 0, 0, time.Local)
-	night, _ := s.repo.GetMaxDataPerDayPerTimeTwoTime(bayId, dayTimeMin1, dayTimeMax1, dayTimeMin2, dayTimeMax2)
+	night, _ := s.repo.GetMinDataPerDayPerTimeTwoTime(bayId, dayTimeMin1, dayTimeMax1, dayTimeMin2, dayTimeMax2)
 
 	if night != nil {
-		peakNight = dto.MonthlyData{
+		lightNight = dto.MonthlyData{
 			Date: night.DataDatetime.Format("02/01/2006"),
 			Time: night.DataDatetime.Format("15:04"),
 			Vab:  fmt.Sprintf("%.2f", night.VoltageAB),
@@ -90,7 +90,7 @@ func (s service) GetDataTable(config config.Config, bayId int, ttime *time.Time,
 		}
 	} else {
 		timeDay := time.Date(ttime.Year(), ttime.Month(), i, 0, 0, 0, 0, time.Local)
-		peakNight = dto.MonthlyData{
+		lightNight = dto.MonthlyData{
 			Date: timeDay.Format("02/01/2006"),
 			Time: timeDay.Format("15:04"),
 			Vab:  "0.00",
@@ -138,7 +138,7 @@ func (s service) GetDataTable(config config.Config, bayId int, ttime *time.Time,
 			P:    "0.00",
 		}
 	}
-	return peakDay, peakNight, all, nil
+	return peakDay, lightNight, all, nil
 }
 
 func getMaxDayMonth(year int, month time.Month) int {

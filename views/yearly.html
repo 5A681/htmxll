@@ -6,54 +6,57 @@
 
 
         <div class="flex justify-center">
-            <h1 class="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-3xl "><span
-                    class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Yearly Load
+            <h1 class=" mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-3xl ">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Yearly Load
                     Report</span>
             </h1>
         </div>
     </div>
 
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border  dark:border-white/10">
-            <caption class=" text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl"><span
-                    class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">Peak Load</span>
+    <div class="flex relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table
+            class=" w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border  dark:border-white/10">
+            <caption
+                class="border-t border-l border-r  dark:border-white/10 text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl pt-2 py-2">
+                <span class=" text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">Peak
+                    Load</span>
             </caption>
             <thead class="text-xs text-gray-700 uppercase dark:text-gray-400 border  dark:border-white/10">
                 <tr class="border  dark:border-white/10">
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800 dark:border-white/10">
                         Month
                     </th>
-                    <th scope="col" class="px-6 py-3 ">
+                    <th scope="col" class="px-6 py-3 border dark:border-white/10">
                         Date
                     </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border dark:border-white/10">
                         Time
                     </th>
-                    <th scope="col" class="px-6 py-3 ">
+                    <th scope="col" class="px-6 py-3 border dark:border-white/10">
                         Vab (kV)
                     </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border dark:border-white/10">
                         Vbc (kV)
                     </th>
-                    <th scope="col" class="px-6 py-3 ">
+                    <th scope="col" class="px-6 py-3 border dark:border-white/10">
                         Vca (kV)
                     </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    <th scope="col" class="px-6 py-3 border bg-gray-50 dark:bg-gray-800 dark:border-white/10">
                         Ia (A)
                     </th>
-                    <th scope="col" class="px-6 py-3 ">
+                    <th scope="col" class="px-6 py-3 border dark:border-white/10">
                         Ib (A)
                     </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    <th scope="col" class="px-6 py-3 border bg-gray-50 dark:bg-gray-800 dark:border-white/10">
                         Ic (A)
                     </th>
-                    <th scope="col" class="px-6 py-3 ">
+                    <th scope="col" class="px-6 py-3 border dark:border-white/10">
                         P (MW)
                     </th>
-                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border dark:border-white/10">
                         Q (MVAR)
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 border dark:border-white/10">
                         PF (%)
                     </th>
                 </tr>
@@ -75,10 +78,10 @@
                     <td class="px-6 py-4 border  dark:border-white/10">
                         {{.Vab}}
                     </td>
-                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border  dark:border-white/10">
+                    <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border  dark:border-white/10">
                         {{.Vbc}}
                     </td>
-                     <td class="px-6 py-4 border  dark:border-white/10">
+                    <td class="px-6 py-4 border  dark:border-white/10">
                         {{.Vca}}
                     </td>
 
@@ -106,9 +109,12 @@
 
             </tbody>
         </table>
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border  dark:border-white/10">
-            <caption class=" text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl"><span
-                    class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">Light Load</span>
+        <table
+            class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border  dark:border-white/10">
+            <caption
+                class="border-t border-l border-r dark:border-white/10 text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-xl pt-2 py-2">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r to-pink-600 from-purple-800">Light
+                    Load</span>
             </caption>
             <thead class="text-xs text-gray-700 uppercase dark:text-gray-400 border  dark:border-white/10">
                 <tr class="border  dark:border-white/10">
