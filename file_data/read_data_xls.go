@@ -63,11 +63,14 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 		if err != nil {
 			if err.Error() == "sql: no rows in result set" {
 				log.Println("bay name = ", ws.Name)
-				dataTempRepo.CreateBay(&entity.Bay{
+				err = dataTempRepo.CreateBay(&entity.Bay{
 					Name:         ws.Name,
 					SubStationId: sub.Id,
 					SheetNumber:  sheet,
 				})
+				if err != nil {
+					log.Println("could not create bay", err, subId*sheet, subId, sheet)
+				}
 			} else {
 				log.Println(err)
 			}
@@ -82,329 +85,76 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 		log.Println("error get bay", err)
 		return
 	}
-	if ws.Row(2).Col(2) == "VOLTAGE PHASE B-C" {
-		for r := 5; r < maxRow; r++ {
+	for r := 5; r < maxRow; r++ {
 
-			if ws.Row(r).Col(0) != "" {
+		if ws.Row(r).Col(0) != "" {
 
-				tempData := entity.DataTmps{
-					BayId: bay.Id,
-				}
-				for c := 0; c < maxCol; c++ {
-
-					if c == 0 {
-
-						//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
-						dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
-						if dateTime != nil {
-							tempData.DataDatetime = *dateTime
-						}
-					}
-
-					if c == 2 || c == 4 || c == 6 || c == 8 || c == 10 || c == 12 || c == 14 {
-						//fmt.Printf("%v \t", ws.Row(r).Col(c))
-						if c > 14 {
-							continue
-						} else if c == 2 {
-
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.VoltageBC = 0
-							} else {
-								tempData.VoltageBC = float32(floatData)
-							}
-							if ws.Name == "INCOMING1" {
-							}
-
-						} else if c == 4 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseA = 0
-							} else {
-								tempData.CurrentPhaseA = float32(floatData)
-							}
-						} else if c == 6 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseB = 0
-							} else {
-								tempData.CurrentPhaseB = float32(floatData)
-							}
-						} else if c == 8 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseC = 0
-
-							} else {
-								tempData.CurrentPhaseC = float32(floatData)
-
-							}
-						} else if c == 10 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.ActivePower = 0
-
-							} else {
-								tempData.ActivePower = float32(floatData)
-							}
-						} else if c == 12 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.ReactivePower = 0
-							} else {
-								tempData.ReactivePower = float32(floatData)
-							}
-						} else if c == 14 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.PowerFactor = 0
-
-							} else {
-								tempData.PowerFactor = float32(floatData)
-							}
-						}
-					} else {
-						continue
-					}
-
-				}
-				tempData.CreatedAt = time.Now()
-				err := dataTempRepo.CreateDataTmep(tempData)
-				if err != nil {
-					log.Println("could not insrt temp data", err.Error())
-				}
+			tempData := entity.DataTmps{
+				BayId: bay.Id,
 			}
+			for c := 0; c < maxCol; c += 2 {
 
-			//fmt.Printf("\n\n")
-		}
-	} else if ws.Row(2).Col(2) == "BUS VOLTAGE A-B" {
-		for r := 5; r < maxRow; r++ {
-
-			if ws.Row(r).Col(0) != "" {
-
-				tempData := entity.DataTmps{
-					BayId: bay.Id,
-				}
-				for c := 0; c < maxCol; c++ {
-
-					if c == 0 {
-
-						//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
-						dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
-						if dateTime != nil {
-							tempData.DataDatetime = *dateTime
-						}
+				if c == 0 {
+					//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
+					dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
+					if dateTime != nil {
+						tempData.DataDatetime = *dateTime
 					}
-
-					if c == 2 || c == 4 || c == 6 {
-						//fmt.Printf("%v \t", ws.Row(r).Col(c))
-						if c > 6 {
-							continue
-						} else if c == 2 {
-
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.VoltageAB = 0
-							} else {
-								tempData.VoltageAB = float32(floatData)
-							}
-
-						} else if c == 4 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.VoltageBC = 0
-							} else {
-								tempData.VoltageBC = float32(floatData)
-							}
-						} else if c == 6 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.VoltageCA = 0
-							} else {
-								tempData.VoltageCA = float32(floatData)
-							}
-						}
+				}
+				columnName := ws.Row(2).Col(c)
+				if columnName != "" {
+					floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
+					if err != nil {
+						MapToInsert(0, columnName, &tempData)
 					} else {
-						continue
+						data := float32(floatData)
+						MapToInsert(data, columnName, &tempData)
 					}
+				}
 
-				}
-				tempData.CreatedAt = time.Now()
-				err := dataTempRepo.CreateDataTmep(tempData)
-				if err != nil {
-					log.Println("could not insrt temp data", err.Error())
-				}
 			}
-
-			//fmt.Printf("\n\n")
-		}
-	} else if ws.Row(2).Col(2) == "CURRENT PHASE A" {
-		log.Println("max col is ", maxCol)
-		for r := 5; r < maxRow; r++ {
-
-			if ws.Row(r).Col(0) != "" {
-
-				tempData := entity.DataTmps{
-					BayId: bay.Id,
-				}
-				for c := 0; c < maxCol; c++ {
-
-					if c == 0 {
-
-						//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
-						dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
-						if dateTime != nil {
-							tempData.DataDatetime = *dateTime
-						}
-					}
-
-					if c == 2 || c == 4 || c == 6 || c == 8 || c == 10 || c == 12 {
-						//fmt.Printf("%v \t", ws.Row(r).Col(c))
-						if c > 12 {
-							continue
-						} else if c == 2 {
-
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseA = 0
-							} else {
-								tempData.CurrentPhaseA = float32(floatData)
-							}
-
-						} else if c == 4 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseB = 0
-							} else {
-								tempData.CurrentPhaseB = float32(floatData)
-							}
-						} else if c == 6 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseC = 0
-							} else {
-								tempData.CurrentPhaseC = float32(floatData)
-							}
-						} else if c == 8 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.ActivePower = 0
-							} else {
-								tempData.ActivePower = float32(floatData)
-							}
-						} else if c == 10 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.ReactivePower = 0
-							} else {
-								tempData.ReactivePower = float32(floatData)
-							}
-						} else if c == 12 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.PowerFactor = 0
-							} else {
-								tempData.PowerFactor = float32(floatData)
-							}
-						}
-
-					} else {
-						continue
-					}
-
-				}
-				tempData.CreatedAt = time.Now()
-				err := dataTempRepo.CreateDataTmep(tempData)
-				if err != nil {
-					log.Println("could not insrt temp data", err.Error())
-				}
+			tempData.CreatedAt = time.Now()
+			err := dataTempRepo.CreateDataTmep(tempData)
+			if err != nil {
+				log.Println("could not insert temp data", err.Error())
 			}
-
-			//fmt.Printf("\n\n")
+		} else {
+			return
 		}
-	} else {
-		for r := 5; r < maxRow; r++ {
 
-			if ws.Row(r).Col(0) != "" {
-
-				tempData := entity.DataTmps{
-					BayId: bay.Id,
-				}
-				for c := 0; c < maxCol; c++ {
-
-					if c == 0 {
-
-						//fmt.Printf("%v \t", ReadDateTimeColumn(ws.Row(r).Col(c)))
-						dateTime := ReadDateTimeColumn(ws.Row(r).Col(c))
-						if dateTime != nil {
-							tempData.DataDatetime = *dateTime
-						}
-					}
-
-					if c == 2 || c == 4 || c == 6 || c == 8 || c == 10 || c == 12 {
-						//fmt.Printf("%v \t", ws.Row(r).Col(c))
-						if c > 12 {
-							continue
-						} else if c == 2 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseA = 0
-							} else {
-								tempData.CurrentPhaseA = float32(floatData)
-							}
-						} else if c == 4 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseB = 0
-							} else {
-								tempData.CurrentPhaseB = float32(floatData)
-							}
-						} else if c == 6 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.CurrentPhaseC = 0
-							} else {
-								tempData.CurrentPhaseC = float32(floatData)
-							}
-						} else if c == 8 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.ActivePower = 0
-							} else {
-								tempData.ActivePower = float32(floatData)
-							}
-						} else if c == 10 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.ReactivePower = 0
-							} else {
-								tempData.ReactivePower = float32(floatData)
-							}
-						} else if c == 12 {
-							floatData, err := strconv.ParseFloat(ws.Row(r).Col(c), 64)
-							if err != nil {
-								tempData.PowerFactor = 0
-							} else {
-								tempData.PowerFactor = float32(floatData)
-							}
-						}
-					} else {
-						continue
-					}
-
-				}
-				tempData.CreatedAt = time.Now()
-
-				err := dataTempRepo.CreateDataTmep(tempData)
-				if err != nil {
-					log.Println("could not insrt temp data", err.Error())
-				}
-			}
-
-			//fmt.Printf("\n\n")
-		}
 	}
+}
 
+func MapToInsert(data float32, field string, model *entity.DataTmps) {
+	log.Println("field = ", field)
+	switch field {
+	case "BUS VOLTAGE A-B":
+		model.VoltageAB = data
+	case "BUS VOLTAGE B-C":
+		model.VoltageBC = data
+	case "BUS VOLTAGE C-A":
+		model.VoltageCA = data
+	case "VOLTAGE A-B":
+		model.VoltageAB = data
+	case "VOLTAGE B-C":
+		model.VoltageBC = data
+	case "VOLTAGE C-A":
+		model.VoltageCA = data
+	case "CURRENT PHASE A":
+		model.CurrentPhaseA = data
+	case "CURRENT PHASE B":
+		model.CurrentPhaseB = data
+	case "CURRENT PHASE C":
+		model.CurrentPhaseC = data
+	case "ACTIVE POWER P":
+		model.ActivePower = data
+	case "REACTIVE POWER Q":
+		model.ReactivePower = data
+	case "POWER FACTOR PF":
+		model.PowerFactor = data
+	default:
+		return
+	}
 }
 
 func ReadDateTimeColumn(datetime string) *time.Time {

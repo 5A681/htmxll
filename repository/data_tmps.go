@@ -20,7 +20,7 @@ func (s repository) CreateDataTmep(data entity.DataTmps) error {
 	sqlCreate := `insert into data_tmps (current_phase_a,current_phase_b,current_phase_c,
 	active_power,reactive_power,power_factor,data_datetime,created_at,bay_id,voltage_bc,voltage_ab,voltage_ca) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`
 	_, err := s.db.Exec(sqlCreate, data.CurrentPhaseA, data.CurrentPhaseB, data.CurrentPhaseC, data.ActivePower, data.ReactivePower,
-		data.PowerFactor, data.DataDatetime, data.CreatedAt, data.BayId, data.VoltageBC, data.VoltageBC, data.VoltageCA)
+		data.PowerFactor, data.DataDatetime, data.CreatedAt, data.BayId, data.VoltageBC, data.VoltageAB, data.VoltageCA)
 	if err != nil {
 		return err
 	}
