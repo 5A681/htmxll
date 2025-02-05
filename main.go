@@ -80,7 +80,6 @@ func main() {
 	changeOptHandler := handler.NewChangeOption(&defaultData)
 	//hello
 	//page := newPage()
-	count := Count{Count: 0}
 	e.GET("/", func(c echo.Context) error {
 		//c.Render(200, "index", nil)
 		timeSpace = ""
@@ -95,10 +94,6 @@ func main() {
 		//c.Render(200, "index", nil)
 
 		return c.Render(200, "new-monthly", nil)
-	})
-	e.POST("/count", func(c echo.Context) error {
-		count.Count++
-		return c.Render(200, "count", count)
 	})
 
 	e.GET("/option-title", changeOptHandler.GetOptionDateTimmeText)

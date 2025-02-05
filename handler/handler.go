@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"htmxll/config"
+	"htmxll/dto"
 	"htmxll/filter"
 	"htmxll/services"
 	"log"
@@ -273,22 +274,13 @@ func (h handler) GetStationList(c echo.Context) error {
 }
 
 func (h handler) GetRowsMonthlyData(c echo.Context) error {
+	var res []dto.MonthlyRowData
 	res, err := h.srv.GetRowsMonthlyData(h.config, *h.bayId, h.time)
 	if err != nil {
 
 		return c.Render(200, "monthly-rows", res)
 	}
-	// if len(res) > 0 {
-	// 	dataTime, err := time.Parse("02-01-2006", res[0].PeakDay.Date)
-	// 	if err != nil {
-	// 		log.Println("error time this", err, *h.time)
-	// 		dataTime = time.Now()
-	// 		log.Println("error time this", err, *h.time)
-	// 	}
-	// 	if !dataTime.IsZero() {
-	// 		*h.time = dataTime
-	// 	}
-	// }
+
 	return c.Render(200, "monthly-rows", res)
 }
 

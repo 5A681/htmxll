@@ -126,7 +126,6 @@ func ReadFileXls(filePath string, sheet int, dataTempRepo repository.Repository)
 }
 
 func MapToInsert(data float32, field string, model *entity.DataTmps) {
-	log.Println("field = ", field)
 	switch field {
 	case "BUS VOLTAGE A-B":
 		model.VoltageAB = data
@@ -148,9 +147,15 @@ func MapToInsert(data float32, field string, model *entity.DataTmps) {
 		model.CurrentPhaseC = data
 	case "ACTIVE POWER P":
 		model.ActivePower = data
+	case "ACTIVE POWER":
+		model.ActivePower = data
 	case "REACTIVE POWER Q":
 		model.ReactivePower = data
+	case "REACTIVE POWER":
+		model.ReactivePower = data
 	case "POWER FACTOR PF":
+		model.PowerFactor = data
+	case "POWER FACTOR":
 		model.PowerFactor = data
 	default:
 		return
