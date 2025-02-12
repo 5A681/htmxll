@@ -139,6 +139,12 @@ func MapToInsert(data float32, field string, model *entity.DataTmps) {
 		model.VoltageBC = data
 	case "VOLTAGE C-A":
 		model.VoltageCA = data
+	case "VOLTAGE PHASE A-B":
+		model.VoltageAB = data
+	case "VOLTAGE PHASE B-C":
+		model.VoltageBC = data
+	case "VOLTAGE PHASE C-A":
+		model.VoltageCA = data
 	case "CURRENT PHASE A":
 		model.CurrentPhaseA = data
 	case "CURRENT PHASE B":
@@ -158,6 +164,7 @@ func MapToInsert(data float32, field string, model *entity.DataTmps) {
 	case "POWER FACTOR":
 		model.PowerFactor = data
 	default:
+		log.Println("can not read",field)
 		return
 	}
 }
